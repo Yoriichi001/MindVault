@@ -17,16 +17,16 @@
                 <img src="{{ material.get_cover_url() }}" alt="{{ material.title }}" style="width: 100%; display: block; object-fit: cover;">
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-                <a href="{{ url_for('routes.read_online', material_id=material.id) }}" class="btn-primary-mv" style="text-align: center; text-decoration: none; display: block;">
+            <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+                <a href="{{ url_for('routes.read_online', material_id=material.id) }}" class="btn-primary-mv" style="text-align: center; text-decoration: none; display: block; font-weight: 800;">
                     📖 Read Online Now
                 </a>
 
-                <a href="{{ url_for('routes.download_pdf', material_id=material.id) }}" class="antique-button" style="text-align: center; text-decoration: none; justify-content: center; background: rgba(91, 56, 35, 0.85); width: 100%;">
+                <a href="{{ url_for('routes.download_pdf', material_id=material.id) }}" class="antique-button" style="text-align: center; text-decoration: none; justify-content: center; background: linear-gradient(135deg, rgba(85, 48, 26, 0.95), rgba(42, 22, 12, 0.98)); color: #ffdf7e; font-weight: 700; border: 1px solid var(--gold); width: 100%; padding: 0.8rem 1rem;">
                     ⬇ Download PDF Material
                 </a>
                 {% if not current_user.is_authenticated %}
-                <small style="color: var(--paper-dark); text-align: center; font-size: 0.78rem;">
+                <small style="color: #e2cca6; text-align: center; font-size: 0.82rem; font-weight: 500;">
                     * Sign-in required to download documents
                 </small>
                 {% endif %}
@@ -37,41 +37,42 @@
         <div>
             <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;">
                 <span class="badge badge-admin">{{ material.category }}</span>
-                <span style="color: var(--paper-dark); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">
+                <span style="color: #ffdf7e; font-size: 0.88rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;">
                     {{ material.sub_category or 'General Academic' }}
                 </span>
             </div>
 
-            <h1 style="font-family: var(--serif); font-size: 2.8rem; color: var(--gold-bright); line-height: 1.15; margin-bottom: 0.5rem;">
+            <h1 style="font-family: var(--serif); font-size: 2.8rem; color: #fffdf8; line-height: 1.15; margin-bottom: 0.5rem; text-shadow: 0 2px 12px rgba(0,0,0,0.6);">
                 {{ material.title }}
             </h1>
 
-            <p style="font-size: 1.1rem; color: var(--paper-dark); font-style: italic; margin-bottom: 1.8rem;">
+            <p style="font-size: 1.15rem; color: #ffdf7e; font-style: italic; margin-bottom: 1.8rem; font-weight: 500;">
                 Authored by {{ material.author }}
             </p>
 
-            <div class="manuscript-divider" style="color: var(--gold); margin: 1.5rem 0;">
+            <div class="manuscript-divider" style="color: var(--gold-bright); margin: 1.5rem 0;">
                 ✦ ━━━━━ ❦ ━━━━━ ✦
             </div>
 
-            <h3 style="font-family: var(--serif); font-size: 1.4rem; color: var(--gold); margin-bottom: 0.8rem;">
+            <h3 style="font-family: var(--serif); font-size: 1.45rem; color: var(--gold-bright); margin-bottom: 0.8rem; font-weight: 600;">
                 Synopsis & Archival Summary
             </h3>
 
-            <div style="font-size: 1rem; line-height: 1.8; color: var(--paper-light); opacity: 0.95; margin-bottom: 2rem;">
+            <div style="font-size: 1.05rem; line-height: 1.85; color: #f4ecdc; margin-bottom: 2rem;">
                 {{ material.description|safe }}
             </div>
 
             {% if material.content_preview %}
-            <div style="background: rgba(24, 12, 6, 0.6); border-left: 3px solid var(--gold); padding: 1.2rem; border-radius: 4px; margin-bottom: 2rem;">
-                <h4 style="font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 0.5rem;">
+            <div style="background: rgba(24, 12, 6, 0.75); border-left: 3px solid var(--gold-bright); padding: 1.4rem; border-radius: 6px; margin-bottom: 2rem; border: 1px solid var(--glass-border);">
+                <h4 style="font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 0.5rem; font-weight: 700;">
                     Expository Excerpt
                 </h4>
-                <p style="font-size: 0.95rem; font-style: italic; color: var(--paper-light); line-height: 1.6;">
+                <p style="font-size: 1rem; font-style: italic; color: #fffdf8; line-height: 1.7;">
                     "{{ material.content_preview }}"
                 </p>
             </div>
             {% endif %}
+
 
             <!-- Technical Specifications -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">

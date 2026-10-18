@@ -4,24 +4,25 @@
 ====================================================== */
 
 :root {
-    --wood-dark: #29170e;
-    --wood-brown: #5b3823;
-    --wood-light: #956640;
+    --wood-dark: #1a0e07;
+    --wood-brown: #4d2b17;
+    --wood-light: #805330;
 
-    --gold: #c4a064;
-    --gold-light: #e6cd96;
+    --gold: #d4af37;
+    --gold-light: #ffdf7e;
 
-    --paper: #e9d7b4;
-    --paper-light: #f6ead2;
-    --paper-dark: #c9ae80;
+    --paper: #f7ebd4;
+    --paper-light: #fffdf8;
+    --paper-dark: #e2cca6;
 
-    --ink: #382419;
+    --ink: #1f1008;
 
     --serif: "Cormorant Garamond", Georgia, serif;
     --script: "IM Fell English", Georgia, serif;
     --display-script: "Great Vibes", "Brush Script MT", cursive;
     --sans: "Manrope", Arial, sans-serif;
 }
+
 
 * {
     margin: 0;
@@ -1191,47 +1192,35 @@ img {
 }
 
 .antique-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    width: 100%;
-
-    margin-top: 22px;
-
-    padding: 15px 17px;
-
-    border: 1px solid #79542e;
-
-    background:
-        linear-gradient(
-            135deg,
-            #684323,
-            #392316
-        );
-
-    color: #f1dfbd;
-
-    font-size: 9px;
-    font-weight: 500;
-
-    letter-spacing: 2px;
-
-    transition: 0.3s;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(104, 67, 35, 0.9), rgba(45, 26, 14, 0.95));
+    color: #fffdf8;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s ease;
 }
 
 .antique-button:hover {
-    background: #805731;
-
-    box-shadow:
-        0 5px 15px rgba(57, 35, 22, 0.2);
+    background: linear-gradient(135deg, rgba(145, 95, 45, 0.95), rgba(70, 38, 20, 0.98));
+    border-color: var(--gold-light);
+    color: #ffdf7e;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 12px rgba(212, 175, 55, 0.3);
+    transform: translateY(-2px);
 }
 
 .antique-button span {
-    font-size: 17px;
+    font-size: inherit;
 }
+
 
 .login-footer {
     margin-top: 25px;
