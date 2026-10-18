@@ -3,6 +3,7 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp, ValidationError, Optional
 from App.models import User
+from App.utils import is_disposable_email
 
 # Honeypot validation helper
 def honeypot_check(form, field):
@@ -37,7 +38,14 @@ class RegisterForm(FlaskForm):
         ]
     )
     email = StringField('Email Address', validators=[DataRequired(), Email(), Length(max=120)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, message="Password must be at least 6 characters.")])
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired(),
+            Length(min=8, message="Password must be at least 8 characters."),
+            Regexp(r'^(?=.*[A-Za-z])(?=.*\d).+$', message="Password must contain at least one letter and one number.")
+        ]
+    )
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message="Passwords must match.")])
     # Anti-bot honeypot field
     website = StringField('Website', validators=[honeypot_check])
@@ -49,9 +57,13 @@ class RegisterForm(FlaskForm):
             raise ValidationError("That username is already claimed in the vault. Please choose another.")
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data.strip().lower()).first()
+        cleaned_email = email.data.strip().lower()
+        if is_disposable_email(cleaned_email):
+            raise ValidationError("Disposable or temporary email services are prohibited in MindVault.")
+        user = User.query.filter_by(email=cleaned_email).first()
         if user:
             raise ValidationError("That email address is already registered. Please sign in.")
+
 
 
 class AccountUpdateForm(FlaskForm):
@@ -91,9 +103,17 @@ class PasswordResetRequestForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    password = PasswordField(
+        'New Password',
+        validators=[
+            DataRequired(),
+            Length(min=8, message="Password must be at least 8 characters."),
+            Regexp(r'^(?=.*[A-Za-z])(?=.*\d).+$', message="Password must contain at least one letter and one number.")
+        ]
+    )
     confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password', message="Passwords must match.")])
     submit = SubmitField('Reset Password')
+
 
 
 class MaterialForm(FlaskForm):

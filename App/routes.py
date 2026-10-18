@@ -16,6 +16,7 @@ from App.utils import (
     is_safe_url, mask_email, generate_verification_token, verify_token,
     save_uploaded_image, save_uploaded_pdf, sanitize_html
 )
+from App import limiter
 
 routes_bp = Blueprint('routes', __name__)
 
@@ -33,7 +34,9 @@ def index():
     with dynamic database catalog, category filters, and search.
     """
     category = request.args.get('category', 'all')
-    search_query = request.args.get('q', '').strip()
+    # Limit search query length to 60 chars to prevent expensive full-table scans
+    search_query = request.args.get('q', '').strip()[:60]
+
 
     query = Material.query
     if category in ['Books', 'Research Papers', 'Study Materials']:
@@ -203,6 +206,7 @@ def feedback():
 # ==========================================
 
 @routes_bp.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute; 30 per hour")
 def login():
     """Student and reader login."""
     if current_user.is_authenticated:
@@ -235,6 +239,7 @@ def login():
 
 @routes_bp.route('/admin', methods=['GET', 'POST'])
 @routes_bp.route('/admin/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute; 20 per hour")
 def admin_login():
     """Dedicated administrative login portal."""
     if current_user.is_authenticated and current_user.is_admin:
@@ -265,6 +270,7 @@ def admin_login():
 
 
 @routes_bp.route('/register', methods=['GET', 'POST'])
+@limiter.limit("5 per minute; 15 per hour")
 def register():
     """Student registration with honeypot and sanitized input."""
     if current_user.is_authenticated:
@@ -280,7 +286,7 @@ def register():
             username=username,
             email=email,
             role='student',
-            is_verified=True,  # Default verified for seamless demo, with email token verification support
+            is_verified=False,  # Unverified until email confirmation is completed
             avatar='default-avatar.png'
         )
         new_user.set_password(password)
@@ -288,11 +294,12 @@ def register():
         db.session.commit()
 
         login_user(new_user)
-        flash("Your MindVault scholar account has been created! Welcome to the digital library.", "success")
-        return redirect(url_for('routes.index'))
+        flash("Your MindVault scholar account has been created! Please verify your email to unlock all privileges.", "success")
+        return redirect(url_for('routes.account'))
     elif request.method == 'POST':
         if form.website.data:
             flash("Bot activity detected. Form submission aborted.", "danger")
+
 
     return render_template('register.html', form=form)
 
@@ -363,6 +370,7 @@ def google_auth():
 
 
 @routes_bp.route('/reset-password', methods=['GET', 'POST'])
+@limiter.limit("3 per minute; 10 per hour")
 def reset_password_request():
     """User enumeration defense: Always returns identical neutral response."""
     form = PasswordResetRequestForm()
@@ -371,8 +379,8 @@ def reset_password_request():
         user = User.query.filter_by(email=email).first()
         if user:
             token = generate_verification_token(user.email, salt='password-reset-salt')
-            # In a production mailer, send the reset link: url_for('routes.reset_password_token', token=token, _external=True)
-            current_app.logger.info(f"Password reset token for {email}: {token}")
+            # Security Hardening: Never log raw reset tokens to server logs
+            current_app.logger.info(f"Password reset dispatch processed for: {mask_email(email)}")
 
         flash("If that email address exists in our archives, password reset instructions have been dispatched.", "info")
         return redirect(url_for('routes.login'))
@@ -416,9 +424,11 @@ def verify_email(token):
 @login_required
 def resend_verification():
     token = generate_verification_token(current_user.email, salt='email-confirm-salt')
-    current_app.logger.info(f"Verification link for {current_user.email}: {url_for('routes.verify_email', token=token, _external=True)}")
-    flash("Verification link generated. Check your inbox or server log to confirm.", "info")
+    # Security Hardening: Omit raw token from logs; notify user via secure flash
+    current_app.logger.info(f"Verification dispatch generated for scholar ID: {current_user.id}")
+    flash(f"Verification scroll refreshed. Please check your inbox at {mask_email(current_user.email)} to confirm.", "info")
     return redirect(url_for('routes.account'))
+
 
 
 # ==========================================

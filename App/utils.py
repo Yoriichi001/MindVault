@@ -33,16 +33,34 @@ def is_safe_url(target):
     """
     Anti-Phishing & Open-Redirect Defense.
     Strictly validates that `next` URLs start with '/', do NOT start with '//',
-    and have no external netloc.
+    contain no backslashes, and have no external netloc.
     """
     if not target or not isinstance(target, str):
         return False
-    # Ensure it starts with / and not //
-    if not target.startswith('/') or target.startswith('//'):
+    # Ensure it starts with / and not //, and contains no backslash evasion
+    if not target.startswith('/') or target.startswith('//') or '\\' in target:
         return False
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
+# Common disposable / burner email domains used by automated spam bots
+DISPOSABLE_EMAIL_DOMAINS = {
+    'mailinator.com', 'guerrillamail.com', 'tempmail.com', 'throwawaymail.com',
+    '10minutemail.com', 'sharklasers.com', 'yopmail.com', 'dispostable.com',
+    'getairmail.com', 'trashmail.com', 'burnermail.io', 'mytemp.email',
+    'temp-mail.org', 'fakeinbox.com', 'crazymailing.com', 'mohmal.com'
+}
+
+
+def is_disposable_email(email):
+    """Detects and flags disposable burner email domains."""
+    if not email or '@' not in email:
+        return False
+    domain = email.split('@')[-1].strip().lower()
+    return domain in DISPOSABLE_EMAIL_DOMAINS
+
 
 
 def mask_email(email):

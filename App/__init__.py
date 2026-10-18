@@ -109,6 +109,17 @@ def create_app(config_class=Config):
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         # Permissions policy for student browser safety
         response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        # Modern Content-Security-Policy (CSP) protecting against XSS and malicious script injections
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "img-src 'self' data: https://images.unsplash.com https://accounts.google.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "script-src 'self' 'unsafe-inline' https://accounts.google.com; "
+            "frame-src https://accounts.google.com; "
+            "connect-src 'self' https://accounts.google.com;"
+        )
         return response
+
 
     return app

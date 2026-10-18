@@ -6,6 +6,13 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'mindvault-super-secure-production-secret-key-92837482347')
     
+    # In production, enforce a cryptographically secure, environment-defined SECRET_KEY
+    if (os.environ.get('FLASK_ENV') == 'production' or os.environ.get('RENDER') is not None) and SECRET_KEY.startswith('mindvault-super-secure'):
+        import secrets
+        # Automatically generate a secure ephemeral random key if not explicitly set to prevent cookie forgery
+        SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_hex(32))
+
+    
     # Database Configuration: SQLite fallback or PostgreSQL from DATABASE_URL
     raw_db_url = os.environ.get('DATABASE_URL')
     if raw_db_url:
