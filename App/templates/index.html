@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %}MindVault[E-BOOK] | Digital Library & Atelier of Knowledge{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+     HERITAGE 3D ANTIQUE BOOK COVER HERO
+=========================================== -->
+<section id="coverScreen" class="screen active" style="min-height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1rem;">
+
+    <div class="scene-label" style="margin-bottom: 1.5rem;">
+        <span class="status-dot"></span>
+        MINDVAULT SANCTUM · DIGITAL ARCHIVES
+    </div>
+
+    <div class="book-scene">
+        <div class="book-shadow"></div>
+        <div class="main-book" id="mainBook">
+
+            <!-- Book page stack underneath -->
+            <div class="book-page-stack">
+                <div class="page-edge"></div>
+                <div class="page-edge"></div>
+                <div class="page-edge"></div>
+            </div>
+
+            <!-- Book interior revealed on open -->
+            <div class="book-interior">
+                <div class="interior-paper">
+                    <div class="paper-border">
+                        <p class="manuscript-small">
+                            ATELIER OF KNOWLEDGE & SCHOLARSHIP
+                        </p>
+                        <div class="ornament">❦</div>
+                        <h2>MIND <span>&</span> VAULT</h2>
+                        <p class="interior-subtitle">
+                            STORE KNOWLEDGE · UNLOCK POTENTIAL
+                        </p>
+                        <div class="ornament divider-ornament">
+                            ━━━━━ ✦ ━━━━━
+                        </div>
+                        <p class="interior-description">
+                            Where students discover timeless wisdom,<br>
+                            peer-reviewed papers, and unlock their highest potential.
+                        </p>
+                        <p class="page-number">— I —</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Front Wooden & Leather Bound Cover -->
+            <div class="book-cover" id="bookCover">
+                <div class="cover-grain"></div>
+                <div class="cover-wear"></div>
+
+                <div class="cover-scratch scratch-one"></div>
+                <div class="cover-scratch scratch-two"></div>
+                <div class="cover-scratch scratch-three"></div>
+
+                <div class="cover-crack crack-one"></div>
+                <div class="cover-crack crack-two"></div>
+                <div class="cover-crack crack-three"></div>
+
+                <!-- Brass corner plates -->
+                <div class="brass-corner top-left"></div>
+                <div class="brass-corner top-right"></div>
+                <div class="brass-corner bottom-left"></div>
+                <div class="brass-corner bottom-right"></div>
+
+                <div class="cover-border">
+                    <div class="cover-top">
+                        <span class="cover-symbol">✦</span>
+                        <span>THE SCHOLAR EDITION</span>
+                        <span class="cover-symbol">✦</span>
+                    </div>
+
+                    <div class="cover-logo">
+                        <div class="logo-monogram">MV</div>
+                        <div class="logo-line"></div>
+                    </div>
+
+                    <p class="cover-pretitle">THE DIGITAL REPOSITORY</p>
+                    <h1>
+                        MIND
+                        <span>&</span>
+                        VAULT
+                    </h1>
+                    <p class="cover-subtitle">STORE KNOWLEDGE. UNLOCK POTENTIAL.</p>
+
+                    <div class="cover-ornament">
+                        ❧ ━━━━━ ❦ ━━━━━ ❧
+                    </div>
+
+                    <p class="cover-description">
+                        Curated books, research publications,<br>
+                        and academic study materials.
+                    </p>
+
+                    <div class="cover-bottom">
+                        <span>OPEN ACCESS</span>
+                        <span class="bottom-star">✦</span>
+                        <span>COMMUNITY DRIVEN</span>
+                    </div>
+                </div>
+
+                <button id="openBookBtn" class="open-book-button" aria-label="Open the digital library collection">
+                    <span>EXPLORE THE VAULT</span>
+                    <span class="button-arrow">↗</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p class="scene-caption" style="margin-top: 2rem;">
+        STORE KNOWLEDGE. UNLOCK POTENTIAL. EVERY BOOK IS A DOORWAY TO MASTERY.
+    </p>
+</section>
+
+<!-- ==========================================
+     DIGITAL LIBRARY CATALOGUE SECTION
+=========================================== -->
+<section id="libraryCollection" class="collection-section" style="max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem;">
+
+    <!-- Library Header & Search Bar -->
+    <div class="section-heading" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div>
+            <p class="eyebrow" style="color: var(--gold); letter-spacing: 2px;">THE CURATED ARCHIVES</p>
+            <h2 style="font-family: var(--serif); font-size: 2.8rem; color: var(--gold-bright);">
+                Sanctum of <em>Knowledge</em>
+            </h2>
+        </div>
+
+        <!-- Live Search Form -->
+        <form method="GET" action="{{ url_for('routes.index') }}" style="display: flex; gap: 0.5rem; max-width: 420px; width: 100%;">
+            {% if selected_category != 'all' %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            <input
+                type="text"
+                name="q"
+                value="{{ search_query }}"
+                placeholder="Search by title, author, or field..."
+                class="form-control"
+                style="background: rgba(24, 12, 6, 0.7); border: 1px solid var(--glass-border); padding: 0.75rem 1.1rem; border-radius: 8px; color: var(--paper-light);"
+            >
+            <button type="submit" class="antique-button" style="padding: 0.75rem 1.4rem; white-space: nowrap;">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Category Filters Navigation -->
+    <div class="category-filters" style="display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2.5rem; justify-content: center;">
+        <a href="{{ url_for('routes.index', q=search_query) }}"
+           class="filter-button {% if selected_category == 'all' %}active{% endif %}">
+            ALL MATERIALS ({{ materials|length }})
+        </a>
+        <a href="{{ url_for('routes.index', category='Books', q=search_query) }}"
+           class="filter-button {% if selected_category == 'Books' %}active{% endif %}">
+            BOOKS ({{ total_books }})
+        </a>
+        <a href="{{ url_for('routes.index', category='Research Papers', q=search_query) }}"
+           class="filter-button {% if selected_category == 'Research Papers' %}active{% endif %}">
+            RESEARCH PAPERS ({{ total_papers }})
+        </a>
+        <a href="{{ url_for('routes.index', category='Study Materials', q=search_query) }}"
+           class="filter-button {% if selected_category == 'Study Materials' %}active{% endif %}">
+            STUDY MATERIALS ({{ total_study }})
+        </a>
+    </div>
+
+    <!-- Materials Grid -->
+    {% if materials %}
+    <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 2rem;">
+        {% for item in materials %}
+        <article class="glass-card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+            
+            {% if item.is_featured %}
+            <div style="position: absolute; top: 12px; right: 12px; background: var(--gold); color: var(--wood-dark); font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; padding: 0.2rem 0.6rem; border-radius: 12px; text-transform: uppercase;">
+                Featured
+            </div>
+            {% endif %}
+
+            <div>
+                <!-- Cover Image & Frame -->
+                <div style="height: 250px; border-radius: 8px; overflow: hidden; margin-bottom: 1.2rem; border: 1px solid var(--glass-border); background: #1f1008; position: relative;">
+                    <img src="{{ item.get_cover_url() }}" alt="{{ item.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                </div>
+
+                <!-- Category & Tag -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">
+                    <span style="color: var(--gold-bright); font-weight: 600;">{{ item.category }}</span>
+                    <span style="color: var(--paper-dark);">{{ item.sub_category or 'General' }}</span>
+                </div>
+
+                <!-- Title & Author -->
+                <h3 style="font-family: var(--serif); font-size: 1.45rem; color: var(--paper-light); margin-bottom: 0.3rem; line-height: 1.3;">
+                    <a href="{{ url_for('routes.material_detail', material_id=item.id) }}" style="text-decoration: none; color: inherit;">
+                        {{ item.title }}
+                    </a>
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--paper-dark); font-style: italic; margin-bottom: 0.8rem;">
+                    by {{ item.author }}
+                </p>
+
+                <!-- Synopsis / Excerpt -->
+                <p style="font-size: 0.88rem; color: var(--paper-light); opacity: 0.85; line-height: 1.5; margin-bottom: 1.2rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ item.description }}
+                </p>
+            </div>
+
+            <div>
+                <!-- Metadata counts -->
+                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--paper-dark); border-top: 1px solid var(--glass-border); padding-top: 0.8rem; margin-bottom: 1.2rem;">
+                    <span>📖 {{ item.pages }} Pages</span>
+                    <span>👁 {{ item.views_count }} Reads</span>
+                    <span>⬇ {{ item.downloads_count }} DLs</span>
+                </div>
+
+                <!-- Dual Action Buttons: Read Online vs Download PDF -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                    <a href="{{ url_for('routes.read_online', material_id=item.id) }}" class="antique-button" style="padding: 0.65rem 0.4rem; font-size: 0.8rem; text-align: center; text-decoration: none; justify-content: center; background: rgba(91, 56, 35, 0.7);">
+                        <span>READ ONLINE</span>
+                    </a>
+
+                    <a href="{{ url_for('routes.download_pdf', material_id=item.id) }}" class="antique-button" style="padding: 0.65rem 0.4rem; font-size: 0.8rem; text-align: center; text-decoration: none; justify-content: center; background: var(--gold); color: #1a0e07; font-weight: 700;">
+                        <span>DOWNLOAD PDF</span>
+                    </a>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-panel" style="padding: 4rem 2rem; text-align: center; max-width: 600px; margin: 0 auto;">
+        <div style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;">📜</div>
+        <h3 style="font-family: var(--serif); font-size: 1.8rem; color: var(--gold-bright); margin-bottom: 0.5rem;">No Manuscripts Found</h3>
+        <p style="color: var(--paper-dark); margin-bottom: 1.5rem;">There are currently no items matching your inquiry in this archive wing.</p>
+        <a href="{{ url_for('routes.index') }}" class="antique-button" style="display: inline-flex;">View All Records</a>
+    </div>
+    {% endif %}
+
+</section>
+
+<!-- ======================================================
+     COMMUNITY REDIRECT SPOTLIGHT BANNER
+     (Displays as students scroll through books)
+====================================================== -->
+<section class="community-spotlight-section">
+    <div class="community-banner-card">
+        <p class="eyebrow" style="color: var(--gold); letter-spacing: 3px; font-weight: 600;">SCHOLARLY DISCOURSE & COMMUNITY</p>
+        <h2>Want to Post your thoughts in Community?</h2>
+        <p>
+            Engage with fellow scholars, debate emerging concepts, share study notes, and collaborate across disciplines. Your insights enrich our collective intelligence.
+        </p>
+        <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" class="community-cta-btn">
+            <span>ENTER THE COMMUNITY FORUM</span>
+            <span>↗</span>
+        </a>
+    </div>
+</section>
+
+<!-- ======================================================
+     PHILOSOPHY & PURPOSE SECTION
+====================================================== -->
+<section class="philosophy-section" id="ourPhilosophy" style="max-width: 900px; margin: 4rem auto; text-align: center; padding: 0 1.5rem;">
+    <p class="eyebrow" style="color: var(--gold); letter-spacing: 2px;">THE MINDVAULT ETHOS</p>
+    <h2 style="font-family: var(--serif); font-size: 2.6rem; color: var(--gold-bright); margin-bottom: 1.2rem;">
+        Store Knowledge.<br>
+        <em>Unlock Potential.</em>
+    </h2>
+    <p style="font-size: 1.1rem; line-height: 1.8; color: var(--paper-light); opacity: 0.9; margin-bottom: 2rem;">
+        Knowledge is not meant to sit dormant in closed vaults. MindVault is built to provide universal access to transformative literature, groundbreaking research, and rigorous study materials. By preserving the timeless craftsmanship of physical books and pairing it with modern digital accessibility, we empower every student to reach the apex of their intellectual journey.
+    </p>
+    <div class="philosophy-signature" style="font-family: var(--serif); font-size: 1.8rem; color: var(--gold-bright);">
+        MINDVAULT ARCHIVES
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Smooth scroll down to library collection on clicking open book button
+    const openBookBtn = document.getElementById('openBookBtn');
+    const mainBook = document.getElementById('mainBook');
+    const bookCover = document.getElementById('bookCover');
+    const libraryCollection = document.getElementById('libraryCollection');
+
+    if (openBookBtn && mainBook && bookCover) {
+        openBookBtn.addEventListener('click', function() {
+            mainBook.classList.add('book-opened');
+            setTimeout(() => {
+                if (libraryCollection) {
+                    libraryCollection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 700);
+        });
+    }
+</script>
+{% endblock %}

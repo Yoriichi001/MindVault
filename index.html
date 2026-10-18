@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindVault[E-BOOK] - Store Knowledge. Unlock Potential. A digital library where students discover books, explore research papers, and expand their knowledge.">
+
+    <title>MindVault[E-BOOK] | Store Knowledge. Unlock Potential.</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="App/static/css/glassmorphism.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Great+Vibes&family=IM+Fell+English:ital@0;1&family=Manrope:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Wooden Background -->
+    <div class="wood-background" aria-hidden="true"></div>
+    <div class="background-vignette" aria-hidden="true"></div>
+
+    <!-- Ambient Light -->
+    <div class="ambient-light" aria-hidden="true"></div>
+
+
+    <!-- ==========================================
+         INTRODUCTION: ANTIQUE WOODEN BOOK
+    =========================================== -->
+
+    <section id="coverScreen" class="screen active">
+
+        <div class="scene-label">
+            <span class="status-dot"></span>
+            MINDVAULT SANCTUM · DIGITAL ARCHIVES
+        </div>
+
+        <div class="book-scene">
+
+            <div class="book-shadow"></div>
+
+            <div class="main-book" id="mainBook">
+
+                <!-- Book pages underneath -->
+                <div class="book-page-stack">
+
+                    <div class="page-edge"></div>
+                    <div class="page-edge"></div>
+                    <div class="page-edge"></div>
+
+                </div>
+
+                <!-- Book interior -->
+                <div class="book-interior">
+
+                    <div class="interior-paper">
+
+                        <div class="paper-border">
+
+                            <p class="manuscript-small">
+                                ATELIER OF KNOWLEDGE & SCHOLARSHIP
+                            </p>
+
+                            <div class="ornament">❦</div>
+
+                            <h2>MIND <span>&</span> VAULT</h2>
+
+                            <p class="interior-subtitle">
+                                STORE KNOWLEDGE · UNLOCK POTENTIAL
+                            </p>
+
+                            <div class="ornament divider-ornament">
+                                ━━━━━ ✦ ━━━━━
+                            </div>
+
+                            <p class="interior-description">
+                                Where students discover timeless wisdom,<br>
+                                peer-reviewed papers, and unlock their highest potential.
+                            </p>
+
+                            <p class="page-number">— I —</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Front Wooden Cover -->
+                <div class="book-cover" id="bookCover">
+
+                    <div class="cover-grain"></div>
+
+                    <div class="cover-wear"></div>
+
+                    <div class="cover-scratch scratch-one"></div>
+                    <div class="cover-scratch scratch-two"></div>
+                    <div class="cover-scratch scratch-three"></div>
+
+                    <div class="cover-crack crack-one"></div>
+                    <div class="cover-crack crack-two"></div>
+                    <div class="cover-crack crack-three"></div>
+
+                    <!-- Brass corners -->
+                    <div class="brass-corner top-left"></div>
+                    <div class="brass-corner top-right"></div>
+                    <div class="brass-corner bottom-left"></div>
+                    <div class="brass-corner bottom-right"></div>
+
+                    <!-- Decorative cover -->
+                    <div class="cover-border">
+
+                        <div class="cover-top">
+
+                            <span class="cover-symbol">✦</span>
+
+                            <span>THE SCHOLAR EDITION</span>
+
+                            <span class="cover-symbol">✦</span>
+
+                        </div>
+
+                        <div class="cover-logo">
+                            <div class="logo-monogram">MV</div>
+                            <div class="logo-line"></div>
+                        </div>
+
+                        <p class="cover-pretitle">
+                            THE DIGITAL REPOSITORY
+                        </p>
+
+                        <h1>
+                            MIND
+                            <span>&</span>
+                            VAULT
+                        </h1>
+
+                        <p class="cover-subtitle">
+                            STORE KNOWLEDGE. UNLOCK POTENTIAL.
+                        </p>
+
+                        <div class="cover-ornament">
+                            ❧ ━━━━━ ❦ ━━━━━ ❧
+                        </div>
+
+                        <p class="cover-description">
+                            Curated books, research publications,<br>
+                            and academic study materials.
+                        </p>
+
+                        <div class="cover-bottom">
+
+                            <span>OPEN ACCESS</span>
+
+                            <span class="bottom-star">✦</span>
+
+                            <span>COMMUNITY DRIVEN</span>
+
+                        </div>
+
+                    </div>
+
+                    <button id="openBookBtn" class="open-book-button">
+                        <span>EXPLORE THE VAULT</span>
+                        <span class="button-arrow">↗</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <p class="scene-caption">
+            STORE KNOWLEDGE. UNLOCK POTENTIAL. EVERY BOOK IS A DOORWAY TO MASTERY.
+        </p>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         LOGIN PAGE
+    =========================================== -->
+
+    <section id="loginScreen" class="screen">
+
+        <div class="login-book">
+
+            <div class="login-page-decoration">
+
+                <span class="page-corner corner-a">❧</span>
+                <span class="page-corner corner-b">❧</span>
+                <span class="page-corner corner-c">❧</span>
+                <span class="page-corner corner-d">❧</span>
+
+            </div>
+
+            <div class="login-content">
+
+                <div class="login-monogram">
+                    O&G
+                </div>
+
+                <p class="eyebrow">
+                    WELCOME TO THE ATELIER
+                </p>
+
+                <h2>Enter Your World</h2>
+
+                <div class="manuscript-divider">
+                    <span>✦</span>
+                </div>
+
+                <p class="login-description">
+                    Discover the beauty of natural materials,
+                    timeless forms and exceptional craftsmanship.
+                </p>
+
+                <form id="loginForm">
+
+                    <label for="email">
+                        EMAIL ADDRESS
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="your@email.com"
+                        required
+                    >
+
+                    <label for="password">
+                        PASSWORD
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                        minlength="4"
+                    >
+
+                    <button type="submit" class="antique-button">
+                        ENTER THE COLLECTION
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+                <p class="login-footer">
+                    An appreciation of wood is an appreciation of time.
+                </p>
+
+            </div>
+
+        </div>
+
+        <button class="back-to-cover" id="backToCover">
+            ← RETURN TO THE COVER
+        </button>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         FURNITURE SHOP
+    =========================================== -->
+
+    <section id="shopScreen" class="screen">
+
+        <header class="shop-navbar">
+
+            <a href="#" class="shop-brand" id="homeBtn">
+                <span class="brand-symbol">MV</span>
+
+                <span class="brand-name">
+                    MIND <i>&</i> VAULT
+                    <small>STORE KNOWLEDGE · UNLOCK POTENTIAL</small>
+                </span>
+            </a>
+
+            <nav class="shop-navigation">
+
+                <a href="#collection">ALL ARCHIVES</a>
+                <a href="#collection" data-filter="Books">BOOKS</a>
+                <a href="#collection" data-filter="Research Papers">RESEARCH PAPERS</a>
+                <a href="#collection" data-filter="Study Materials">STUDY MATERIALS</a>
+                <a href="https://ecellcup.onrender.com/community" target="_blank" rel="noopener noreferrer" style="color: var(--gold-bright);">COMMUNITY ↗</a>
+
+            </nav>
+
+            <a href="login.html" class="cart-button" id="authPortalBtn" style="text-decoration: none;">
+                <span>PORTAL</span>
+                <span class="cart-count">✦</span>
+            </a>
+
+        </header>
+
+
+        <!-- Library Hero -->
+
+        <div class="shop-hero">
+
+            <div class="hero-ornament">❦</div>
+
+            <p class="eyebrow">
+                A DIGITAL SANCTUM OF INTELLECT
+            </p>
+
+            <h1>
+                Knowledge That
+                <span>Unlocks Potential.</span>
+            </h1>
+
+            <p class="hero-description">
+                A digital library where students discover books, explore new concepts,
+                and expand their knowledge through open academic literature and peer-reviewed research.
+            </p>
+
+            <a href="#collection" class="hero-link">
+                EXPLORE THE ARCHIVES
+                <span>↓</span>
+            </a>
+
+        </div>
+
+
+        <!-- Category Filters -->
+
+        <main class="collection-section" id="collection">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="eyebrow">THE DIGITAL REPOSITORY</p>
+
+                    <h2>
+                        Manuscripts of
+                        <em>Enduring Wisdom</em>
+                    </h2>
+                </div>
+
+                <p class="catalogue-note">
+                    OPEN ACCESS · CURATED FOR SCHOLARS
+                </p>
+
+            </div>
+
+
+            <div class="category-filters">
+
+                <button class="filter-button active"
+                        data-category="all"
+                        aria-pressed="true">
+                    ALL MATERIALS
+                </button>
+
+                <button class="filter-button"
+                        data-category="Books"
+                        aria-pressed="false">
+                    BOOKS
+                </button>
+
+                <button class="filter-button"
+                        data-category="Research Papers"
+                        aria-pressed="false">
+                    RESEARCH PAPERS
+                </button>
+
+                <button class="filter-button"
+                        data-category="Study Materials"
+                        aria-pressed="false">
+                    STUDY MATERIALS
+                </button>
+
+            </div>
+
+
+            <!-- Materials inserted by JavaScript -->
+            <div class="product-grid" id="productGrid"></div>
+
+
+            <!-- Community Redirect Section (When User Scrolls Books) -->
+            <section class="community-spotlight-section" style="margin: 4.5rem 0;">
+                <div class="community-banner-card">
+                    <p class="eyebrow" style="color: var(--gold); letter-spacing: 3px; font-weight: 600;">COMMUNITY & SCHOLARLY FORUM</p>
+                    <h2>Want to Post your thoughts in Community?</h2>
+                    <p>
+                        Engage with fellow scholars, share research discoveries, ask questions on complex study materials, and build knowledge together.
+                    </p>
+                    <a href="https://ecellcup.onrender.com/community" target="_blank" rel="noopener noreferrer" class="community-cta-btn">
+                        <span>POST IN COMMUNITY</span>
+                        <span>↗</span>
+                    </a>
+                </div>
+            </section>
+
+
+            <section class="philosophy-section" id="ourStory">
+
+                <p class="eyebrow">OUR PHILOSOPHY</p>
+
+                <h2>
+                    Store Knowledge.<br>
+                    <em>Unlock Potential.</em>
+                </h2>
+
+                <p>
+                    We believe that deep, transformative education should be accessible to all. MindVault marries the timeless craftsmanship of physical antique folios with modern digital discovery—giving students and researchers an inspiring atmosphere to think, analyze, and innovate.
+                </p>
+
+                <div class="philosophy-signature">
+                    MINDVAULT ARCHIVES
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <footer class="shop-footer">
+
+            <span>MINDVAULT [E-BOOK]</span>
+
+            <span>STORE KNOWLEDGE · UNLOCK POTENTIAL</span>
+
+        </footer>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         PRODUCT DETAIL BOOK
+    =========================================== -->
+
+    <section id="detailScreen" class="screen">
+
+        <button id="backToShop" class="detail-back-button">
+            ← BACK TO THE CATALOGUE
+        </button>
+
+        <div class="detail-scene">
+
+            <div class="detail-book" id="detailBook">
+
+                <!-- Left page -->
+                <article class="detail-page left-page">
+
+                    <div class="aged-paper-texture"></div>
+
+                    <div class="page-content">
+
+                        <p class="eyebrow">
+                            FROM THE ATELIER ARCHIVES
+                        </p>
+
+                        <h2 id="detailNameLeft">
+                            A Study in Form
+                        </h2>
+
+                        <div class="manuscript-divider">
+                            ✦
+                        </div>
+
+                        <p class="detail-left-description"
+                           id="detailDescriptionLeft">
+                        </p>
+
+                        <div class="detail-specifications">
+
+                            <div>
+                                <span>MATERIAL</span>
+                                <strong id="detailMaterial"></strong>
+                            </div>
+
+                            <div>
+                                <span>FINISH</span>
+                                <strong id="detailFinish"></strong>
+                            </div>
+
+                            <div>
+                                <span>COLLECTION</span>
+                                <strong id="detailCategory"></strong>
+                            </div>
+
+                        </div>
+
+                        <div class="page-footer">
+                            OAK & GRAIN <span>—</span> ARCHIVE
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Right page -->
+                <article class="detail-page right-page">
+
+                    <div class="aged-paper-texture"></div>
+
+                    <div class="product-detail-image-frame">
+
+                        <div class="product-image-mat">
+
+                            <img
+                                id="detailImage"
+                                src=""
+                                alt="Furniture product"
+                            >
+
+                        </div>
+
+                        <p class="image-caption">
+                            AN OBJECT OF ENDURING BEAUTY
+                        </p>
+
+                    </div>
+
+                    <div class="detail-right-content">
+
+                        <p class="eyebrow">
+                            THE SELECTED MANUSCRIPT
+                        </p>
+
+                        <h1 id="detailName">
+                            Scholar Collection
+                        </h1>
+
+                        <p class="detail-price" id="detailPrice">
+                            Digital Archival Edition
+                        </p>
+
+                        <p class="detail-short-description"
+                           id="detailDescription">
+                        </p>
+
+                        <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
+                            <button id="addToCartBtn"
+                                    class="antique-button">
+                                READ ONLINE
+                                <span>📖</span>
+                            </button>
+
+                            <button id="downloadStaticPdfBtn"
+                                    class="antique-button"
+                                    style="background: var(--gold); color: #1a0e07; font-weight: 700;"
+                                    onclick="alert('Please sign in via the Flask application portal to authenticate and download full PDF materials.')">
+                                DOWNLOAD PDF
+                                <span>⬇</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="page-footer">
+                        <span>O&G</span>
+                        <span>THE ATELIER COLLECTION</span>
+                    </div>
+
+                </article>
+
+
+                <!-- Page turn overlay -->
+                <div class="turning-page" id="turningPage">
+
+                    <div class="turning-page-front">
+                        <span>OAK & GRAIN</span>
+                        <div>❦</div>
+                        <small>THE ART OF FINE FURNITURE</small>
+                    </div>
+
+                    <div class="turning-page-back">
+                        <span>THE ATELIER ARCHIVES</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         CART MODAL
+    =========================================== -->
+
+    <div class="modal-overlay" id="cartModal">
+
+        <div class="cart-modal">
+
+            <button class="modal-close" id="closeCart">
+                ×
+            </button>
+
+            <p class="eyebrow">YOUR SELECTION</p>
+
+            <h2>The Collection Bag</h2>
+
+            <div id="cartItems"></div>
+
+            <div class="cart-total-row">
+                <span>TOTAL</span>
+                <strong id="cartTotal">₹0</strong>
+            </div>
+
+            <p class="cart-note">
+                Demonstration cart. No payment is processed.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Scholar Feedback & Review | MindVault[E-BOOK]{% endblock %}
+
+{% block content %}
+<div class="auth-container" style="max-width: 650px; margin: 3rem auto;">
+    <div class="auth-glass-box" style="max-width: 650px;">
+
+        <div class="auth-header">
+            <div style="font-family: var(--serif); font-size: 2.2rem; color: var(--gold-bright); margin-bottom: 0.2rem;">
+                INSCRIBE YOUR THOUGHTS
+            </div>
+            <p style="color: var(--gold); letter-spacing: 2px; font-size: 0.78rem; text-transform: uppercase;">
+                STORE KNOWLEDGE · UNLOCK POTENTIAL
+            </p>
+            <div class="manuscript-divider" style="color: var(--gold); margin: 0.8rem 0;">
+                ✦ ━━━━━ ❦ ━━━━━ ✦
+            </div>
+            <p style="font-size: 0.95rem; color: var(--paper-light); line-height: 1.6;">
+                Have a book recommendation, feature proposal, or critique? We actively refine the MindVault archives based on scholar input.
+            </p>
+        </div>
+
+        <form method="POST" action="{{ url_for('routes.feedback') }}">
+            {{ form.hidden_tag() }}
+
+            <!-- Invisible honeypot field -->
+            <div class="website-hp-field">
+                {{ form.website(tabindex="-1", autocomplete="off") }}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="name">{{ form.name.label.text }}</label>
+                    {{ form.name(class="form-control", placeholder="Your full name or handle", required=true) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="email">{{ form.email.label.text }}</label>
+                    {{ form.email(class="form-control", placeholder="student@university.edu", required=true) }}
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="subject">{{ form.subject.label.text }}</label>
+                    {{ form.subject(class="form-control", placeholder="e.g. Request for Quantum Computing texts", required=true) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="rating">{{ form.rating.label.text }}</label>
+                    {{ form.rating(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="message">{{ form.message.label.text }}</label>
+                {{ form.message(class="form-control", rows="5", placeholder="Share your detailed reflection or book recommendation...", required=true) }}
+            </div>
+
+            <div style="margin-top: 1.8rem;">
+                {{ form.submit(class="btn-primary-mv") }}
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--paper-dark);">
+            Looking for live community discussions?
+            <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold-bright); text-decoration: none; font-weight: 600;">
+                Join the Community Platform ↗
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

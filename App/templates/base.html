@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MindVault[E-BOOK] - Store Knowledge. Unlock Potential. A digital library where students discover books, explore research papers, and expand their knowledge.">
+  <title>{% block title %}MindVault[E-BOOK] | Store Knowledge. Unlock Potential.{% endblock %}</title>
+
+  <!-- Google Fonts: Vintage Atelier Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Great+Vibes&family=IM+Fell+English:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core Theme & Glassmorphism Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/glassmorphism.css') }}">
+
+  <!-- Google Identity Services client -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- Antique Wooden Background & Lighting Layers -->
+  <div class="wood-background" aria-hidden="true"></div>
+  <div class="background-vignette" aria-hidden="true"></div>
+  <div class="ambient-light" aria-hidden="true"></div>
+
+  <!-- Global Navigation Bar -->
+  {% include 'partials/_navbar.html' %}
+
+  <!-- Flashed Messages / Toasts -->
+  {% include 'partials/_toasts.html' %}
+
+  <!-- Main Application Content -->
+  <main id="mainContent">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Global Footer -->
+  {% include 'partials/_footer.html' %}
+
+  <!-- Core Scripts -->
+  <script>
+    // Dropdown toggles
+    document.addEventListener('click', function(e) {
+      const dropdowns = document.querySelectorAll('.mv-dropdown');
+      dropdowns.forEach(dropdown => {
+        if (dropdown.contains(e.target)) {
+          dropdown.classList.toggle('open');
+        } else {
+          dropdown.classList.remove('open');
+        }
+      });
+    });
+
+    // Auto dismiss toasts after 7 seconds
+    setTimeout(() => {
+      const toasts = document.querySelectorAll('.mv-toast');
+      toasts.forEach(t => {
+        t.style.opacity = '0';
+        t.style.transition = 'opacity 0.6s ease';
+        setTimeout(() => t.remove(), 600);
+      });
+    }, 7000);
+
+    // Google Sign-In Callback Handler
+    function handleGoogleCredentialResponse(response) {
+      if (!response.credential) return;
+      fetch("{{ url_for('routes.google_auth') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: response.credential })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          alert(data.message || "Google Authentication was not successful.");
+        }
+      })
+      .catch(err => {
+        console.error("Google Auth Dispatch Error:", err);
+      });
+    }
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

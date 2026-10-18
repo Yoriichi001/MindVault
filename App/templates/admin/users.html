@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Registered Scholars & Users | MindVault Admin{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+
+    <div class="admin-header">
+        <div>
+            <a href="{{ url_for('routes.admin_dashboard') }}" style="color: var(--gold); text-decoration: none; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase;">
+                ← Back to Dashboard
+            </a>
+            <h1 style="margin-top: 0.4rem;">Registered Scholar Directory</h1>
+        </div>
+
+        <div style="font-size: 0.9rem; color: var(--paper-dark); background: rgba(36,21,13,0.8); padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+            Total Registered Users in Database: <strong style="color: var(--gold-bright); font-size: 1.1rem;">{{ pagination.total }}</strong>
+        </div>
+    </div>
+
+    <!-- Search & Filter Toolbar -->
+    <div class="glass-panel" style="padding: 1.2rem; margin-bottom: 2rem;">
+        <form method="GET" action="{{ url_for('routes.admin_users') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{{ url_for('routes.admin_users', role='all', search=search) }}" class="filter-button {% if role_filter == 'all' %}active{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">ALL USERS</a>
+                <a href="{{ url_for('routes.admin_users', role='student', search=search) }}" class="filter-button {% if role_filter == 'student' %}active{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">STUDENTS</a>
+                <a href="{{ url_for('routes.admin_users', role='admin', search=search) }}" class="filter-button {% if role_filter == 'admin' %}active{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">ADMINS</a>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; max-width: 340px; width: 100%;">
+                <input type="hidden" name="role" value="{{ role_filter }}">
+                <input type="text" name="search" value="{{ search }}" placeholder="Search username or email..." class="form-control" style="padding: 0.45rem 0.8rem; font-size: 0.85rem;">
+                <button type="submit" class="antique-button" style="padding: 0.45rem 0.9rem; font-size: 0.8rem;">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Users Table -->
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <div class="table-responsive">
+            <table class="mv-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email Address</th>
+                        <th>Role</th>
+                        <th>Verification</th>
+                        <th>Status</th>
+                        <th>Registered</th>
+                        <th>Governance Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in pagination.items %}
+                    <tr>
+                        <td style="display: flex; align-items: center; gap: 0.75rem;">
+                            <img src="{{ u.get_avatar_url() }}" alt="" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold);">
+                            <div>
+                                <strong style="color: var(--paper-light); display: block;">{{ u.username }}</strong>
+                                {% if u.google_id %}
+                                    <small style="color: #4285F4; font-size: 0.72rem;">Google Account</small>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>{{ u.email }}</td>
+                        <td>
+                            <span class="badge {% if u.is_admin %}badge-admin{% else %}badge-student{% endif %}">
+                                {{ u.role }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if u.is_verified %}
+                                <span style="color: var(--success); font-size: 0.8rem;">✓ Verified</span>
+                            {% else %}
+                                <span style="color: var(--warning); font-size: 0.8rem;">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.is_active %}
+                                <span style="color: var(--success); font-size: 0.8rem;">Active</span>
+                            {% else %}
+                                <span style="color: var(--danger); font-size: 0.8rem;">Suspended</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ u.created_at.strftime('%b %d, %Y') }}</td>
+                        <td>
+                            {% if u.id != current_user.id %}
+                            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                <form method="POST" action="{{ url_for('routes.admin_user_toggle_role', user_id=u.id) }}" style="display: inline;">
+                                    <button type="submit" class="antique-button" style="padding: 0.3rem 0.6rem; font-size: 0.72rem;" title="Switch role between student and admin">
+                                        {% if u.is_admin %}Make Student{% else %}Promote Admin{% endif %}
+                                    </button>
+                                </form>
+
+                                <form method="POST" action="{{ url_for('routes.admin_user_toggle_active', user_id=u.id) }}" style="display: inline;">
+                                    <button type="submit" class="antique-button" style="padding: 0.3rem 0.6rem; font-size: 0.72rem; {% if u.is_active %}background: rgba(240, 173, 78, 0.2);{% else %}background: rgba(92, 184, 92, 0.2);{% endif %}">
+                                        {% if u.is_active %}Suspend{% else %}Activate{% endif %}
+                                    </button>
+                                </form>
+
+                                <form method="POST" action="{{ url_for('routes.admin_user_delete', user_id=u.id) }}" onsubmit="return confirm('Permanently expunge scholar {{ u.username }} from the database?');" style="display: inline;">
+                                    <button type="submit" class="antique-button" style="padding: 0.3rem 0.6rem; font-size: 0.72rem; color: var(--danger); border-color: var(--danger); background: rgba(217, 83, 79, 0.2);">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                            {% else %}
+                            <span style="color: var(--gold-bright); font-size: 0.75rem; font-style: italic;">(Current Session)</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 3rem; color: var(--paper-dark);">
+                            No registered users found matching query.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination.pages > 1 %}
+        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;">
+            {% for p in pagination.iter_pages() %}
+                {% if p %}
+                    <a href="{{ url_for('routes.admin_users', page=p, role=role_filter, search=search) }}" class="filter-button {% if p == pagination.page %}active{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                        {{ p }}
+                    </a>
+                {% else %}
+                    <span style="color: var(--paper-dark); padding: 0.4rem;">…</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

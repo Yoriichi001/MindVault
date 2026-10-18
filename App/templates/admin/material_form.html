@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MindVault Admin{% endblock %}
+
+{% block content %}
+<div class="reader-container" style="max-width: 900px; margin: 2.5rem auto; padding: 0 1.5rem;">
+
+    <div style="margin-bottom: 1.5rem;">
+        <a href="{{ url_for('routes.admin_materials') }}" style="color: var(--gold); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;">
+            ← Back to Material Archives
+        </a>
+        <h1 style="font-family: var(--serif); font-size: 2.4rem; color: var(--gold-bright); margin-top: 0.4rem;">
+            {{ title }}
+        </h1>
+    </div>
+
+    <div class="glass-panel" style="padding: 2.5rem;">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem;">
+                <div class="form-group">
+                    <label for="title">{{ form.title.label.text }} *</label>
+                    {{ form.title(class="form-control", placeholder="e.g. Structure and Interpretation of Computer Programs", required=true, autofocus=true) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="author">{{ form.author.label.text }} *</label>
+                    {{ form.author(class="form-control", placeholder="Author or Research Team", required=true) }}
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 1.2rem;">
+                <div class="form-group">
+                    <label for="category">{{ form.category.label.text }} *</label>
+                    {{ form.category(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    <label for="sub_category">{{ form.sub_category.label.text }}</label>
+                    {{ form.sub_category(class="form-control", placeholder="e.g. Computer Science, AI, Physics") }}
+                </div>
+
+                <div class="form-group">
+                    <label for="pages">{{ form.pages.label.text }}</label>
+                    {{ form.pages(class="form-control", type="number", min="1") }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">{{ form.description.label.text }} *</label>
+                {{ form.description(class="form-control", rows="4", placeholder="Enter the complete synopsis or abstract of this manuscript...", required=true) }}
+            </div>
+
+            <div class="form-group">
+                <label for="content_preview">{{ form.content_preview.label.text }}</label>
+                {{ form.content_preview(class="form-control", rows="2", placeholder="A short memorable quote or expository passage shown in previews...") }}
+            </div>
+
+            <div class="form-group">
+                <label for="full_content">{{ form.full_content.label.text }}</label>
+                <small style="color: var(--paper-dark); display: block; margin-bottom: 0.4rem;">
+                    Text displayed inside the vintage in-browser dual-page book reader. Use <code>---PAGE---</code> to denote page breaks.
+                </small>
+                {{ form.full_content(class="form-control", rows="10", placeholder="Inscribe chapter text, theorems, or manuscript contents here...") }}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; padding: 1.5rem; background: rgba(20, 10, 5, 0.5); border: 1px dashed var(--glass-border); border-radius: 8px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="cover_image">{{ form.cover_image.label.text }}</label>
+                    {{ form.cover_image(class="form-control") }}
+                    <small style="color: var(--paper-dark); display: block; margin-top: 0.3rem;">
+                        JPG/PNG/WEBP. Decompression-bomb protected.
+                    </small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="file">{{ form.file.label.text }}</label>
+                    {{ form.file(class="form-control") }}
+                    <small style="color: var(--paper-dark); display: block; margin-top: 0.3rem;">
+                        Secure PDF format only (magic bytes verified).
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-check" style="margin-bottom: 2rem;">
+                {{ form.is_featured() }}
+                <label for="is_featured" style="cursor: pointer; color: var(--gold-bright);">
+                    Feature prominently in library spotlight carousel
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                {{ form.submit(class="btn-primary-mv", style="max-width: 280px;") }}
+                <a href="{{ url_for('routes.admin_materials') }}" class="antique-button" style="padding: 0.8rem 1.4rem; text-decoration: none;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

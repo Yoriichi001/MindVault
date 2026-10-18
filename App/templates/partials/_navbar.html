@@ -1,0 +1,76 @@
+<header class="mv-navbar">
+  <a href="{{ url_for('routes.index') }}" class="mv-brand">
+    <div class="mv-brand-seal">MV</div>
+    <div class="mv-brand-title">
+      <span>MINDVAULT</span>
+      <small>STORE KNOWLEDGE · UNLOCK POTENTIAL</small>
+    </div>
+  </a>
+
+  <nav class="mv-nav-links">
+    <a href="{{ url_for('routes.index') }}" class="{% if request.endpoint == 'routes.index' and not request.args.get('category') %}active{% endif %}">Library</a>
+    <a href="{{ url_for('routes.books_view') }}" class="{% if request.args.get('category') == 'Books' %}active{% endif %}">Books</a>
+    <a href="{{ url_for('routes.papers_view') }}" class="{% if request.args.get('category') == 'Research Papers' %}active{% endif %}">Research Papers</a>
+    <a href="{{ url_for('routes.study_materials_view') }}" class="{% if request.args.get('category') == 'Study Materials' %}active{% endif %}">Study Materials</a>
+    <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" class="mv-community-pill">
+      <span>Community</span>
+      <span>↗</span>
+    </a>
+    <a href="{{ url_for('routes.feedback') }}" class="{% if request.endpoint == 'routes.feedback' %}active{% endif %}">Feedback</a>
+  </nav>
+
+  <div class="mv-dropdown" id="userMenuDropdown">
+    {% if current_user.is_authenticated %}
+      <button class="mv-dropdown-toggle" id="userDropdownBtn" aria-haspopup="true" aria-expanded="false">
+        <img src="{{ current_user.get_avatar_url() }}" alt="{{ current_user.username }}" class="mv-avatar-img">
+        <span>{{ current_user.username }}</span>
+        <span style="font-size: 0.7rem;">▼</span>
+      </button>
+      <div class="mv-dropdown-menu" aria-labelledby="userDropdownBtn">
+        <div style="padding: 0.5rem 1.2rem; border-bottom: 1px solid var(--glass-border);">
+          <small style="color: var(--paper-dark); letter-spacing: 1px; text-transform: uppercase;">Signed in as</small>
+          <div style="font-weight: 600; color: var(--gold-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ current_user.username }}</div>
+        </div>
+        <a href="{{ url_for('routes.account') }}" class="mv-dropdown-item">
+          <span>👤</span> Account Panel
+        </a>
+        {% if current_user.is_admin %}
+          <div class="mv-dropdown-divider"></div>
+          <a href="{{ url_for('routes.admin_dashboard') }}" class="mv-dropdown-item" style="color: var(--gold-bright);">
+            <span>⚡</span> Admin Dashboard
+          </a>
+          <a href="{{ url_for('routes.admin_materials') }}" class="mv-dropdown-item">
+            <span>📚</span> Manage Library
+          </a>
+          <a href="{{ url_for('routes.admin_users') }}" class="mv-dropdown-item">
+            <span>👥</span> Registered Users
+          </a>
+          <a href="{{ url_for('routes.admin_feedbacks') }}" class="mv-dropdown-item">
+            <span>💬</span> View Feedbacks
+          </a>
+        {% endif %}
+        <div class="mv-dropdown-divider"></div>
+        <a href="{{ url_for('routes.logout') }}" class="mv-dropdown-item" style="color: var(--danger);">
+          <span>🚪</span> Sign Out
+        </a>
+      </div>
+    {% else %}
+      <button class="mv-dropdown-toggle" id="authDropdownBtn" aria-haspopup="true" aria-expanded="false">
+        <span>Access Portal</span>
+        <span style="font-size: 0.7rem;">▼</span>
+      </button>
+      <div class="mv-dropdown-menu" aria-labelledby="authDropdownBtn">
+        <a href="{{ url_for('routes.login') }}" class="mv-dropdown-item">
+          <span>📖</span> Student Login
+        </a>
+        <a href="{{ url_for('routes.register') }}" class="mv-dropdown-item">
+          <span>✍</span> Register Account
+        </a>
+        <div class="mv-dropdown-divider"></div>
+        <a href="{{ url_for('routes.admin_login') }}" class="mv-dropdown-item" style="color: var(--gold-bright);">
+          <span>🛡</span> Admin Login
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</header>

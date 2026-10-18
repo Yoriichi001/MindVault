@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Master Administrator Authentication | MindVault{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-glass-box" style="border: 2px solid var(--gold); box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(196, 160, 100, 0.2);">
+
+        <div class="auth-header">
+            <div style="font-size: 2.8rem; color: var(--gold); margin-bottom: 0.5rem;">
+                🛡
+            </div>
+            <div style="font-family: var(--serif); font-size: 2rem; color: var(--gold-bright); margin-bottom: 0.2rem;">
+                ADMINISTRATIVE ARCHIVIST
+            </div>
+            <p style="color: var(--paper-dark); font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;">
+                Restricted System Control Gateway
+            </p>
+            <div class="manuscript-divider" style="color: var(--gold); margin: 0.8rem 0;">
+                ━━━━━ ✦ ━━━━━
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('routes.admin_login', next=request.args.get('next')) }}">
+            {{ form.hidden_tag() }}
+
+            <!-- Anti-bot honeypot field -->
+            <div class="website-hp-field">
+                {{ form.website(tabindex="-1", autocomplete="off") }}
+            </div>
+
+            <div class="form-group">
+                <label for="identity">{{ form.identity.label.text }}</label>
+                {{ form.identity(class="form-control", placeholder="Admin username or master email", required=true, autofocus=true) }}
+            </div>
+
+            <div class="form-group">
+                <label for="password">{{ form.password.label.text }}</label>
+                {{ form.password(class="form-control", placeholder="Master cryptographic key", required=true) }}
+            </div>
+
+            <div style="margin-top: 1.8rem;">
+                {{ form.submit(class="btn-primary-mv", style="background: linear-gradient(135deg, #e6cd96 0%, #c4a064 100%);") }}
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.8rem; font-size: 0.82rem;">
+            <a href="{{ url_for('routes.login') }}" style="color: var(--paper-dark); text-decoration: none;">
+                ← Return to Student & Reader Login
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

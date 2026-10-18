@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Reading: {{ material.title }} | MindVault In-Browser Reader{% endblock %}
+
+{% block content %}
+<div class="reader-container">
+
+    <!-- Reader Top Toolbar -->
+    <div class="reader-toolbar">
+        <div>
+            <a href="{{ url_for('routes.material_detail', material_id=material.id) }}" style="color: var(--gold); text-decoration: none; font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase;">
+                ← Back to Details
+            </a>
+            <h2 style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold-bright); margin-top: 0.2rem;">
+                {{ material.title }}
+            </h2>
+            <small style="color: var(--paper-dark); font-style: italic;">
+                by {{ material.author }} · [{{ material.category }}]
+            </small>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <!-- Font sizing controls -->
+            <div style="display: flex; align-items: center; gap: 0.3rem; background: rgba(0,0,0,0.4); padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid var(--glass-border);">
+                <button type="button" onclick="adjustFontSize(-1)" style="background:none; border:none; color:var(--gold); font-size:1rem; cursor:pointer;" title="Decrease font size">A-</button>
+                <span style="color:var(--paper-dark); font-size:0.75rem;">FONT</span>
+                <button type="button" onclick="adjustFontSize(1)" style="background:none; border:none; color:var(--gold); font-size:1.1rem; cursor:pointer;" title="Increase font size">A+</button>
+            </div>
+
+            <!-- Page Navigation -->
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                {% if current_page > 1 %}
+                    <a href="{{ url_for('routes.read_online', material_id=material.id, p=current_page-1) }}" class="antique-button" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                        ← Prev
+                    </a>
+                {% endif %}
+
+                <span style="font-family: var(--serif); font-size: 1rem; color: var(--gold-bright); white-space: nowrap;">
+                    Page {{ current_page }} of {{ total_pages }}
+                </span>
+
+                {% if current_page < total_pages %}
+                    <a href="{{ url_for('routes.read_online', material_id=material.id, p=current_page+1) }}" class="antique-button" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                        Next →
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Download Button -->
+            <a href="{{ url_for('routes.download_pdf', material_id=material.id) }}" class="antique-button" style="padding: 0.45rem 1rem; font-size: 0.8rem; background: var(--gold); color: #1a0e07; font-weight: 700;">
+                ⬇ PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Antique Parchment Dual-Page Spread -->
+    <div class="reader-parchment-spread" id="parchmentReader">
+        
+        <!-- Left Folio Page -->
+        <div class="parchment-page left-page" id="leftFolio">
+            <div>
+                <p style="text-align: center; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #825e43; margin-bottom: 1.5rem;">
+                    ✦ MINDVAULT DIGITAL CODEX ✦
+                </p>
+
+                <h3>{{ material.title }}</h3>
+                <div style="text-align: center; color: #956640; font-size: 1.2rem; margin-bottom: 1.5rem;">❦</div>
+
+                <!-- Page Text -->
+                <div class="reader-text-body" style="font-family: var(--serif); font-size: 1.12rem; line-height: 1.85; text-align: justify;">
+                    {{ pages[current_page - 1]|safe }}
+                </div>
+            </div>
+
+            <div class="parchment-page-footer">
+                <span>{{ material.author }}</span>
+                <span>— Page {{ current_page }} —</span>
+            </div>
+        </div>
+
+        <!-- Right Folio Page (Shows next section or reflections/notes) -->
+        <div class="parchment-page right-page" id="rightFolio">
+            <div>
+                <p style="text-align: center; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #825e43; margin-bottom: 1.5rem;">
+                    ✦ SCHOLAR OBSERVATIONS & STUDY ✦
+                </p>
+
+                <h3>Study Notes & Reflections</h3>
+                <div style="text-align: center; color: #956640; font-size: 1.2rem; margin-bottom: 1.5rem;">❧</div>
+
+                {% if current_page < total_pages %}
+                <div class="reader-text-body" style="font-family: var(--serif); font-size: 1.12rem; line-height: 1.85; text-align: justify;">
+                    {{ pages[current_page]|safe }}
+                </div>
+                {% else %}
+                <div style="padding: 2rem 1rem; text-align: center;">
+                    <div style="font-size: 2.2rem; color: #956640; margin-bottom: 1rem;">📜</div>
+                    <h4 style="font-family: var(--serif); font-size: 1.4rem; color: #3b2214; margin-bottom: 0.6rem;">
+                        You have reached the conclusion of this chapter.
+                    </h4>
+                    <p style="font-size: 1rem; color: #5b3823; line-height: 1.6; margin-bottom: 1.5rem;">
+                        Reflect on these insights, or discuss your thoughts with our scholar community on the community platform.
+                    </p>
+                    <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" class="community-cta-btn" style="font-size: 0.85rem; padding: 0.7rem 1.6rem;">
+                        Share Thoughts in Community ↗
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="parchment-page-footer">
+                <span>MindVault Collection</span>
+                <span>— {% if current_page < total_pages %}Page {{ current_page + 1 }}{% else %}Epilogue{% endif %} —</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Navigation Footer -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; color: var(--paper-dark); font-size: 0.85rem;">
+        <div>
+            Tip: Use the Font buttons above to adjust readability.
+        </div>
+        <div>
+            <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold-bright); text-decoration: none;">
+                Discuss this paper in Community ↗
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let currentFontSize = 1.12;
+    function adjustFontSize(delta) {
+        currentFontSize += delta * 0.1;
+        if (currentFontSize < 0.85) currentFontSize = 0.85;
+        if (currentFontSize > 1.6) currentFontSize = 1.6;
+        document.querySelectorAll('.reader-text-body').forEach(el => {
+            el.style.fontSize = currentFontSize + 'rem';
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv/
+
+# Environment Variables
+.env
+.env.local
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDEs & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# User Uploads (keep directory structure)
+App/static/uploads/avatars/*
+!App/static/uploads/avatars/.gitkeep
+App/static/uploads/covers/*
+!App/static/uploads/covers/.gitkeep
+App/static/uploads/books/*
+!App/static/uploads/books/.gitkeep
+!App/static/uploads/books/*.pdf

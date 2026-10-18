@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ material.title }} | MindVault Archives{% endblock %}
+
+{% block content %}
+<div class="reader-container" style="max-width: 1050px; margin: 3rem auto; padding: 0 1.5rem;">
+
+    <a href="{{ url_for('routes.index') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--gold); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2rem;">
+        ← Back to Vault Catalogue
+    </a>
+
+    <div class="glass-panel" style="padding: 3rem; display: grid; grid-template-columns: 320px 1fr; gap: 3rem; align-items: start;">
+        
+        <!-- Book Cover & Actions Column -->
+        <div>
+            <div style="border-radius: 10px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.8); margin-bottom: 1.5rem; background: #1a0e07;">
+                <img src="{{ material.get_cover_url() }}" alt="{{ material.title }}" style="width: 100%; display: block; object-fit: cover;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                <a href="{{ url_for('routes.read_online', material_id=material.id) }}" class="btn-primary-mv" style="text-align: center; text-decoration: none; display: block;">
+                    📖 Read Online Now
+                </a>
+
+                <a href="{{ url_for('routes.download_pdf', material_id=material.id) }}" class="antique-button" style="text-align: center; text-decoration: none; justify-content: center; background: rgba(91, 56, 35, 0.85); width: 100%;">
+                    ⬇ Download PDF Material
+                </a>
+                {% if not current_user.is_authenticated %}
+                <small style="color: var(--paper-dark); text-align: center; font-size: 0.78rem;">
+                    * Sign-in required to download documents
+                </small>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Material Details Column -->
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;">
+                <span class="badge badge-admin">{{ material.category }}</span>
+                <span style="color: var(--paper-dark); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">
+                    {{ material.sub_category or 'General Academic' }}
+                </span>
+            </div>
+
+            <h1 style="font-family: var(--serif); font-size: 2.8rem; color: var(--gold-bright); line-height: 1.15; margin-bottom: 0.5rem;">
+                {{ material.title }}
+            </h1>
+
+            <p style="font-size: 1.1rem; color: var(--paper-dark); font-style: italic; margin-bottom: 1.8rem;">
+                Authored by {{ material.author }}
+            </p>
+
+            <div class="manuscript-divider" style="color: var(--gold); margin: 1.5rem 0;">
+                ✦ ━━━━━ ❦ ━━━━━ ✦
+            </div>
+
+            <h3 style="font-family: var(--serif); font-size: 1.4rem; color: var(--gold); margin-bottom: 0.8rem;">
+                Synopsis & Archival Summary
+            </h3>
+
+            <div style="font-size: 1rem; line-height: 1.8; color: var(--paper-light); opacity: 0.95; margin-bottom: 2rem;">
+                {{ material.description|safe }}
+            </div>
+
+            {% if material.content_preview %}
+            <div style="background: rgba(24, 12, 6, 0.6); border-left: 3px solid var(--gold); padding: 1.2rem; border-radius: 4px; margin-bottom: 2rem;">
+                <h4 style="font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 0.5rem;">
+                    Expository Excerpt
+                </h4>
+                <p style="font-size: 0.95rem; font-style: italic; color: var(--paper-light); line-height: 1.6;">
+                    "{{ material.content_preview }}"
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Technical Specifications -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Page Count</span>
+                    <strong style="color: var(--gold-bright); font-size: 1.1rem;">{{ material.pages }} Pages</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Readers</span>
+                    <strong style="color: var(--gold-bright); font-size: 1.1rem;">{{ material.views_count }}</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Downloads</span>
+                    <strong style="color: var(--gold-bright); font-size: 1.1rem;">{{ material.downloads_count }}</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Archived On</span>
+                    <strong style="color: var(--gold-bright); font-size: 1.1rem;">{{ material.created_at.strftime('%b %d, %Y') }}</strong>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

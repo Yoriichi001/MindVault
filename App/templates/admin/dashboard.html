@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrative Command Dashboard | MindVault{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+
+    <div class="admin-header">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.3rem;">
+                <span class="badge badge-admin">Master Archivist Portal</span>
+                <span style="color: var(--paper-dark); font-size: 0.8rem;">REAL-TIME DATABASE METRICS</span>
+            </div>
+            <h1>Executive Control Console</h1>
+        </div>
+
+        <div style="display: flex; gap: 0.8rem;">
+            <a href="{{ url_for('routes.admin_material_new') }}" class="btn-primary-mv" style="padding: 0.75rem 1.4rem; font-size: 0.85rem; text-decoration: none;">
+                + Inscribe New Material
+            </a>
+            <a href="{{ url_for('routes.index') }}" class="antique-button" style="padding: 0.75rem 1.2rem; font-size: 0.85rem; text-decoration: none;">
+                View Public Library →
+            </a>
+        </div>
+    </div>
+
+    <!-- Live Statistics Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-label">Total Registered Scholars</span>
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-desc">
+                {{ total_students }} Students · {{ total_admins }} Admins
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Archived Documents</span>
+            <div class="stat-number">{{ total_materials }}</div>
+            <div class="stat-desc">
+                {{ total_books }} Books · {{ total_papers }} Papers · {{ total_study }} Notes
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Online Consultations</span>
+            <div class="stat-number">{{ total_views }}</div>
+            <div class="stat-desc">Cumulative reader engagements</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Total PDF Downloads</span>
+            <div class="stat-number">{{ total_downloads }}</div>
+            <div class="stat-desc">Authenticated scholar downloads</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Feedback Inscriptions</span>
+            <div class="stat-number">{{ total_feedbacks }}</div>
+            <div class="stat-desc" style="color: {% if unread_feedbacks > 0 %}var(--gold-bright){% else %}var(--paper-dark){% endif %};">
+                {{ unread_feedbacks }} unread submissions
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Management Hub -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+
+        <!-- Recent Registered Users -->
+        <div class="glass-panel" style="padding: 1.8rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                <h3 style="font-family: var(--serif); font-size: 1.4rem; color: var(--gold-bright);">
+                    Recent User Registrations
+                </h3>
+                <a href="{{ url_for('routes.admin_users') }}" style="color: var(--gold); font-size: 0.8rem; text-decoration: none; text-transform: uppercase;">
+                    Manage All ({{ total_users }}) →
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="mv-table">
+                    <thead>
+                        <tr>
+                            <th>Scholar</th>
+                            <th>Email Address</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Registered</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in recent_users %}
+                        <tr>
+                            <td style="display: flex; align-items: center; gap: 0.6rem;">
+                                <img src="{{ u.get_avatar_url() }}" alt="" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover;">
+                                <strong>{{ u.username }}</strong>
+                            </td>
+                            <td>{{ u.email }}</td>
+                            <td>
+                                <span class="badge {% if u.is_admin %}badge-admin{% else %}badge-student{% endif %}">
+                                    {{ u.role }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if u.is_active %}
+                                    <span style="color: var(--success); font-size: 0.8rem;">Active</span>
+                                {% else %}
+                                    <span style="color: var(--danger); font-size: 0.8rem;">Suspended</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ u.created_at.strftime('%b %d, %Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Feedbacks -->
+        <div class="glass-panel" style="padding: 1.8rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                <h3 style="font-family: var(--serif); font-size: 1.4rem; color: var(--gold-bright);">
+                    Latest Feedback
+                </h3>
+                <a href="{{ url_for('routes.admin_feedbacks') }}" style="color: var(--gold); font-size: 0.8rem; text-decoration: none; text-transform: uppercase;">
+                    All ({{ total_feedbacks }}) →
+                </a>
+            </div>
+
+            {% if recent_feedbacks %}
+                <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    {% for fb in recent_feedbacks %}
+                    <div style="padding: 0.8rem; background: rgba(20, 10, 5, 0.6); border-radius: 6px; border-left: 3px solid var(--gold);">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                            <strong style="color: var(--gold-bright);">{{ fb.name }}</strong>
+                            <span style="color: var(--gold);">★ {{ fb.rating }}/5</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--paper-light); margin-bottom: 0.4rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ fb.subject }}
+                        </p>
+                        <small style="color: var(--paper-dark); font-size: 0.75rem;">{{ fb.created_at.strftime('%b %d, %H:%M') }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="color: var(--paper-dark); font-style: italic;">No feedback received yet.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Quick Navigation Panels -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <h4 style="font-family: var(--serif); font-size: 1.3rem; color: var(--gold-bright); margin-bottom: 0.5rem;">
+                📚 Library Manuscripts
+            </h4>
+            <p style="font-size: 0.88rem; color: var(--paper-light); margin-bottom: 1.2rem;">
+                Add, edit, delete books, research papers, and study material records.
+            </p>
+            <a href="{{ url_for('routes.admin_materials') }}" class="antique-button" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                Open Material Archive →
+            </a>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem;">
+            <h4 style="font-family: var(--serif); font-size: 1.3rem; color: var(--gold-bright); margin-bottom: 0.5rem;">
+                👥 Scholar Registry
+            </h4>
+            <p style="font-size: 0.88rem; color: var(--paper-light); margin-bottom: 1.2rem;">
+                Inspect user accounts, manage permission roles, and monitor engagement.
+            </p>
+            <a href="{{ url_for('routes.admin_users') }}" class="antique-button" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                Inspect User Panel →
+            </a>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem;">
+            <h4 style="font-family: var(--serif); font-size: 1.3rem; color: var(--gold-bright); margin-bottom: 0.5rem;">
+                💬 Scholar Inscriptions
+            </h4>
+            <p style="font-size: 0.88rem; color: var(--paper-light); margin-bottom: 1.2rem;">
+                Review recommendations and feedback from students and researchers.
+            </p>
+            <a href="{{ url_for('routes.admin_feedbacks') }}" class="antique-button" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                Review Feedbacks →
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

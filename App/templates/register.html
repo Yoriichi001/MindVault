@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Scholar Account | MindVault[E-BOOK]{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-glass-box">
+
+        <div class="auth-header">
+            <div style="font-family: var(--serif); font-size: 2.2rem; color: var(--gold-bright); margin-bottom: 0.2rem;">
+                MINDVAULT
+            </div>
+            <p style="color: var(--gold); letter-spacing: 2px; font-size: 0.78rem; text-transform: uppercase;">
+                STORE KNOWLEDGE · UNLOCK POTENTIAL
+            </p>
+            <div class="manuscript-divider" style="color: var(--gold); margin: 0.8rem 0;">
+                ✦ ━━━━━ ❦ ━━━━━ ✦
+            </div>
+            <h1 style="font-size: 1.8rem; font-weight: 500; color: var(--paper-light);">
+                Inscribe Your Name
+            </h1>
+        </div>
+
+        <form method="POST" action="{{ url_for('routes.register') }}">
+            {{ form.hidden_tag() }}
+
+            <!-- Invisible honeypot field -->
+            <div class="website-hp-field">
+                {{ form.website(tabindex="-1", autocomplete="off") }}
+            </div>
+
+            <div class="form-group">
+                <label for="username">{{ form.username.label.text }}</label>
+                {{ form.username(class="form-control", placeholder="e.g. alex_scholar24 (letters, numbers, underscores)", required=true, autofocus=true) }}
+                {% if form.username.errors %}
+                    <small style="color: var(--danger); display: block; margin-top: 0.3rem;">{{ form.username.errors[0] }}</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="email">{{ form.email.label.text }}</label>
+                {{ form.email(class="form-control", placeholder="student@university.edu", required=true) }}
+                {% if form.email.errors %}
+                    <small style="color: var(--danger); display: block; margin-top: 0.3rem;">{{ form.email.errors[0] }}</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="password">{{ form.password.label.text }}</label>
+                {{ form.password(class="form-control", placeholder="Minimum 6 characters", required=true) }}
+                {% if form.password.errors %}
+                    <small style="color: var(--danger); display: block; margin-top: 0.3rem;">{{ form.password.errors[0] }}</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">{{ form.confirm_password.label.text }}</label>
+                {{ form.confirm_password(class="form-control", placeholder="Repeat password", required=true) }}
+                {% if form.confirm_password.errors %}
+                    <small style="color: var(--danger); display: block; margin-top: 0.3rem;">{{ form.confirm_password.errors[0] }}</small>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 1.8rem;">
+                {{ form.submit(class="btn-primary-mv") }}
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.8rem; font-size: 0.88rem; color: var(--paper-dark);">
+            Already have an active account?
+            <a href="{{ url_for('routes.login') }}" style="color: var(--gold-bright); text-decoration: none; font-weight: 600;">Sign In</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

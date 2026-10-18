@@ -1,0 +1,26 @@
+<footer class="shop-footer" style="margin-top: 5rem; border-top: 1px solid var(--glass-border); padding: 3rem 1.5rem; text-align: center; background: rgba(20, 10, 5, 0.9);">
+  <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+    <div style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold-bright); letter-spacing: 2px;">
+      MINDVAULT [E-BOOK]
+    </div>
+    <div style="color: var(--paper-dark); font-size: 0.88rem; letter-spacing: 1.5px; text-transform: uppercase;">
+      Store Knowledge. Unlock Potential.
+    </div>
+    <div class="manuscript-divider" style="color: var(--gold); margin: 0.5rem 0;">
+      <span>❧ ━━━━━ ❦ ━━━━━ ❧</span>
+    </div>
+    <p style="font-size: 0.95rem; color: var(--paper-light); max-width: 600px; line-height: 1.6; opacity: 0.85;">
+      A sanctum of wisdom designed for scholars, researchers, and voracious readers. Explore books, delve into peer-reviewed research papers, and master study materials crafted to elevate human understanding.
+    </p>
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">
+      <a href="{{ url_for('routes.books_view') }}" style="color: var(--paper-light); text-decoration: none;">Books</a>
+      <a href="{{ url_for('routes.papers_view') }}" style="color: var(--paper-light); text-decoration: none;">Research Papers</a>
+      <a href="{{ url_for('routes.study_materials_view') }}" style="color: var(--paper-light); text-decoration: none;">Study Materials</a>
+      <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold-bright); text-decoration: none;">Community Forum ↗</a>
+      <a href="{{ url_for('routes.feedback') }}" style="color: var(--paper-light); text-decoration: none;">Feedback</a>
+    </div>
+    <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--paper-dark);">
+      &copy; {{ current_year }} MindVault Digital Library. Preserved with timeless craftsmanship.
+    </div>
+  </div>
+</footer>

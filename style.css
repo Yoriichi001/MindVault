@@ -1,0 +1,3318 @@
+/* ======================================================
+   OAK & GRAIN
+   Rustic Wooden Furniture Atelier
+====================================================== */
+
+:root {
+    --wood-dark: #29170e;
+    --wood-brown: #5b3823;
+    --wood-light: #956640;
+
+    --gold: #c4a064;
+    --gold-light: #e6cd96;
+
+    --paper: #e9d7b4;
+    --paper-light: #f6ead2;
+    --paper-dark: #c9ae80;
+
+    --ink: #382419;
+
+    --serif: "Cormorant Garamond", Georgia, serif;
+    --script: "IM Fell English", Georgia, serif;
+    --display-script: "Great Vibes", "Brush Script MT", cursive;
+    --sans: "Manrope", Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    color: var(--paper-light);
+    font-family: var(--sans);
+
+    background: #24150d;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 4px;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* ======================================================
+   1. WOOD BACKGROUND
+
+   Save your uploaded wood image as:
+   wood-background.jpg
+
+   Put it beside index.html.
+====================================================== */
+
+.wood-background {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+
+    background-image:
+        linear-gradient(
+            rgba(24, 12, 6, 0.34),
+            rgba(24, 12, 6, 0.55)
+        ),
+        url("wood-background.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transform: scale(1.025);
+}
+
+.background-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 15%,
+            rgba(15, 8, 4, 0.22) 65%,
+            rgba(10, 5, 3, 0.64) 100%
+        );
+}
+
+.ambient-light {
+    position: fixed;
+
+    width: 600px;
+    height: 600px;
+
+    top: -300px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: -1;
+
+    pointer-events: none;
+
+    background: radial-gradient(
+        circle,
+        rgba(255, 190, 100, 0.13),
+        transparent 70%
+    );
+
+    filter: blur(35px);
+}
+
+
+/* ======================================================
+   2. SCREEN SYSTEM
+====================================================== */
+
+.screen {
+    display: none;
+
+    position: relative;
+
+    min-height: 100vh;
+    padding: 30px;
+}
+
+.screen.active {
+    display: flex;
+    animation: screenAppear 0.5s ease both;
+}
+
+#coverScreen,
+#loginScreen,
+#detailScreen {
+    align-items: center;
+    justify-content: center;
+}
+
+#coverScreen {
+    flex-direction: column;
+    overflow: hidden;
+    perspective: 1800px;
+}
+
+#shopScreen {
+    display: none;
+    flex-direction: column;
+}
+
+#shopScreen.active {
+    display: flex;
+}
+
+@keyframes screenAppear {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* ======================================================
+   3. COMMON TYPOGRAPHY
+====================================================== */
+
+.eyebrow {
+    color: var(--gold-light);
+
+    font-size: 9px;
+    letter-spacing: 3px;
+    line-height: 1.9;
+}
+
+.manuscript-divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 15px;
+
+    margin: 22px 0;
+
+    color: #96713d;
+
+    font-family: var(--script);
+    font-size: 21px;
+}
+
+.manuscript-divider::before,
+.manuscript-divider::after {
+    content: "";
+
+    width: 40px;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #96713d
+    );
+}
+
+.manuscript-divider::after {
+    transform: rotate(180deg);
+}
+
+
+/* ======================================================
+   4. BOOK INTRO SCENE
+====================================================== */
+
+.scene-label {
+    position: absolute;
+
+    top: 34px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: max-content;
+    max-width: 90%;
+
+    color: #e0c49a;
+
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    text-align: center;
+}
+
+.status-dot {
+    display: inline-block;
+
+    width: 6px;
+    height: 6px;
+
+    margin-right: 9px;
+
+    background: #caa86b;
+    border-radius: 50%;
+
+    box-shadow: 0 0 10px rgba(230, 190, 120, 0.6);
+}
+
+.book-scene {
+    position: relative;
+
+    width: min(430px, 83vw);
+    height: min(580px, 72vh);
+
+    min-height: 450px;
+
+    margin-top: 25px;
+
+    perspective: 2200px;
+    transform-style: preserve-3d;
+}
+
+.book-shadow {
+    position: absolute;
+
+    width: 110%;
+    height: 65px;
+
+    left: -5%;
+    bottom: -20px;
+
+    background: rgba(0, 0, 0, 0.7);
+
+    filter: blur(30px);
+    border-radius: 50%;
+}
+
+
+/* Main book body */
+
+.main-book {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    transform-style: preserve-3d;
+
+    transform: rotateY(-5deg) rotateX(2deg);
+
+    transition: transform 1s ease;
+}
+
+
+/* ======================================================
+   5. BOOK PAGE STACK
+====================================================== */
+
+.book-page-stack {
+    position: absolute;
+
+    top: 8px;
+    right: -10px;
+
+    width: 100%;
+    height: calc(100% - 16px);
+
+    border: 1px solid #8d6d43;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #f1dfbb 0px,
+            #cdb38a 1px,
+            #f8e9ca 2px,
+            #bfa27a 3px
+        );
+
+    box-shadow:
+        4px 5px 0 #5b3a20,
+        8px 9px 0 #362116,
+        15px 20px 35px rgba(0, 0, 0, 0.6);
+
+    transform: translateZ(-2px);
+}
+
+.page-edge {
+    position: absolute;
+
+    top: 0;
+    right: 3px;
+
+    width: 4px;
+    height: 100%;
+
+    background: rgba(102, 67, 33, 0.15);
+}
+
+
+/* ======================================================
+   6. BOOK INTERIOR
+====================================================== */
+
+.book-interior {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    padding: 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #bfa17a,
+            #e8d5af 5%,
+            #f1e3c7 50%,
+            #d6bc92
+        );
+
+    box-shadow:
+        inset 0 0 0 2px #89673f,
+        10px 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+.interior-paper {
+    height: 100%;
+
+    padding: 15px;
+
+    background:
+        radial-gradient(
+            ellipse at 0% 0%,
+            rgba(122, 75, 33, 0.16),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 100% 100%,
+            rgba(122, 75, 33, 0.13),
+            transparent 40%
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(99, 70, 40, 0.035) 0,
+            transparent 1px,
+            transparent 4px
+        ),
+        #ead9b8;
+
+    color: var(--ink);
+
+    border: 1px solid #c5a77a;
+
+    box-shadow: inset 0 0 30px rgba(104, 67, 33, 0.14);
+}
+
+.paper-border {
+    height: 100%;
+
+    border: 1px solid rgba(132, 91, 44, 0.45);
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 15px;
+}
+
+.manuscript-small {
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+.ornament {
+    margin-top: 35px;
+
+    color: #8e6836;
+
+    font-family: var(--script);
+    font-size: 40px;
+}
+
+.interior-paper h2 {
+    margin-top: 25px;
+
+    font-family: var(--serif);
+    font-size: 29px;
+
+    letter-spacing: 2px;
+}
+
+.interior-paper h2 span {
+    color: #936c37;
+}
+
+.interior-subtitle {
+    margin-top: 15px;
+
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+.divider-ornament {
+    margin-top: 30px;
+    font-size: 13px;
+}
+
+.interior-description {
+    margin-top: 15px;
+
+    font-family: var(--script);
+    font-size: 18px;
+    font-style: italic;
+
+    line-height: 1.8;
+}
+
+.page-number {
+    margin-top: 35px;
+
+    font-family: var(--script);
+    font-size: 15px;
+}
+
+
+/* ======================================================
+   7. REALISTIC-LOOKING WOODEN COVER
+====================================================== */
+
+.book-cover {
+    position: absolute;
+    inset: 0;
+
+    z-index: 5;
+
+    padding: 13px;
+
+    overflow: hidden;
+
+    transform-origin: left center;
+    transform-style: preserve-3d;
+
+    backface-visibility: visible;
+
+    border: 3px solid #684326;
+    border-radius: 4px 10px 10px 4px;
+
+    background:
+        repeating-linear-gradient(
+            2deg,
+            transparent 0px,
+            rgba(21, 10, 4, 0.25) 2px,
+            transparent 5px,
+            rgba(231, 180, 116, 0.09) 8px,
+            transparent 13px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.08),
+            transparent 5px,
+            rgba(255, 220, 165, 0.05) 10px,
+            transparent 16px
+        ),
+        radial-gradient(
+            ellipse at 20% 20%,
+            #9b6a3e,
+            transparent 45%
+        ),
+        linear-gradient(
+            115deg,
+            #79502f,
+            #382014 25%,
+            #704629 52%,
+            #2a160c 78%,
+            #634027
+        );
+
+    box-shadow:
+        inset 0 0 0 3px #2e1a0f,
+        inset 0 0 0 5px #ad854b,
+        inset 0 0 0 8px #3b2415,
+        inset 8px 0 16px rgba(0, 0, 0, 0.65),
+        inset -5px 0 15px rgba(255, 211, 148, 0.14),
+        5px 8px 0 #21130c,
+        10px 13px 0 #382116,
+        18px 23px 40px rgba(0, 0, 0, 0.65);
+
+    transition:
+        transform 1.8s cubic-bezier(0.65, 0, 0.25, 1),
+        box-shadow 1.8s ease;
+}
+
+
+/* Wood grain */
+
+.cover-grain {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            177deg,
+            transparent 0,
+            rgba(12, 5, 2, 0.17) 1px,
+            transparent 3px,
+            rgba(255, 215, 159, 0.1) 5px,
+            transparent 9px
+        );
+
+    mix-blend-mode: multiply;
+}
+
+
+/* Worn edges */
+
+.cover-wear {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(20, 9, 3, 0.45),
+            transparent 8%,
+            transparent 92%,
+            rgba(20, 9, 3, 0.35)
+        ),
+        linear-gradient(
+            0deg,
+            rgba(20, 9, 3, 0.35),
+            transparent 7%,
+            transparent 94%,
+            rgba(20, 9, 3, 0.3)
+        );
+}
+
+
+/* Surface scratches */
+
+.cover-scratch {
+    position: absolute;
+
+    height: 1px;
+
+    background: rgba(26, 12, 5, 0.45);
+
+    box-shadow: 0 1px 0 rgba(222, 173, 108, 0.2);
+
+    pointer-events: none;
+}
+
+.scratch-one {
+    width: 70px;
+
+    top: 18%;
+    left: 12%;
+
+    transform: rotate(-22deg);
+}
+
+.scratch-two {
+    width: 95px;
+
+    right: 10%;
+    bottom: 22%;
+
+    transform: rotate(13deg);
+}
+
+.scratch-three {
+    width: 45px;
+
+    left: 15%;
+    bottom: 13%;
+
+    transform: rotate(-38deg);
+}
+
+
+/* Cracks */
+
+.cover-crack {
+    position: absolute;
+
+    width: 30px;
+    height: 60px;
+
+    pointer-events: none;
+
+    opacity: 0.65;
+
+    background:
+        linear-gradient(
+            105deg,
+            transparent 44%,
+            rgba(23, 10, 4, 0.8) 46%,
+            rgba(23, 10, 4, 0.8) 49%,
+            transparent 52%
+        );
+}
+
+.crack-one {
+    top: 4%;
+    right: 14%;
+
+    transform: rotate(24deg);
+}
+
+.crack-two {
+    bottom: 5%;
+    left: 7%;
+
+    height: 45px;
+
+    transform: rotate(-25deg);
+}
+
+.crack-three {
+    top: 44%;
+    right: 3%;
+
+    height: 42px;
+
+    transform: rotate(60deg);
+}
+
+
+/* Brass book corners */
+
+.brass-corner {
+    position: absolute;
+
+    z-index: 3;
+
+    width: 30px;
+    height: 30px;
+
+    border: 1px solid #e0c07b;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0d89a,
+            #a57a36 48%,
+            #d5b16b
+        );
+
+    box-shadow:
+        inset 0 0 0 3px rgba(74, 43, 17, 0.3),
+        1px 2px 5px rgba(0, 0, 0, 0.45);
+}
+
+.brass-corner::after {
+    content: "✦";
+
+    position: absolute;
+
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+
+    color: #684521;
+
+    font-size: 12px;
+}
+
+.top-left {
+    top: 6px;
+    left: 6px;
+
+    border-radius: 2px 0 6px 0;
+}
+
+.top-right {
+    top: 6px;
+    right: 6px;
+
+    border-radius: 0 2px 0 6px;
+}
+
+.bottom-left {
+    bottom: 6px;
+    left: 6px;
+
+    border-radius: 0 6px 0 2px;
+}
+
+.bottom-right {
+    bottom: 6px;
+    right: 6px;
+
+    border-radius: 6px 0 2px 0;
+}
+
+
+/* ======================================================
+   8. BOOK COVER TYPOGRAPHY
+====================================================== */
+
+.cover-border {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    height: 100%;
+
+    padding: 20px 14px;
+
+    border: 1px solid rgba(230, 190, 120, 0.8);
+
+    text-align: center;
+
+    box-shadow:
+        inset 0 0 0 4px rgba(37, 19, 9, 0.5),
+        inset 0 0 0 5px rgba(201, 157, 83, 0.3);
+}
+
+.cover-border::before {
+    content: "";
+
+    position: absolute;
+    inset: 10px;
+
+    border: 1px solid rgba(226, 185, 111, 0.3);
+
+    pointer-events: none;
+}
+
+.cover-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    color: #d6b273;
+
+    font-size: 7px;
+    letter-spacing: 2px;
+}
+
+.cover-symbol {
+    font-size: 10px;
+}
+
+.cover-logo {
+    margin-top: 25px;
+}
+
+.logo-monogram {
+    color: #e8cb8b;
+
+    font-family: var(--serif);
+    font-size: 39px;
+    font-weight: 600;
+
+    text-shadow:
+        0 2px 1px #271408,
+        0 0 15px rgba(220, 174, 96, 0.2);
+}
+
+.logo-line {
+    width: 65px;
+    height: 1px;
+
+    margin: 8px auto;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #e0bb75,
+        transparent
+    );
+}
+
+.cover-pretitle {
+    margin-top: 20px;
+
+    color: #d4b47a;
+
+    font-size: 9px;
+    letter-spacing: 4px;
+}
+
+.cover-border h1 {
+    margin-top: 15px;
+
+    color: #f0d7a5;
+
+    font-family: var(--serif);
+    font-size: clamp(30px, 7vw, 45px);
+
+    line-height: 1.3;
+    letter-spacing: 3px;
+
+    text-shadow:
+        0 2px 1px #29170b,
+        0 0 20px rgba(215, 169, 91, 0.1);
+}
+
+.cover-border h1 span {
+    color: #d5ad69;
+}
+
+.cover-subtitle {
+    margin-top: 8px;
+
+    color: #d8b77b;
+
+    font-size: 8px;
+    letter-spacing: 4px;
+}
+
+.cover-ornament {
+    margin-top: 22px;
+
+    color: #d3b173;
+
+    font-family: var(--script);
+    font-size: 13px;
+}
+
+.cover-description {
+    margin-top: 18px;
+
+    color: #e3c9a2;
+
+    font-family: var(--script);
+    font-size: 14px;
+    font-style: italic;
+
+    line-height: 1.8;
+}
+
+.cover-bottom {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 25px;
+
+    color: #d2b17a;
+
+    font-size: 7px;
+    letter-spacing: 2px;
+}
+
+.bottom-star {
+    font-size: 11px;
+}
+
+
+/* Open book button */
+
+.open-book-button {
+    position: absolute;
+
+    left: 50%;
+    bottom: 24px;
+
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    width: 78%;
+    max-width: 280px;
+
+    padding: 13px 12px;
+
+    border: 1px solid #dfbf7a;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e9d099,
+            #b48b48
+        );
+
+    color: #29170b;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 5px 14px rgba(0, 0, 0, 0.25);
+
+    transition: 0.35s;
+}
+
+.open-book-button:hover {
+    background: #f1dca9;
+
+    box-shadow:
+        0 0 20px rgba(226, 185, 111, 0.2);
+
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.button-arrow {
+    font-size: 15px;
+}
+
+
+/* Cover opening */
+
+.main-book.opening .book-cover {
+    transform: rotateY(-165deg);
+
+    box-shadow:
+        inset 0 0 0 3px #2e1a0f,
+        inset 0 0 0 5px #ad854b,
+        15px 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.main-book.opening {
+    transform: rotateY(0deg);
+}
+
+.scene-caption {
+    margin-top: 35px;
+
+    color: #e0c49a;
+
+    font-size: 8px;
+    letter-spacing: 3px;
+
+    text-align: center;
+}
+
+
+/* ======================================================
+   9. LOGIN PAGE
+====================================================== */
+
+.login-book {
+    position: relative;
+
+    width: min(430px, 100%);
+
+    padding: 14px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #b08a5d,
+            #f0dfbd 5%,
+            #e8d4ad 95%,
+            #a37b4e
+        );
+
+    box-shadow:
+        5px 8px 0 #5b3a20,
+        10px 15px 0 #382116,
+        20px 30px 50px rgba(0, 0, 0, 0.55);
+
+    transform: rotate(-1deg);
+}
+
+.login-page-decoration {
+    position: absolute;
+    inset: 14px;
+
+    border: 1px solid rgba(117, 77, 36, 0.5);
+
+    pointer-events: none;
+}
+
+.page-corner {
+    position: absolute;
+
+    color: #9a7441;
+
+    font-family: var(--script);
+    font-size: 24px;
+}
+
+.corner-a {
+    top: 5px;
+    left: 7px;
+}
+
+.corner-b {
+    top: 5px;
+    right: 7px;
+}
+
+.corner-c {
+    bottom: 5px;
+    left: 7px;
+}
+
+.corner-d {
+    bottom: 5px;
+    right: 7px;
+}
+
+.login-content {
+    position: relative;
+
+    padding: 40px 25px;
+
+    background:
+        radial-gradient(
+            ellipse at 0 0,
+            rgba(137, 92, 44, 0.12),
+            transparent 50%
+        ),
+        radial-gradient(
+            ellipse at 100% 100%,
+            rgba(137, 92, 44, 0.1),
+            transparent 50%
+        ),
+        #ead9b8;
+
+    color: var(--ink);
+
+    text-align: center;
+
+    border: 1px solid #c6a578;
+}
+
+.login-monogram {
+    font-family: var(--serif);
+    font-size: 40px;
+
+    color: #79552f;
+}
+
+.login-content .eyebrow {
+    color: #8a663c;
+}
+
+.login-content h2 {
+    margin-top: 15px;
+
+    font-family: var(--script);
+    font-size: 32px;
+    font-weight: 400;
+
+    color: #3d2818;
+}
+
+.login-description {
+    color: #735a3e;
+
+    font-family: var(--script);
+    font-size: 15px;
+    font-style: italic;
+
+    line-height: 1.8;
+}
+
+#loginForm {
+    margin-top: 25px;
+    text-align: left;
+}
+
+#loginForm label {
+    display: block;
+
+    margin: 17px 0 8px;
+
+    color: #654629;
+
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+#loginForm input {
+    width: 100%;
+
+    padding: 13px;
+
+    color: #382419;
+
+    background: rgba(255, 255, 255, 0.28);
+
+    border: 1px solid rgba(113, 77, 41, 0.35);
+
+    outline: none;
+
+    transition: 0.3s;
+}
+
+#loginForm input:focus {
+    border-color: #98713c;
+
+    box-shadow:
+        0 0 0 3px rgba(152, 113, 60, 0.1);
+}
+
+#loginForm input::placeholder {
+    color: #92785a;
+}
+
+.antique-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    width: 100%;
+
+    margin-top: 22px;
+
+    padding: 15px 17px;
+
+    border: 1px solid #79542e;
+
+    background:
+        linear-gradient(
+            135deg,
+            #684323,
+            #392316
+        );
+
+    color: #f1dfbd;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    letter-spacing: 2px;
+
+    transition: 0.3s;
+}
+
+.antique-button:hover {
+    background: #805731;
+
+    box-shadow:
+        0 5px 15px rgba(57, 35, 22, 0.2);
+}
+
+.antique-button span {
+    font-size: 17px;
+}
+
+.login-footer {
+    margin-top: 25px;
+
+    color: #80674a;
+
+    font-family: var(--script);
+    font-size: 12px;
+    font-style: italic;
+}
+
+.back-to-cover {
+    position: absolute;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: max-content;
+
+    border: none;
+    background: transparent;
+
+    color: #e1c69d;
+
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+
+/* ======================================================
+   10. SHOP NAVBAR
+====================================================== */
+
+.shop-navbar {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 5%;
+
+    border-bottom: 1px solid rgba(219, 178, 110, 0.25);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(43, 25, 14, 0.95),
+            rgba(24, 14, 8, 0.94)
+        );
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.shop-brand {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    text-decoration: none;
+}
+
+.brand-symbol {
+    display: grid;
+    place-items: center;
+
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid var(--gold);
+
+    color: var(--gold-light);
+
+    font-family: var(--serif);
+    font-size: 15px;
+}
+
+.brand-name {
+    display: flex;
+    flex-direction: column;
+
+    font-family: var(--serif);
+    font-size: 15px;
+
+    letter-spacing: 2px;
+}
+
+.brand-name i {
+    color: var(--gold);
+}
+
+.brand-name small {
+    margin-top: 5px;
+
+    color: #c4a77b;
+
+    font-family: var(--sans);
+    font-size: 7px;
+
+    letter-spacing: 2px;
+}
+
+.shop-navigation {
+    display: flex;
+    align-items: center;
+
+    gap: 28px;
+}
+
+.shop-navigation a {
+    color: #d6c3a5;
+
+    font-size: 9px;
+    letter-spacing: 1.5px;
+
+    text-decoration: none;
+
+    transition: color 0.3s;
+}
+
+.shop-navigation a:hover {
+    color: var(--gold-light);
+}
+
+.cart-button {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 13px;
+
+    border: 1px solid var(--gold);
+
+    background: transparent;
+
+    color: #ead7b6;
+
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.cart-count {
+    display: grid;
+    place-items: center;
+
+    width: 21px;
+    height: 21px;
+
+    border-radius: 50%;
+
+    background: var(--gold);
+    color: #24150d;
+}
+
+
+/* ======================================================
+   11. SHOP HERO
+====================================================== */
+
+.shop-hero {
+    position: relative;
+
+    padding: 85px 20px 75px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            rgba(24, 14, 8, 0.3),
+            rgba(24, 14, 8, 0.62)
+        );
+}
+
+.hero-ornament {
+    margin-bottom: 15px;
+
+    color: var(--gold);
+
+    font-family: var(--script);
+    font-size: 38px;
+}
+
+.shop-hero h1 {
+    margin-top: 20px;
+
+    font-family: var(--serif);
+    font-size: clamp(30px, 5vw, 49px);
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+.shop-hero h1 span {
+    display: block;
+
+    color: var(--gold-light);
+
+    font-family: var(--script);
+    font-style: italic;
+
+    font-size: 1.05em;
+}
+
+.hero-description {
+    max-width: 570px;
+
+    margin: 20px auto 0;
+
+    color: #dbc7a8;
+
+    font-family: var(--script);
+    font-size: 16px;
+
+    line-height: 1.9;
+}
+
+.hero-link {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-top: 30px;
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid var(--gold);
+
+    color: var(--gold-light);
+
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    text-decoration: none;
+}
+
+.hero-link span {
+    font-size: 16px;
+}
+
+
+/* ======================================================
+   12. COLLECTION SECTION
+====================================================== */
+
+.collection-section {
+    width: min(1200px, 100%);
+
+    margin: 0 auto;
+
+    padding: 55px 25px 80px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding-bottom: 25px;
+
+    border-bottom: 1px solid rgba(214, 173, 103, 0.3);
+}
+
+.section-heading h2 {
+    margin-top: 12px;
+
+    font-family: var(--serif);
+    font-size: clamp(23px, 4vw, 34px);
+    font-weight: 400;
+}
+
+.section-heading h2 em {
+    color: var(--gold-light);
+
+    font-family: var(--script);
+    font-weight: 400;
+}
+
+.catalogue-note {
+    color: #c7ae88;
+
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+
+/* ======================================================
+   13. FILTER BUTTONS
+====================================================== */
+
+.category-filters {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin: 30px 0;
+}
+
+.filter-button {
+    padding: 11px 17px;
+
+    border: 1px solid rgba(208, 169, 105, 0.3);
+
+    background: rgba(38, 23, 13, 0.7);
+
+    color: #ddc7a3;
+
+    font-size: 9px;
+    letter-spacing: 1.5px;
+
+    transition: 0.3s;
+}
+
+.filter-button:hover,
+.filter-button.active {
+    background: var(--gold);
+    border-color: var(--gold);
+
+    color: #28170d;
+}
+
+
+/* ======================================================
+   14. FURNITURE PRODUCT CARDS
+====================================================== */
+
+.product-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 27px;
+}
+
+.product-card {
+    position: relative;
+
+    padding: 9px;
+
+    overflow: hidden;
+
+    border: 1px solid #76502f;
+
+    background:
+        repeating-linear-gradient(
+            3deg,
+            transparent 0,
+            rgba(15, 7, 3, 0.2) 2px,
+            transparent 5px,
+            rgba(224, 174, 107, 0.05) 8px,
+            transparent 13px
+        ),
+        linear-gradient(
+            135deg,
+            #70472a,
+            #352014 45%,
+            #614027
+        );
+
+    box-shadow:
+        inset 0 0 0 2px rgba(31, 17, 9, 0.8),
+        inset 0 0 0 4px rgba(183, 136, 71, 0.35),
+        5px 8px 20px rgba(0, 0, 0, 0.3);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+
+    animation: productAppear 0.6s both;
+}
+
+@keyframes productAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card:hover {
+    transform: translateY(-7px);
+
+    border-color: var(--gold-light);
+
+    box-shadow:
+        inset 0 0 0 2px rgba(31, 17, 9, 0.8),
+        inset 0 0 0 4px rgba(183, 136, 71, 0.5),
+        0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Inner frame */
+
+.product-card-inner {
+    position: relative;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(218, 179, 112, 0.45);
+
+    background: #29190f;
+}
+
+.product-image-wrap {
+    position: relative;
+
+    overflow: hidden;
+
+    height: 255px;
+
+    background: #342116;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.8s ease,
+        filter 0.8s ease;
+
+    filter: saturate(0.88);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.06);
+    filter: saturate(1.05);
+}
+
+.image-overlay {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.1),
+            transparent 30%,
+            rgba(0, 0, 0, 0.35)
+        );
+}
+
+
+/* Card details */
+
+.product-info {
+    padding: 19px 16px 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0dfbd,
+            #d9c09a
+        );
+
+    color: #3a2517;
+}
+
+.product-category {
+    color: #8c6537;
+
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.product-info h3 {
+    margin-top: 9px;
+
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 500;
+
+    line-height: 1.6;
+}
+
+.product-description {
+    margin-top: 9px;
+
+    color: #765b3e;
+
+    font-family: var(--script);
+    font-size: 13px;
+    font-style: italic;
+
+    line-height: 1.7;
+}
+
+.product-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 15px;
+    padding-top: 13px;
+
+    border-top: 1px solid rgba(92, 61, 32, 0.2);
+}
+
+.product-price {
+    color: #664221;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.view-product {
+    color: #74512e;
+
+    font-size: 8px;
+    letter-spacing: 1px;
+}
+
+
+/* ======================================================
+   15. PHILOSOPHY
+====================================================== */
+
+.philosophy-section {
+    position: relative;
+
+    margin-top: 100px;
+    padding: 65px 25px;
+
+    text-align: center;
+
+    border-top: 1px solid rgba(213, 174, 108, 0.3);
+    border-bottom: 1px solid rgba(213, 174, 108, 0.3);
+
+    background:
+        linear-gradient(
+            rgba(28, 16, 9, 0.35),
+            rgba(28, 16, 9, 0.5)
+        );
+}
+
+.philosophy-section h2 {
+    margin-top: 18px;
+
+    font-family: var(--serif);
+    font-size: clamp(27px, 4vw, 40px);
+    font-weight: 400;
+
+    line-height: 1.5;
+}
+
+.philosophy-section h2 em {
+    color: var(--gold-light);
+
+    font-family: var(--script);
+}
+
+.philosophy-section > p:not(.eyebrow) {
+    max-width: 600px;
+
+    margin: 22px auto 0;
+
+    color: #d8c2a0;
+
+    font-family: var(--script);
+    font-size: 15px;
+
+    line-height: 2;
+}
+
+.philosophy-signature {
+    margin-top: 25px;
+
+    color: var(--gold-light);
+
+    font-family: var(--serif);
+    font-size: 12px;
+
+    letter-spacing: 4px;
+}
+
+
+/* ======================================================
+   16. FOOTER
+====================================================== */
+
+.shop-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 25px 5%;
+
+    border-top: 1px solid rgba(213, 174, 108, 0.25);
+
+    background: rgba(20, 11, 6, 0.8);
+
+    color: #c9af86;
+
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+
+/* ======================================================
+   17. PRODUCT DETAIL BOOK
+====================================================== */
+
+#detailScreen {
+    perspective: 2000px;
+    overflow: hidden;
+}
+
+.detail-back-button {
+    position: absolute;
+
+    top: 25px;
+    left: 30px;
+
+    z-index: 20;
+
+    border: none;
+    background: transparent;
+
+    color: var(--gold-light);
+
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    transition: 0.3s;
+}
+
+.detail-back-button:hover {
+    transform: translateX(-4px);
+}
+
+.detail-scene {
+    width: min(1050px, 100%);
+
+    margin-top: 40px;
+
+    perspective: 2200px;
+}
+
+.detail-book {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    width: 100%;
+    min-height: 560px;
+
+    transform-style: preserve-3d;
+    transform-origin: center center;
+
+    background: #c7a97c;
+
+    box-shadow:
+        0 25px 0 #4b2d18,
+        0 35px 65px rgba(0, 0, 0, 0.6);
+
+    animation: detailBookAppear 0.8s ease both;
+}
+
+@keyframes detailBookAppear {
+    from {
+        opacity: 0;
+        transform: rotateY(-18deg) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotateY(0) translateY(0);
+    }
+}
+
+
+/* Paper pages */
+
+.detail-page {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    padding: 32px;
+
+    color: var(--ink);
+
+    background:
+        radial-gradient(
+            ellipse at 0% 0%,
+            rgba(123, 78, 36, 0.16),
+            transparent 42%
+        ),
+        radial-gradient(
+            ellipse at 100% 100%,
+            rgba(123, 78, 36, 0.13),
+            transparent 42%
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(107, 73, 39, 0.025) 0,
+            transparent 2px,
+            transparent 5px
+        ),
+        linear-gradient(
+            110deg,
+            #e5d1ad,
+            #f1e2c5,
+            #dfc49a
+        );
+
+    border: 1px solid #b39466;
+}
+
+.left-page {
+    border-right: 1px solid rgba(101, 68, 37, 0.35);
+
+    box-shadow:
+        inset -10px 0 20px rgba(85, 52, 25, 0.1);
+}
+
+.right-page {
+    box-shadow:
+        inset 10px 0 20px rgba(85, 52, 25, 0.08);
+}
+
+.aged-paper-texture {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.45;
+
+    background:
+        radial-gradient(
+            circle at 12% 17%,
+            rgba(130, 88, 44, 0.2),
+            transparent 15%
+        ),
+        radial-gradient(
+            circle at 89% 83%,
+            rgba(130, 88, 44, 0.16),
+            transparent 16%
+        );
+}
+
+.page-content {
+    position: relative;
+    z-index: 1;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content h2 {
+    margin-top: 25px;
+
+    font-family: var(--script);
+    font-size: 32px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+.detail-left-description {
+    margin-top: 15px;
+
+    color: #715639;
+
+    font-family: var(--script);
+    font-size: 16px;
+    font-style: italic;
+
+    line-height: 1.9;
+}
+
+.detail-specifications {
+    display: grid;
+
+    gap: 16px;
+
+    margin-top: 30px;
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(103, 68, 36, 0.25);
+}
+
+.detail-specifications div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.detail-specifications span {
+    color: #8b6c46;
+
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+.detail-specifications strong {
+    color: #49301b;
+
+    font-family: var(--serif);
+    font-size: 11px;
+}
+
+.page-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: auto;
+    padding-top: 20px;
+
+    color: #94744a;
+
+    font-size: 8px;
+    letter-spacing: 1px;
+}
+
+
+/* Product image page */
+
+.product-detail-image-frame {
+    position: relative;
+
+    padding: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6b472a,
+            #a27b47,
+            #392315
+        );
+
+    border: 1px solid #987343;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-image-mat {
+    overflow: hidden;
+
+    padding: 5px;
+
+    background: #e4d0ad;
+
+    border: 1px solid #c5a477;
+}
+
+.product-image-mat img {
+    width: 100%;
+    height: 235px;
+
+    object-fit: cover;
+}
+
+.image-caption {
+    margin-top: 9px;
+
+    color: #f0dfbf;
+
+    font-size: 7px;
+    letter-spacing: 1.5px;
+
+    text-align: center;
+}
+
+.detail-right-content {
+    position: relative;
+
+    margin-top: 25px;
+}
+
+.detail-right-content h1 {
+    margin-top: 10px;
+
+    color: #3a2618;
+
+    font-family: var(--serif);
+    font-size: clamp(18px, 2vw, 25px);
+    font-weight: 500;
+
+    line-height: 1.5;
+}
+
+.detail-price {
+    margin-top: 10px;
+
+    color: #75502d;
+
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.detail-short-description {
+    margin-top: 12px;
+
+    color: #73583c;
+
+    font-family: var(--script);
+    font-size: 14px;
+    font-style: italic;
+
+    line-height: 1.8;
+}
+
+.detail-right-content .antique-button {
+    margin-top: 18px;
+}
+
+
+/* ======================================================
+   18. 3D PAGE TURN
+====================================================== */
+
+.turning-page {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 50%;
+    height: 100%;
+
+    z-index: 10;
+
+    transform-origin: left center;
+    transform-style: preserve-3d;
+
+    pointer-events: none;
+
+    visibility: hidden;
+}
+
+.turning-page-front,
+.turning-page-back {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    text-align: center;
+
+    backface-visibility: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 0% 0%,
+            rgba(123, 78, 36, 0.16),
+            transparent 42%
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(107, 73, 39, 0.035) 0,
+            transparent 2px,
+            transparent 5px
+        ),
+        linear-gradient(
+            110deg,
+            #e5d1ad,
+            #f1e2c5,
+            #dfc49a
+        );
+
+    border: 1px solid #b39466;
+}
+
+.turning-page-front {
+    color: #654426;
+
+    font-family: var(--serif);
+    font-size: 12px;
+
+    letter-spacing: 2px;
+}
+
+.turning-page-front div {
+    margin: 25px 0;
+
+    color: #987343;
+
+    font-family: var(--script);
+    font-size: 40px;
+}
+
+.turning-page-front small {
+    font-size: 8px;
+}
+
+.turning-page-back {
+    transform: rotateY(180deg);
+
+    color: #745334;
+
+    font-family: var(--script);
+    font-size: 14px;
+}
+
+.detail-book.turning .turning-page {
+    visibility: visible;
+
+    animation: pageTurn 1.2s cubic-bezier(0.65, 0, 0.25, 1) both;
+}
+
+@keyframes pageTurn {
+    0% {
+        transform: rotateY(0deg);
+
+        box-shadow:
+            0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    35% {
+        box-shadow:
+            -15px 0 25px rgba(0, 0, 0, 0.18);
+    }
+
+    100% {
+        transform: rotateY(-180deg);
+
+        box-shadow:
+            -20px 0 35px rgba(0, 0, 0, 0.05);
+    }
+}
+
+
+/* ======================================================
+   19. CART MODAL
+====================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 100;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(10, 5, 2, 0.78);
+
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.open {
+    display: flex;
+
+    animation: screenAppear 0.25s ease both;
+}
+
+.cart-modal {
+    position: relative;
+
+    width: min(500px, 100%);
+    max-height: 85vh;
+
+    overflow-y: auto;
+
+    padding: 35px 25px;
+
+    color: var(--ink);
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(107, 73, 39, 0.025) 0,
+            transparent 2px,
+            transparent 5px
+        ),
+        #ead9b8;
+
+    border: 8px solid #684326;
+
+    box-shadow:
+        inset 0 0 0 2px #b28a4f,
+        0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    position: absolute;
+
+    top: 12px;
+    right: 15px;
+
+    border: none;
+    background: transparent;
+
+    color: #654426;
+
+    font-size: 27px;
+}
+
+.cart-modal h2 {
+    margin-top: 10px;
+
+    font-family: var(--script);
+    font-size: 29px;
+    font-weight: 400;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid rgba(94, 63, 34, 0.2);
+}
+
+.cart-item-name {
+    font-family: var(--serif);
+    font-size: 11px;
+}
+
+.cart-item-price {
+    color: #77512e;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.cart-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 25px;
+
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.cart-note {
+    margin-top: 18px;
+
+    color: #82694a;
+
+    font-family: var(--script);
+    font-size: 13px;
+    font-style: italic;
+}
+
+
+/* ======================================================
+   20. TOAST NOTIFICATION
+====================================================== */
+
+.toast {
+    position: fixed;
+
+    left: 50%;
+    bottom: 25px;
+
+    z-index: 200;
+
+    transform: translate(-50%, 20px);
+
+    max-width: calc(100% - 30px);
+
+    padding: 13px 22px;
+
+    border: 1px solid #c4a064;
+
+    background: #342014;
+
+    color: #f0dfbd;
+
+    font-size: 11px;
+
+    text-align: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.3s,
+        transform 0.3s,
+        visibility 0.3s;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translate(-50%, 0);
+}
+
+
+/* ======================================================
+   21. TABLET RESPONSIVENESS
+====================================================== */
+
+@media (max-width: 900px) {
+
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .detail-book {
+        min-height: 520px;
+    }
+
+    .detail-page {
+        padding: 23px;
+    }
+
+    .product-image-mat img {
+        height: 190px;
+    }
+
+    .shop-navigation {
+        gap: 15px;
+    }
+}
+
+
+/* ======================================================
+   22. MOBILE RESPONSIVENESS
+====================================================== */
+
+@media (max-width: 600px) {
+
+    .screen {
+        padding: 15px;
+    }
+
+    .scene-label {
+        top: 23px;
+
+        font-size: 7px;
+        letter-spacing: 1.5px;
+    }
+
+    .book-scene {
+        width: min(350px, 82vw);
+        height: min(530px, 70vh);
+
+        min-height: 440px;
+    }
+
+    .cover-border {
+        padding: 12px 7px;
+    }
+
+    .cover-border h1 {
+        font-size: clamp(29px, 8vw, 39px);
+        letter-spacing: 2px;
+    }
+
+    .cover-top {
+        gap: 5px;
+        font-size: 6px;
+    }
+
+    .cover-description {
+        font-size: 12px;
+    }
+
+    .cover-bottom {
+        gap: 8px;
+        font-size: 6px;
+    }
+
+    .open-book-button {
+        width: 85%;
+
+        padding: 12px 7px;
+
+        font-size: 8px;
+        letter-spacing: 1.5px;
+    }
+
+    .scene-caption {
+        max-width: 300px;
+
+        font-size: 7px;
+        line-height: 1.8;
+    }
+
+    .login-book {
+        width: 100%;
+    }
+
+    .login-content {
+        padding: 35px 19px;
+    }
+
+    .login-content h2 {
+        font-size: 27px;
+    }
+
+    .back-to-cover {
+        bottom: 13px;
+
+        font-size: 8px;
+    }
+
+    .shop-navbar {
+        padding: 17px 12px;
+
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .brand-symbol {
+        width: 36px;
+        height: 36px;
+
+        font-size: 12px;
+    }
+
+    .brand-name {
+        font-size: 12px;
+    }
+
+    .brand-name small {
+        font-size: 6px;
+    }
+
+    .shop-navigation {
+        order: 3;
+
+        width: 100%;
+
+        justify-content: center;
+
+        gap: 22px;
+    }
+
+    .shop-navigation a {
+        font-size: 8px;
+    }
+
+    .cart-button {
+        gap: 7px;
+
+        padding: 8px;
+
+        font-size: 8px;
+    }
+
+    .shop-hero {
+        padding: 60px 18px;
+    }
+
+    .shop-hero h1 {
+        font-size: 30px;
+    }
+
+    .hero-description {
+        font-size: 14px;
+    }
+
+    .collection-section {
+        padding: 35px 10px 50px;
+    }
+
+    .section-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .catalogue-note {
+        font-size: 7px;
+    }
+
+    .category-filters {
+        gap: 7px;
+    }
+
+    .filter-button {
+        padding: 9px 11px;
+
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .product-image-wrap {
+        height: 260px;
+    }
+
+    .product-info h3 {
+        font-size: 16px;
+    }
+
+    .philosophy-section {
+        margin-top: 60px;
+        padding: 45px 10px;
+    }
+
+    .shop-footer {
+        flex-direction: column;
+        text-align: center;
+
+        font-size: 7px;
+    }
+
+    .detail-back-button {
+        top: 16px;
+        left: 15px;
+
+        font-size: 8px;
+    }
+
+    .detail-scene {
+        margin-top: 65px;
+    }
+
+    .detail-book {
+        grid-template-columns: 1fr;
+
+        min-height: auto;
+    }
+
+    .detail-page {
+        min-height: 430px;
+        padding: 23px;
+    }
+
+    .left-page {
+        border-right: 1px solid #b39466;
+        border-bottom: 2px solid #a58557;
+    }
+
+    .right-page {
+        min-height: 560px;
+    }
+
+    .page-content h2 {
+        font-size: 29px;
+    }
+
+    .detail-left-description {
+        font-size: 15px;
+    }
+
+    .product-image-mat img {
+        height: 240px;
+    }
+
+    .detail-right-content h1 {
+        font-size: 23px;
+    }
+
+    .turning-page {
+        display: none;
+    }
+
+    .cart-modal {
+        padding: 30px 18px;
+    }
+}
+
+
+/* ======================================================
+   23. REDUCED MOTION
+====================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
+
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* ======================================================
+   24. CINEMATIC WOODWORK FINISH
+====================================================== */
+
+.wood-background {
+    overflow: hidden;
+    background-color: #2b160b;
+    background-image:
+        radial-gradient(ellipse at 50% 4%, rgba(193, 126, 62, 0.26), transparent 38%),
+        radial-gradient(ellipse at 12% 78%, rgba(0, 0, 0, 0.38), transparent 44%),
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 92px,
+            rgba(15, 7, 3, 0.88) 93px,
+            rgba(9, 4, 2, 0.9) 97px,
+            rgba(149, 95, 49, 0.36) 99px,
+            transparent 103px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 246px,
+            rgba(15, 7, 3, 0.48) 247px,
+            rgba(8, 4, 2, 0.75) 250px,
+            transparent 253px
+        ),
+        repeating-linear-gradient(
+            1deg,
+            transparent 0,
+            rgba(23, 10, 4, 0.32) 2px,
+            transparent 4px,
+            rgba(211, 147, 86, 0.12) 7px,
+            transparent 10px,
+            transparent 19px
+        ),
+        repeating-linear-gradient(
+            178deg,
+            #58351f 0,
+            #784b2b 22px,
+            #3a2112 48px,
+            #684027 74px,
+            #30190d 96px
+        );
+    background-size: auto, auto, auto, auto, auto, 100% 194px;
+    background-position: center, center, center, 29px center, center, center;
+    transform: scale(1.025);
+}
+
+.wood-background::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    opacity: 0.48;
+    background:
+        radial-gradient(ellipse at 32% 37%, transparent 0 2%, rgba(21, 9, 3, 0.52) 2.2% 2.6%, transparent 3%),
+        radial-gradient(ellipse at 32% 37%, transparent 0 8%, rgba(19, 8, 3, 0.34) 8.2% 8.5%, transparent 9%),
+        radial-gradient(ellipse at 78% 78%, transparent 0 1.5%, rgba(18, 7, 2, 0.48) 1.8% 2.2%, transparent 2.5%),
+        repeating-linear-gradient(172deg, transparent 0 180px, rgba(19, 8, 3, 0.6) 181px, transparent 183px 290px),
+        linear-gradient(105deg, transparent 48%, rgba(223, 165, 97, 0.08) 49%, transparent 50%);
+}
+
+.background-vignette {
+    background:
+        radial-gradient(ellipse at 50% 42%, rgba(53, 29, 15, 0.04) 5%, rgba(15, 7, 3, 0.35) 67%, rgba(8, 4, 2, 0.79) 100%),
+        linear-gradient(180deg, rgba(19, 9, 4, 0.22), rgba(10, 5, 2, 0.42));
+}
+
+.ambient-light {
+    width: min(900px, 100vw);
+    height: 700px;
+    top: -360px;
+    background: radial-gradient(ellipse, rgba(255, 184, 99, 0.2), rgba(181, 104, 42, 0.07) 32%, transparent 70%);
+    filter: blur(44px);
+}
+
+.book-scene {
+    filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.24));
+}
+
+.main-book {
+    transform: rotateY(-8deg) rotateX(3deg);
+}
+
+.book-page-stack {
+    right: -13px;
+    background:
+        repeating-linear-gradient(to bottom, #f4e5c8 0 1px, #c4a879 2px, #f4e6c8 3px, #b59668 4px),
+        linear-gradient(90deg, #8a6741, #eee0c1 8%, #d9c49e 94%, #765333);
+    box-shadow:
+        3px 4px 0 #906a3e,
+        6px 8px 0 #5b391f,
+        10px 12px 0 #362014,
+        18px 25px 42px rgba(0, 0, 0, 0.72);
+}
+
+.book-cover {
+    border: 4px solid #533018;
+    background:
+        radial-gradient(ellipse at 20% 18%, rgba(202, 143, 82, 0.38), transparent 36%),
+        radial-gradient(ellipse at 84% 88%, rgba(7, 3, 1, 0.5), transparent 40%),
+        repeating-linear-gradient(176deg, transparent 0 4px, rgba(18, 8, 3, 0.24) 5px, transparent 7px 12px),
+        repeating-linear-gradient(3deg, rgba(218, 163, 101, 0.06) 0 1px, transparent 2px 17px),
+        linear-gradient(118deg, #81502d, #3d2111 25%, #754629 47%, #2a150a 75%, #70452a);
+    box-shadow:
+        inset 0 0 0 2px #2d180c,
+        inset 0 0 0 5px #c19a5a,
+        inset 0 0 0 8px #462716,
+        inset 12px 0 22px rgba(0, 0, 0, 0.72),
+        inset -7px 0 18px rgba(255, 210, 144, 0.16),
+        5px 8px 0 #21130c,
+        10px 13px 0 #382116,
+        22px 30px 42px rgba(0, 0, 0, 0.76);
+}
+
+.cover-grain {
+    opacity: 0.8;
+    background:
+        repeating-linear-gradient(177deg, transparent 0 2px, rgba(13, 5, 2, 0.36) 3px, transparent 4px 8px),
+        repeating-linear-gradient(2deg, transparent 0 31px, rgba(224, 172, 109, 0.1) 32px, transparent 34px 61px);
+}
+
+.brass-corner {
+    border-color: #f2d58f;
+    background:
+        linear-gradient(135deg, rgba(255, 236, 177, 0.9), transparent 35%),
+        linear-gradient(135deg, #f1d68e, #8f642d 48%, #e2bd70);
+    box-shadow:
+        inset 0 0 0 2px rgba(81, 49, 18, 0.55),
+        inset 0 0 0 4px rgba(244, 216, 151, 0.32),
+        1px 3px 7px rgba(0, 0, 0, 0.62);
+}
+
+.cover-border {
+    box-shadow:
+        inset 0 0 0 4px rgba(30, 14, 6, 0.68),
+        inset 0 0 0 5px rgba(224, 180, 103, 0.48),
+        0 0 18px rgba(0, 0, 0, 0.14);
+}
+
+.login-book,
+.detail-book,
+.product-card {
+    filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.18));
+}
+
+.product-card {
+    padding: 11px;
+    border-color: #a27742;
+    background:
+        repeating-linear-gradient(2deg, transparent 0 5px, rgba(17, 8, 3, 0.24) 6px, transparent 8px 15px),
+        linear-gradient(135deg, #875832, #321b0e 45%, #79502f);
+    box-shadow:
+        inset 0 0 0 2px rgba(31, 17, 9, 0.9),
+        inset 0 0 0 4px rgba(205, 162, 94, 0.52),
+        inset 0 0 0 7px rgba(35, 18, 8, 0.72),
+        0 12px 28px rgba(0, 0, 0, 0.42);
+}
+
+.product-card::before {
+    position: absolute;
+    inset: 5px;
+    z-index: 2;
+    border: 1px solid rgba(241, 211, 151, 0.38);
+    content: "";
+    pointer-events: none;
+}
+
+.product-card-inner {
+    border-color: rgba(236, 199, 128, 0.58);
+    box-shadow: inset 0 0 0 2px rgba(28, 15, 8, 0.86);
+}
+
+.product-card:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 5px;
+}
+
+.product-image {
+    filter: saturate(0.9) contrast(1.04) sepia(0.08);
+}
+
+.product-info {
+    background:
+        repeating-linear-gradient(0deg, rgba(99, 69, 38, 0.035) 0 1px, transparent 2px 5px),
+        linear-gradient(135deg, #f4e6ca, #ddc49c);
+}
+
+.shop-hero {
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(190, 124, 62, 0.19), transparent 55%),
+        linear-gradient(180deg, rgba(30, 16, 8, 0.34), rgba(24, 14, 8, 0.74));
+}
+
+.detail-book {
+    background: #855d35;
+    box-shadow:
+        0 7px 0 #a27a49,
+        0 13px 0 #382114,
+        0 25px 0 #24150d,
+        0 42px 72px rgba(0, 0, 0, 0.72);
+}
+
+.detail-page {
+    background:
+        radial-gradient(ellipse at 9% 10%, rgba(130, 84, 42, 0.19), transparent 34%),
+        radial-gradient(ellipse at 96% 92%, rgba(119, 73, 35, 0.18), transparent 38%),
+        repeating-linear-gradient(2deg, transparent 0 21px, rgba(97, 67, 39, 0.028) 22px, transparent 23px 34px),
+        repeating-linear-gradient(0deg, rgba(103, 71, 39, 0.04) 0 1px, transparent 2px 5px),
+        linear-gradient(110deg, #ddc69f, #f3e5c8 48%, #dfc79f);
+}
+
+.product-detail-image-frame {
+    padding: 12px;
+    background:
+        repeating-linear-gradient(3deg, transparent 0 7px, rgba(20, 9, 3, 0.2) 8px, transparent 10px 16px),
+        linear-gradient(135deg, #91683a, #4c2e18 48%, #a67e48);
+    box-shadow:
+        inset 0 0 0 2px rgba(37, 19, 8, 0.72),
+        inset 0 0 0 4px rgba(224, 183, 111, 0.42),
+        0 9px 20px rgba(49, 30, 14, 0.28);
+}
+
+.product-image-mat {
+    padding: 7px;
+    background: #eee0c1;
+    box-shadow: inset 0 0 0 1px #aa885a;
+}
+
+.product-image-mat img {
+    filter: saturate(0.92) contrast(1.04);
+}
+
+.turning-page-front,
+.turning-page-back {
+    box-shadow:
+        inset 0 0 0 1px rgba(125, 84, 42, 0.2),
+        0 10px 22px rgba(61, 38, 18, 0.2);
+}
+
+.turning-page-front {
+    background:
+        radial-gradient(ellipse at 0% 50%, rgba(108, 69, 33, 0.2), transparent 45%),
+        repeating-linear-gradient(0deg, rgba(107, 73, 39, 0.035) 0 1px, transparent 2px 5px),
+        linear-gradient(110deg, #dec79e, #f3e4c6 48%, #d7bd91);
+}
+
+.turning-page-back {
+    background:
+        radial-gradient(ellipse at 100% 20%, rgba(107, 68, 32, 0.2), transparent 45%),
+        repeating-linear-gradient(0deg, rgba(107, 73, 39, 0.035) 0 1px, transparent 2px 5px),
+        linear-gradient(110deg, #d6bd91, #f0dfbd 55%, #d9c29a);
+}
+
+.detail-book.turning .turning-page {
+    animation-duration: 1.15s;
+}
+
+#detailScreen {
+    overflow: visible;
+}
+
+@media (max-width: 900px) {
+    .product-grid {
+        gap: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    #detailScreen {
+        align-items: flex-start;
+        overflow: visible;
+        padding-bottom: 35px;
+    }
+
+    .detail-scene {
+        margin-bottom: 15px;
+    }
+
+    .turning-page {
+        display: block;
+        top: 430px;
+        right: 0;
+        width: 100%;
+        height: 560px;
+    }
+}
+
+/* Wood photograph: Wikimedia Commons, "Wood texture, light.jpg" (CC0). */
+.wood-background {
+    z-index: 0;
+    background-color: #fff;
+    background-image:
+        linear-gradient(
+            rgba(23, 10, 4, 0.1),
+            rgba(23, 10, 4, 0.22)
+        ),
+        linear-gradient(
+            115deg,
+            #a96b3c,
+            #744628 48%,
+            #59351e
+        ),
+        url("wood-background.jpg");
+    background-blend-mode: multiply, color, normal;
+    background-position: center, center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: scale(1.04);
+    filter: sepia(0.78) saturate(1.55) brightness(0.82) contrast(1.3);
+}
+
+.wood-background::after {
+    opacity: 0.35;
+    background:
+        radial-gradient(
+            ellipse at 76% 18%,
+            rgba(229, 167, 94, 0.2),
+            transparent 42%
+        ),
+        linear-gradient(
+            105deg,
+            transparent 35%,
+            rgba(225, 167, 101, 0.08) 50%,
+            transparent 67%
+        );
+}
+
+.background-vignette {
+    z-index: 1;
+}
+
+.background-vignette {
+    background:
+        radial-gradient(
+            ellipse at 50% 42%,
+            transparent 12%,
+            rgba(15, 7, 3, 0.18) 76%,
+            rgba(8, 4, 2, 0.58) 100%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(19, 9, 4, 0.06),
+            rgba(10, 5, 2, 0.2)
+        );
+}
+
+.ambient-light {
+    z-index: 2;
+    animation: warmLightDrift 34s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+}
+
+.screen {
+    z-index: 3;
+}
+
+@keyframes warmLightDrift {
+    from {
+        opacity: 0.58;
+        transform: translate(-57%, -3%);
+    }
+
+    to {
+        opacity: 0.9;
+        transform: translate(-43%, 15%);
+    }
+}
+
+.shop-hero h1 span,
+.section-heading h2 em,
+.philosophy-section h2 em,
+.login-content h2 {
+    font-family: var(--display-script);
+    font-weight: 400;
+}
+
+.shop-hero h1 span {
+    line-height: 1.35;
+}
+
+.section-heading h2,
+.philosophy-section h2,
+.page-content h2,
+.detail-right-content h1,
+.product-info h3 {
+    letter-spacing: 0.015em;
+}
+
+.product-image-wrap::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+        112deg,
+        transparent 26%,
+        rgba(255, 231, 192, 0.18) 48%,
+        transparent 66%
+    );
+    content: "";
+    pointer-events: none;
+    transform: translateX(-125%);
+    transition: transform 0.9s cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.product-card:hover .product-image-wrap::after,
+.product-card:focus-visible .product-image-wrap::after {
+    transform: translateX(125%);
+}
+
+.product-card,
+.filter-button,
+.brand-symbol,
+.detail-book,
+.login-book {
+    transition-timing-function: cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+
+.book-cover {
+    background:
+        linear-gradient(
+            rgba(24, 10, 4, 0.34),
+            rgba(24, 10, 4, 0.48)
+        ),
+        linear-gradient(
+            120deg,
+            #cf945d,
+            #744529 52%,
+            #aa7043
+        ),
+        url("wood-background.jpg") center / cover;
+    background-blend-mode: multiply, multiply, normal;
+}
+
+.cover-grain {
+    opacity: 0.18;
+    mix-blend-mode: soft-light;
+    background:
+        linear-gradient(
+            90deg,
+            transparent 12%,
+            rgba(231, 182, 116, 0.2) 50%,
+            transparent 88%
+        );
+}
+
+.shop-navbar {
+    border-bottom-color: rgba(220, 181, 119, 0.38);
+    background: linear-gradient(
+        180deg,
+        rgba(36, 19, 11, 0.94),
+        rgba(24, 12, 7, 0.9)
+    );
+    backdrop-filter: blur(12px);
+}
+
+.shop-navigation a {
+    position: relative;
+    padding: 8px 0;
+}
+
+.shop-navigation a::after {
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+    left: 0;
+    height: 1px;
+    background: var(--gold-light);
+    content: "";
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+}
+
+.shop-navigation a:hover::after,
+.shop-navigation a:focus-visible::after {
+    transform: scaleX(1);
+}
+
+.cart-button {
+    transition:
+        color 0.3s ease,
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.cart-button:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold-light);
+    background: rgba(196, 160, 100, 0.13);
+    color: var(--gold-light);
+}
+
+.product-card {
+    background:
+        linear-gradient(
+            rgba(22, 9, 4, 0.3),
+            rgba(22, 9, 4, 0.44)
+        ),
+        linear-gradient(
+            135deg,
+            #bd8251,
+            #57321b 72%
+        ),
+        url("wood-background.jpg") center / cover;
+    background-blend-mode: multiply, multiply, normal;
+}
+
+.product-card:hover {
+    box-shadow:
+        inset 0 0 0 2px rgba(31, 17, 9, 0.8),
+        inset 0 0 0 4px rgba(221, 183, 116, 0.62),
+        0 22px 42px rgba(0, 0, 0, 0.48),
+        0 0 24px rgba(198, 150, 82, 0.1);
+}
+
+.antique-button,
+.open-book-button {
+    transition:
+        color 0.3s ease,
+        background-color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+}
+
+.antique-button:hover {
+    transform: translateY(-2px);
+}
+
+.hero-link {
+    transition:
+        color 0.3s ease,
+        border-color 0.3s ease,
+        letter-spacing 0.3s ease;
+}
+
+.hero-link:hover {
+    color: #fff0ce;
+    border-color: #fff0ce;
+    letter-spacing: 2.4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .wood-background::after {
+        animation: timberGlow 30s ease-in-out infinite alternate;
+        will-change: transform, opacity;
+    }
+
+    @keyframes timberGlow {
+        from {
+            opacity: 0.22;
+            transform: translate3d(-1.2%, -0.4%, 0);
+        }
+
+        to {
+            opacity: 0.42;
+            transform: translate3d(1.2%, 0.8%, 0);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ambient-light {
+        animation: none;
+        will-change: auto;
+    }
+}

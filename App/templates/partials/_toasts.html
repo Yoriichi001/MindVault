@@ -1,0 +1,17 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="toast-container" id="toastContainer" aria-live="polite">
+      {% for category, message in messages %}
+        <div class="mv-toast mv-toast-{{ category }}">
+          <div class="toast-body">
+            <strong>
+              {% if category == 'success' %}✓ SUCCESS{% elif category == 'danger' %}⚠ ALERT{% elif category == 'warning' %}✦ NOTICE{% else %}ℹ INFO{% endif %}
+            </strong>
+            <p style="margin: 0.2rem 0 0 0; font-size: 0.9rem;">{{ message }}</p>
+          </div>
+          <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--paper-dark); font-size:1.2rem; cursor:pointer; padding-left:1rem;">×</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}

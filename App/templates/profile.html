@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Scholar Account Panel | MindVault{% endblock %}
+
+{% block content %}
+<div class="reader-container" style="max-width: 1050px; margin: 3rem auto; padding: 0 1.5rem;">
+
+    <div class="section-heading" style="margin-bottom: 2rem;">
+        <p class="eyebrow" style="color: var(--gold); letter-spacing: 2px;">SCHOLAR SANCTUM</p>
+        <h1 style="font-family: var(--serif); font-size: 2.6rem; color: var(--gold-bright);">
+            Account Dossier & Profile
+        </h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 340px 1fr; gap: 2rem; align-items: start;">
+
+        <!-- Left Column: Avatar & Account Badges -->
+        <div class="glass-panel" style="padding: 2.2rem; text-align: center;">
+            <div style="position: relative; width: 140px; height: 140px; margin: 0 auto 1.5rem auto;">
+                <img src="{{ current_user.get_avatar_url() }}"
+                     alt="{{ current_user.username }}"
+                     id="avatarPreview"
+                     style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); box-shadow: 0 8px 25px rgba(0,0,0,0.6);"
+                >
+                {% if current_user.is_admin %}
+                <span style="position: absolute; bottom: 5px; right: 5px; background: var(--gold); color: #1a0e07; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 2px solid var(--wood-dark);" title="Administrator">
+                    ⚡
+                </span>
+                {% endif %}
+            </div>
+
+            <h2 style="font-family: var(--serif); font-size: 1.8rem; color: var(--paper-light); margin-bottom: 0.2rem;">
+                {{ current_user.username }}
+            </h2>
+
+            <p style="color: var(--paper-dark); font-size: 0.9rem; margin-bottom: 1rem;">
+                {{ current_user.email }}
+            </p>
+
+            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <span class="badge {% if current_user.is_admin %}badge-admin{% else %}badge-student{% endif %}">
+                    {{ current_user.role|capitalize }}
+                </span>
+
+                {% if current_user.is_verified %}
+                    <span class="badge badge-verified">✓ Verified Scholar</span>
+                {% else %}
+                    <span class="badge" style="background: rgba(240, 173, 78, 0.2); color: #f0ad4e;">Unverified</span>
+                {% endif %}
+            </div>
+
+            {% if not current_user.is_verified %}
+            <div style="background: rgba(24, 12, 6, 0.6); border: 1px dashed var(--warning); border-radius: 8px; padding: 0.8rem; margin-bottom: 1.5rem;">
+                <p style="font-size: 0.78rem; color: var(--paper-light); margin-bottom: 0.5rem;">Email verification unlocks full vault privileges.</p>
+                <a href="{{ url_for('routes.resend_verification') }}" class="antique-button" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; width: 100%; justify-content: center;">
+                    Resend Verification Link
+                </a>
+            </div>
+            {% endif %}
+
+            <div style="border-top: 1px solid var(--glass-border); padding-top: 1.2rem; text-align: left; font-size: 0.85rem; color: var(--paper-dark);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Member Since</span>
+                    <strong style="color: var(--gold-bright);">{{ current_user.created_at.strftime('%B %d, %Y') }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Books Consulted</span>
+                    <strong style="color: var(--gold-bright);">{{ history|length }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Edit Profile Form & Activity -->
+        <div>
+            <!-- Edit Profile Form -->
+            <div class="glass-panel" style="padding: 2.2rem; margin-bottom: 2rem;">
+                <h3 style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold-bright); margin-bottom: 0.4rem;">
+                    Update Credentials & Portrait
+                </h3>
+                <p style="color: var(--paper-dark); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                    Modify your scholar handle, notification dispatch address, and avatar portrait.
+                </p>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group">
+                        <label for="username">{{ form.username.label.text }}</label>
+                        {{ form.username(class="form-control", required=true) }}
+                        {% if form.username.errors %}
+                            <small style="color: var(--danger);">{{ form.username.errors[0] }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">{{ form.email.label.text }}</label>
+                        {{ form.email(class="form-control", required=true) }}
+                        {% if form.email.errors %}
+                            <small style="color: var(--danger);">{{ form.email.errors[0] }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avatar">{{ form.avatar.label.text }} (JPG, PNG, WEBP)</label>
+                        {{ form.avatar(class="form-control", onchange="previewFile(this)") }}
+                        <small style="color: var(--paper-dark); display: block; margin-top: 0.3rem;">
+                            If left untouched, your existing or default portrait will remain active.
+                        </small>
+                        {% if form.avatar.errors %}
+                            <small style="color: var(--danger);">{{ form.avatar.errors[0] }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div style="margin-top: 1.8rem;">
+                        {{ form.submit(class="btn-primary-mv", style="max-width: 260px;") }}
+                    </div>
+                </form>
+            </div>
+
+            <!-- Reading History Archive -->
+            <div class="glass-panel" style="padding: 2.2rem;">
+                <h3 style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold-bright); margin-bottom: 1.2rem;">
+                    Recent Consultations
+                </h3>
+
+                {% if history %}
+                <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    {% for h in history %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: rgba(20, 10, 5, 0.5); border: 1px solid var(--glass-border); border-radius: 8px;">
+                        <div>
+                            <strong style="color: var(--paper-light); display: block;">{{ h.material.title }}</strong>
+                            <small style="color: var(--paper-dark);">{{ h.material.author }} · {{ h.material.category }}</small>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-size: 0.8rem; color: var(--gold);">{{ h.progress_percent }}% Completed</span>
+                            <a href="{{ url_for('routes.read_online', material_id=h.material_id) }}" class="antique-button" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                                Resume Read →
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="color: var(--paper-dark); font-style: italic;">
+                    No books have been consulted yet. Explore the MindVault catalogue to begin reading!
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function previewFile(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}
