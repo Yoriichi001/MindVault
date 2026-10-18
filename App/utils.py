@@ -8,8 +8,8 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignat
 import bleach
 from PIL import Image
 
-# Enforce Anti-DoS & Image Bomb Defense
-Image.MAX_IMAGE_PIXELS = 10_000_000
+# Enforce Anti-DoS & Image Bomb Defense (allow up to 100 Megapixels for modern phone cameras)
+Image.MAX_IMAGE_PIXELS = 100_000_000
 
 # Allowed HTML tags and attributes for rich book text / markdown excerpts
 ALLOWED_TAGS = [
@@ -114,13 +114,18 @@ def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=
         return None
 
     try:
-        # Read image securely
-        img = Image.open(file_storage.stream)
-        img.verify()  # Verify integrity
-        
-        # Re-open for transformation (verify closes the image stream)
-        file_storage.stream.seek(0)
-        img = Image.open(file_storage.stream)
+        raw_bytes = file_storage.read()
+        if not raw_bytes:
+            return None
+
+        # Verify integrity on isolated stream
+        test_stream = io.BytesIO(raw_bytes)
+        img_test = Image.open(test_stream)
+        img_test.verify()
+
+        # Open fresh image stream for manipulation
+        work_stream = io.BytesIO(raw_bytes)
+        img = Image.open(work_stream)
         
         # Convert to RGB to discard RGBA / CMYK color anomalies
         if img.mode in ('RGBA', 'LA', 'P'):

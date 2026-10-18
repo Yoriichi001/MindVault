@@ -61,7 +61,7 @@
             <div style="border-top: 1px solid var(--glass-border); padding-top: 1.2rem; text-align: left; font-size: 0.85rem; color: var(--paper-dark);">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                     <span>Member Since</span>
-                    <strong style="color: var(--gold-bright);">{{ current_user.created_at.strftime('%B %d, %Y') }}</strong>
+                    <strong style="color: var(--gold-bright);">{{ current_user.created_at.strftime('%B %d, %Y') if current_user.created_at else 'Recent Scholar' }}</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                     <span>Books Consulted</span>

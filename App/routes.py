@@ -505,26 +505,42 @@ def account():
     """
     form = AccountUpdateForm(current_user=current_user)
     if form.validate_on_submit():
-        # Handle avatar upload with Pillow bomb defense
-        if form.avatar.data:
-            avatar_path = save_uploaded_image(form.avatar.data, subfolder='avatars', max_dim=400)
-            if avatar_path:
-                current_user.avatar = avatar_path
-            else:
-                flash("Failed to process image. Ensure it is a valid JPG/PNG under 10MB.", "danger")
+        try:
+            # Handle avatar upload with Pillow bomb defense
+            if form.avatar.data and hasattr(form.avatar.data, 'filename') and form.avatar.data.filename:
+                avatar_path = save_uploaded_image(form.avatar.data, subfolder='avatars', max_dim=400)
+                if avatar_path:
+                    current_user.avatar = avatar_path
+                else:
+                    flash("Failed to process image. Ensure it is a valid JPG/PNG/WEBP image under 16MB.", "danger")
 
-        current_user.username = form.username.data.strip()
-        current_user.email = form.email.data.strip().lower()
-        db.session.commit()
-        flash("Your scholar profile has been updated.", "success")
-        return redirect(url_for('routes.account'))
+            if form.username.data:
+                current_user.username = form.username.data.strip()
+            if form.email.data:
+                current_user.email = form.email.data.strip().lower()
+
+            db.session.commit()
+            flash("Your scholar profile has been updated.", "success")
+            return redirect(url_for('routes.account'))
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Account update error: {e}", exc_info=True)
+            flash(f"Profile update could not be saved: {str(e)}", "danger")
+            return redirect(url_for('routes.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
 
-    # Fetch user reading history
-    history = ReadingHistory.query.filter_by(user_id=current_user.id).order_by(ReadingHistory.last_read_at.desc()).limit(10).all()
-    user_feedbacks = Feedback.query.filter_by(user_id=current_user.id).all()
+    # Fetch user reading history safely
+    try:
+        history = ReadingHistory.query.filter_by(user_id=current_user.id).order_by(ReadingHistory.last_read_at.desc()).limit(10).all()
+    except Exception:
+        history = []
+
+    try:
+        user_feedbacks = Feedback.query.filter_by(user_id=current_user.id).all()
+    except Exception:
+        user_feedbacks = []
 
     return render_template(
         'profile.html',

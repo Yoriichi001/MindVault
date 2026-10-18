@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=True)
     role = db.Column(db.String(20), default='student', nullable=False)  # 'student' or 'admin'
-    avatar = db.Column(db.String(255), default='default-avatar.png', nullable=False)
+    avatar = db.Column(db.Text, default='default-avatar.png', nullable=False)
     is_verified = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     google_id = db.Column(db.String(128), unique=True, nullable=True)
@@ -65,8 +65,8 @@ class Material(db.Model):
     content_preview = db.Column(db.Text, nullable=True)
     # Full textual/chapter content for in-browser antique book reader
     full_content = db.Column(db.Text, nullable=True)
-    cover_image = db.Column(db.String(255), nullable=True)
-    file_path = db.Column(db.String(255), nullable=True)  # PDF path in uploads/books
+    cover_image = db.Column(db.Text, nullable=True)
+    file_path = db.Column(db.Text, nullable=True)  # PDF path or Cloudinary URL
     file_size_mb = db.Column(db.Float, default=0.0)
     pages = db.Column(db.Integer, default=1)
     edition_year = db.Column(db.String(50), nullable=True, default='')
