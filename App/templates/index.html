@@ -32,19 +32,61 @@
                         <p class="manuscript-small">
                             ATELIER OF KNOWLEDGE & SCHOLARSHIP
                         </p>
-                        <div class="ornament">❦</div>
-                        <h2>MIND <span>&</span> VAULT</h2>
-                        <p class="interior-subtitle">
+                        <div class="ornament" style="margin-top: 6px; font-size: 24px;">❦</div>
+                        <h2 style="margin-top: 4px; font-size: 24px;">MIND <span>&</span> VAULT</h2>
+                        <p class="interior-subtitle" style="margin-top: 4px; font-size: 7.5px;">
                             STORE KNOWLEDGE · UNLOCK POTENTIAL
                         </p>
-                        <div class="ornament divider-ornament">
+                        <div class="ornament divider-ornament" style="margin: 8px 0; font-size: 11px;">
                             ━━━━━ ✦ ━━━━━
                         </div>
-                        <p class="interior-description">
-                            Where students discover timeless wisdom,<br>
-                            peer-reviewed papers, and unlock their highest potential.
-                        </p>
-                        <p class="page-number">— I —</p>
+
+                        <!-- Action Buttons on the Open Book Page -->
+                        <div class="book-page-actions">
+                            {% if current_user.is_authenticated %}
+                                <div style="font-size: 0.85rem; color: #382419; margin-bottom: 0.2rem;">
+                                    Welcome, <strong>{{ current_user.username }}</strong>
+                                </div>
+                                <a href="{{ url_for('routes.account') }}" class="book-page-btn book-page-btn-primary">
+                                    <span>👤</span> Account Panel
+                                </a>
+                                {% if current_user.is_admin %}
+                                <a href="{{ url_for('routes.admin_dashboard') }}" class="book-page-btn book-page-btn-secondary" style="border-color: #c4a064;">
+                                    <span>⚡</span> Master Admin Dashboard
+                                </a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('routes.login') }}" class="book-page-btn book-page-btn-primary">
+                                    <span>📖</span> Sign In / Login
+                                </a>
+
+                                <a href="{{ url_for('routes.register') }}" class="book-page-btn book-page-btn-secondary">
+                                    <span>✍</span> Register Account
+                                </a>
+                            {% endif %}
+
+                            <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" class="book-page-btn book-page-btn-community">
+                                <span>🌐</span> Join Community ↗
+                            </a>
+
+                            <button type="button" id="browseLibraryBtn" class="book-page-btn book-page-btn-browse">
+                                <span>↓</span> Browse Manuscripts & Books
+                            </button>
+
+                            {% if not current_user.is_authenticated or not current_user.is_admin %}
+                            <div style="margin-top: 0.4rem; font-size: 0.72rem; text-align: center;">
+                                <a href="{{ url_for('routes.admin_login') }}" style="color: #79502f; text-decoration: none; font-weight: 600;">
+                                    🛡 Master Admin Login
+                                </a>
+                            </div>
+                            {% endif %}
+
+                            <button type="button" id="closeBookBtn" class="book-close-cover-btn">
+                                <span>✕</span> Close Book Cover
+                            </button>
+                        </div>
+
+                        <p class="page-number" style="margin-top: 10px; font-size: 11px;">— FOLIO I —</p>
                     </div>
                 </div>
             </div>
@@ -282,20 +324,33 @@
 
 {% block extra_scripts %}
 <script>
-    // Smooth scroll down to library collection on clicking open book button
     const openBookBtn = document.getElementById('openBookBtn');
+    const closeBookBtn = document.getElementById('closeBookBtn');
+    const browseLibraryBtn = document.getElementById('browseLibraryBtn');
     const mainBook = document.getElementById('mainBook');
-    const bookCover = document.getElementById('bookCover');
     const libraryCollection = document.getElementById('libraryCollection');
 
-    if (openBookBtn && mainBook && bookCover) {
-        openBookBtn.addEventListener('click', function() {
+    if (openBookBtn && mainBook) {
+        // Open the 3D book smoothly and reveal buttons inside without scrolling down
+        openBookBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             mainBook.classList.add('book-opened');
-            setTimeout(() => {
-                if (libraryCollection) {
-                    libraryCollection.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 700);
+        });
+    }
+
+    if (closeBookBtn && mainBook) {
+        // Close the book cover back smoothly
+        closeBookBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            mainBook.classList.remove('book-opened');
+        });
+    }
+
+    if (browseLibraryBtn && libraryCollection) {
+        // Scroll down when user clicks browse manuscripts
+        browseLibraryBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            libraryCollection.scrollIntoView({ behavior: 'smooth' });
         });
     }
 </script>

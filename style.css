@@ -990,17 +990,27 @@ img {
 
 /* Cover opening */
 
-.main-book.opening .book-cover {
-    transform: rotateY(-165deg);
+.main-book.opening .book-cover,
+.main-book.book-opened .book-cover {
+    transform: rotateY(-162deg);
 
     box-shadow:
         inset 0 0 0 3px #2e1a0f,
         inset 0 0 0 5px #ad854b,
-        15px 20px 40px rgba(0, 0, 0, 0.4);
+        -15px 20px 45px rgba(0, 0, 0, 0.7);
+
+    pointer-events: none;
 }
 
-.main-book.opening {
+.main-book.opening,
+.main-book.book-opened {
     transform: rotateY(0deg);
+}
+
+@media (min-width: 900px) {
+    .main-book.book-opened {
+        transform: translateX(110px) rotateY(-5deg);
+    }
 }
 
 .scene-caption {

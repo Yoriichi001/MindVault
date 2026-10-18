@@ -171,36 +171,42 @@ function showToast(message) {
 
 
 /* ======================================================
-   5. OPEN THE ANTIQUE BOOK
+   5. OPEN THE ANTIQUE BOOK (NO MOVE DOWN)
 ====================================================== */
 
-let openingBook = false;
-
 openBookBtn.addEventListener("click", () => {
-
-    if (openingBook) {
-        return;
-    }
-
-    openingBook = true;
-
-    mainBook.classList.add("opening");
-
-    openBookBtn.disabled = true;
-
-    setTimeout(() => {
-
-        showScreen("login");
-
-        mainBook.classList.remove("opening");
-
-        openBookBtn.disabled = false;
-
-        openingBook = false;
-
-    }, 1500);
-
+    mainBook.classList.add("book-opened");
 });
+
+const closeBookBtn = document.getElementById("closeBookBtn");
+if (closeBookBtn) {
+    closeBookBtn.addEventListener("click", () => {
+        mainBook.classList.remove("book-opened");
+    });
+}
+
+const bookPageLoginBtn = document.getElementById("bookPageLoginBtn");
+if (bookPageLoginBtn) {
+    bookPageLoginBtn.addEventListener("click", () => {
+        showScreen("login");
+    });
+}
+
+const bookPageRegisterBtn = document.getElementById("bookPageRegisterBtn");
+if (bookPageRegisterBtn) {
+    bookPageRegisterBtn.addEventListener("click", () => {
+        showScreen("login");
+        showToast("Enter your email and desired password to register.");
+    });
+}
+
+const browseLibraryBtn = document.getElementById("browseLibraryBtn");
+if (browseLibraryBtn) {
+    browseLibraryBtn.addEventListener("click", () => {
+        showScreen("shop");
+        renderProducts("all");
+    });
+}
 
 
 /* ======================================================

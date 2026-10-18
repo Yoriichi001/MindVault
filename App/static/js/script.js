@@ -17,18 +17,29 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Heritage 3D Book Cover Open Animation
     const openBookBtn = document.getElementById('openBookBtn');
+    const closeBookBtn = document.getElementById('closeBookBtn');
+    const browseLibraryBtn = document.getElementById('browseLibraryBtn');
     const mainBook = document.getElementById('mainBook');
-    const bookCover = document.getElementById('bookCover');
     const libraryCollection = document.getElementById('libraryCollection');
 
     if (openBookBtn && mainBook) {
-        openBookBtn.addEventListener('click', function () {
+        openBookBtn.addEventListener('click', function (e) {
+            e.preventDefault();
             mainBook.classList.add('book-opened');
-            setTimeout(() => {
-                if (libraryCollection) {
-                    libraryCollection.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 650);
+        });
+    }
+
+    if (closeBookBtn && mainBook) {
+        closeBookBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            mainBook.classList.remove('book-opened');
+        });
+    }
+
+    if (browseLibraryBtn && libraryCollection) {
+        browseLibraryBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            libraryCollection.scrollIntoView({ behavior: 'smooth' });
         });
     }
 
