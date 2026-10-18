@@ -24,10 +24,11 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    # Upload settings
+    # Upload & Media Cloud Storage settings
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB limit (Anti-DoS)
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'App', 'static', 'uploads')
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'pdf'}
+    CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
     
     # Cookie & Session Security Hardening
     SESSION_COOKIE_HTTPONLY = True

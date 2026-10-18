@@ -1,3 +1,4 @@
+import io
 import os
 import re
 import uuid
@@ -102,7 +103,7 @@ def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=
     2. Inspects file with Pillow
     3. Prevents decompression bombs (MAX_IMAGE_PIXELS)
     4. Strips EXIF metadata & converts to RGB
-    5. Saves with cryptographically random UUID filename
+    5. Saves to Cloudinary CDN if CLOUDINARY_URL is configured, else local storage
     """
     if not file_storage or not file_storage.filename:
         return None
@@ -113,12 +114,6 @@ def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=
         return None
 
     try:
-        target_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], subfolder)
-        os.makedirs(target_dir, exist_ok=True)
-        
-        unique_name = f"{uuid.uuid4().hex}.jpg"
-        save_path = os.path.join(target_dir, unique_name)
-        
         # Read image securely
         img = Image.open(file_storage.stream)
         img.verify()  # Verify integrity
@@ -140,7 +135,33 @@ def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=
         # Resize if exceeding max dimensions maintaining aspect ratio
         img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
         
-        # Save as high-quality progressive JPEG without EXIF metadata
+        # Check for Cloudinary configuration
+        cloudinary_url = current_app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
+        if cloudinary_url:
+            try:
+                import cloudinary
+                import cloudinary.uploader
+                cloudinary.config(cloudinary_url=cloudinary_url)
+                
+                buffer = io.BytesIO()
+                img.save(buffer, 'JPEG', quality=quality, optimize=True)
+                buffer.seek(0)
+                
+                upload_res = cloudinary.uploader.upload(
+                    buffer,
+                    folder=f"mindvault/{subfolder}",
+                    resource_type="image"
+                )
+                if upload_res and 'secure_url' in upload_res:
+                    return upload_res['secure_url']
+            except Exception as ce:
+                current_app.logger.warning(f"Cloudinary image upload failed, falling back to local: {ce}")
+
+        # Local storage fallback
+        target_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], subfolder)
+        os.makedirs(target_dir, exist_ok=True)
+        unique_name = f"{uuid.uuid4().hex}.jpg"
+        save_path = os.path.join(target_dir, unique_name)
         img.save(save_path, 'JPEG', quality=quality, optimize=True)
         return f"{subfolder}/{unique_name}"
     except Exception as e:
@@ -153,7 +174,7 @@ def save_uploaded_pdf(file_storage):
     Secure PDF upload handler:
     1. Validates .pdf extension
     2. Checks magic bytes (%PDF)
-    3. Saves with unique UUID filename in uploads/books/
+    3. Saves to Cloudinary CDN if CLOUDINARY_URL is configured, else local storage
     """
     if not file_storage or not file_storage.filename:
         return None, 0.0
@@ -168,6 +189,29 @@ def save_uploaded_pdf(file_storage):
         file_storage.stream.seek(0)
         if header != b'%PDF-':
             return None, 0.0
+
+        # Check for Cloudinary configuration
+        cloudinary_url = current_app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
+        if cloudinary_url:
+            try:
+                import cloudinary
+                import cloudinary.uploader
+                cloudinary.config(cloudinary_url=cloudinary_url)
+                
+                unique_id = uuid.uuid4().hex
+                upload_res = cloudinary.uploader.upload(
+                    file_storage.stream,
+                    folder="mindvault/books",
+                    resource_type="raw",
+                    public_id=f"{unique_id}.pdf"
+                )
+                if upload_res and 'secure_url' in upload_res:
+                    size_bytes = upload_res.get('bytes', 0)
+                    size_mb = round(size_bytes / (1024 * 1024), 2)
+                    return upload_res['secure_url'], size_mb
+            except Exception as ce:
+                current_app.logger.warning(f"Cloudinary PDF upload failed, falling back to local: {ce}")
+                file_storage.stream.seek(0)
             
         target_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'books')
         os.makedirs(target_dir, exist_ok=True)

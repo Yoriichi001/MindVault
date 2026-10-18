@@ -83,6 +83,16 @@ def create_app(config_class=Config):
     for sub in ['avatars', 'books', 'covers']:
         os.makedirs(os.path.join(upload_root, sub), exist_ok=True)
 
+    # Initialize Cloudinary cloud storage if configured
+    cloudinary_url = app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
+    if cloudinary_url:
+        try:
+            import cloudinary
+            cloudinary.config(cloudinary_url=cloudinary_url)
+            app.logger.info("Cloudinary cloud media storage initialized.")
+        except Exception as ce:
+            app.logger.warning(f"Cloudinary configuration warning: {ce}")
+
     # Database creation & auto-migration
     with app.app_context():
         db.create_all()

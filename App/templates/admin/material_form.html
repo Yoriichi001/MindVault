@@ -116,7 +116,13 @@
                         </small>
                         {% if material and material.file_path %}
                         <div style="margin-top: 0.8rem; padding: 0.5rem 0.8rem; background: rgba(40, 167, 69, 0.15); border: 1px solid rgba(40, 167, 69, 0.4); border-radius: 4px; font-size: 0.8rem; color: #a3e9a4;">
-                            ✔ Current File: <strong>{{ material.file_path }}</strong> ({{ material.file_size_mb }} MB)
+                            ✔ Current File: 
+                            {% if material.file_path.startswith('http') %}
+                                <a href="{{ material.file_path }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold); text-decoration: underline; font-weight: bold;">Cloud Archival PDF</a>
+                            {% else %}
+                                <strong>{{ material.file_path }}</strong>
+                            {% endif %}
+                            ({{ material.file_size_mb }} MB)
                             <br><small style="color: var(--paper-dark);">Leave input empty to keep existing file, or select a new PDF to overwrite.</small>
                         </div>
                         {% endif %}

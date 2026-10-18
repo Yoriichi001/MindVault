@@ -161,6 +161,12 @@ def download_pdf(material_id):
         flash(f"Digital PDF for '{material.title}' is currently undergoing preservation. You can read the full text online right now!", "info")
         return redirect(url_for('routes.read_online', material_id=material.id))
 
+    # Remote Cloudinary CDN file delivery
+    if material.file_path.startswith('http://') or material.file_path.startswith('https://'):
+        material.downloads_count += 1
+        db.session.commit()
+        return redirect(material.file_path)
+
     upload_folder = current_app.config['UPLOAD_FOLDER']
     full_path = os.path.join(upload_folder, material.file_path)
 
