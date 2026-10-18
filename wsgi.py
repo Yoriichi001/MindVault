@@ -7,20 +7,22 @@ app = create_app()
 def seed_database():
     """Seeds default master administrator, sample scholar, and curated library materials."""
     with app.app_context():
-        # 1. Create Master Administrator if none exists
-        admin = User.query.filter_by(role='admin').first()
-        if not admin:
-            admin = User(
-                username='admin',
-                email='admin@mindvault.edu',
-                role='admin',
-                is_verified=True,
-                is_active=True,
-                avatar='default-avatar.png'
-            )
-            admin.set_password('AdminPassword123!')
-            db.session.add(admin)
-            app.logger.info("Created default Master Administrator: admin@mindvault.edu / AdminPassword123!")
+        # 1. Ensure E_Cell_Admin_Panel has Master Administrator authority
+        ecell_admin = User.query.filter(
+            (User.username.ilike('E_Cell_Admin_Panel')) | (User.email == 'ecell.cup@gmail.com')
+        ).first()
+        if ecell_admin:
+            ecell_admin.role = 'admin'
+            ecell_admin.is_verified = True
+            ecell_admin.is_active = True
+
+        # Permanently purge any generic 'admin' / 'admin@mindvault.edu' account to prevent guessing attacks
+        generic_admin = User.query.filter(
+            (User.username == 'admin') | (User.email == 'admin@mindvault.edu')
+        ).first()
+        if generic_admin:
+            db.session.delete(generic_admin)
+            db.session.commit()
 
         # 2. Create Sample Student if none exists
         student = User.query.filter_by(email='student@mindvault.edu').first()
