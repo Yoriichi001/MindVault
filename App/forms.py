@@ -139,8 +139,12 @@ class MaterialForm(FlaskForm):
     cover_image = FileField('Book Cover Image', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], 'Images only')])
     file = FileField('PDF Document File (For Online & Download)', validators=[FileAllowed(['pdf'], 'PDF documents only')])
     pages = IntegerField('Page Count', default=1, validators=[Optional()])
+    edition_year = StringField('Publication Year / Edition', validators=[Optional(), Length(max=50)])
+    isbn_doi = StringField('ISBN / DOI / Reference ID', validators=[Optional(), Length(max=100)])
+    language = StringField('Language', default='English', validators=[Optional(), Length(max=50)])
     is_featured = BooleanField('Feature in Spotlight')
     submit = SubmitField('Commit to Vault Database')
+
 
 
 class FeedbackForm(FlaskForm):

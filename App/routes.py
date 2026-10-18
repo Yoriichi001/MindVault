@@ -558,6 +558,13 @@ def admin_materials():
 def admin_material_new():
     """Upload/add a new Book, Research Paper, or Study Material."""
     form = MaterialForm()
+    
+    # Pre-select category if passed in URL (e.g. ?category=Books or ?type=Research+Papers)
+    if request.method == 'GET':
+        prefill_cat = request.args.get('category') or request.args.get('type')
+        if prefill_cat in ['Books', 'Research Papers', 'Study Materials']:
+            form.category.data = prefill_cat
+
     if form.validate_on_submit():
         cover_path = None
         if form.cover_image.data:
@@ -579,6 +586,9 @@ def admin_material_new():
             file_path=pdf_path,
             file_size_mb=size_mb,
             pages=form.pages.data or 1,
+            edition_year=sanitize_html(form.edition_year.data.strip() if form.edition_year.data else ''),
+            isbn_doi=sanitize_html(form.isbn_doi.data.strip() if form.isbn_doi.data else ''),
+            language=sanitize_html(form.language.data.strip() if form.language.data else 'English'),
             is_featured=form.is_featured.data
         )
         db.session.add(material)
@@ -616,6 +626,9 @@ def admin_material_edit(material_id):
         material.content_preview = sanitize_html(form.content_preview.data.strip() if form.content_preview.data else '')
         material.full_content = form.full_content.data.strip() if form.full_content.data else ''
         material.pages = form.pages.data or material.pages
+        material.edition_year = sanitize_html(form.edition_year.data.strip() if form.edition_year.data else '')
+        material.isbn_doi = sanitize_html(form.isbn_doi.data.strip() if form.isbn_doi.data else '')
+        material.language = sanitize_html(form.language.data.strip() if form.language.data else 'English')
         material.is_featured = form.is_featured.data
 
         db.session.commit()
@@ -631,9 +644,13 @@ def admin_material_edit(material_id):
         form.content_preview.data = material.content_preview
         form.full_content.data = material.full_content
         form.pages.data = material.pages
+        form.edition_year.data = material.edition_year or ''
+        form.isbn_doi.data = material.isbn_doi or ''
+        form.language.data = material.language or 'English'
         form.is_featured.data = material.is_featured
 
     return render_template('admin/material_form.html', form=form, title=f"Edit: {material.title}", material=material)
+
 
 
 @routes_bp.route('/admin/materials/delete/<int:material_id>', methods=['POST'])

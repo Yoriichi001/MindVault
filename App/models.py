@@ -69,11 +69,15 @@ class Material(db.Model):
     file_path = db.Column(db.String(255), nullable=True)  # PDF path in uploads/books
     file_size_mb = db.Column(db.Float, default=0.0)
     pages = db.Column(db.Integer, default=1)
+    edition_year = db.Column(db.String(50), nullable=True, default='')
+    isbn_doi = db.Column(db.String(100), nullable=True, default='')
+    language = db.Column(db.String(50), nullable=True, default='English')
     views_count = db.Column(db.Integer, default=0)
     downloads_count = db.Column(db.Integer, default=0)
     is_featured = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
 
     # Relationships with cascading deletes
     readers = db.relationship('ReadingHistory', backref='material', lazy='dynamic', cascade='all, delete-orphan')

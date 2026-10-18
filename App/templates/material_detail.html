@@ -91,7 +91,26 @@
                     <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Archived On</span>
                     <strong style="color: var(--gold-bright); font-size: 1.1rem;">{{ material.created_at.strftime('%b %d, %Y') }}</strong>
                 </div>
+                {% if material.edition_year %}
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Edition / Year</span>
+                    <strong style="color: var(--gold-bright); font-size: 1rem;">{{ material.edition_year }}</strong>
+                </div>
+                {% endif %}
+                {% if material.isbn_doi %}
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Reference ID / DOI</span>
+                    <strong style="color: var(--gold-bright); font-size: 0.95rem;">{{ material.isbn_doi }}</strong>
+                </div>
+                {% endif %}
+                {% if material.language and material.language != 'English' %}
+                <div>
+                    <span style="font-size: 0.75rem; letter-spacing: 1px; color: var(--paper-dark); display: block; text-transform: uppercase;">Language</span>
+                    <strong style="color: var(--gold-bright); font-size: 1rem;">{{ material.language }}</strong>
+                </div>
+                {% endif %}
             </div>
+
 
         </div>
 

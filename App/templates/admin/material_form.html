@@ -30,20 +30,45 @@
                 </div>
             </div>
 
+            <!-- Document Category, Subject, Pages & Category Description -->
             <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 1.2rem;">
                 <div class="form-group">
                     <label for="category">{{ form.category.label.text }} *</label>
-                    {{ form.category(class="form-control") }}
+                    {{ form.category(class="form-control", id="categorySelect") }}
+                    <small style="color: var(--gold); display: block; margin-top: 0.3rem;">
+                        Choose: Books, Research Papers, or Study Materials
+                    </small>
                 </div>
 
                 <div class="form-group">
                     <label for="sub_category">{{ form.sub_category.label.text }}</label>
-                    {{ form.sub_category(class="form-control", placeholder="e.g. Computer Science, AI, Physics") }}
+                    {{ form.sub_category(class="form-control", placeholder="e.g. Computer Science, AI, Quantum Physics") }}
                 </div>
 
                 <div class="form-group">
                     <label for="pages">{{ form.pages.label.text }}</label>
                     {{ form.pages(class="form-control", type="number", min="1") }}
+                </div>
+            </div>
+
+            <!-- Optional Academic & Citation Details (Valuable for Research Papers & Textbooks) -->
+            <div style="background: rgba(30, 15, 8, 0.45); border: 1px solid var(--glass-border); border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;">
+                <h4 style="font-family: var(--serif); font-size: 1.05rem; color: var(--gold-bright); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>📜</span> Academic & Citation Details <small style="color: var(--paper-dark); font-size: 0.75rem;">(Optional)</small>
+                </h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="edition_year" style="font-size: 0.82rem;">Publication Year / Edition</label>
+                        {{ form.edition_year(class="form-control", placeholder="e.g. 2024 or 3rd Edition") }}
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="isbn_doi" style="font-size: 0.82rem;">ISBN / DOI / Document Ref</label>
+                        {{ form.isbn_doi(class="form-control", placeholder="e.g. 10.1145/... or ISBN 978-...") }}
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="language" style="font-size: 0.82rem;">Document Language</label>
+                        {{ form.language(class="form-control", placeholder="e.g. English, French, Sanskrit") }}
+                    </div>
                 </div>
             </div>
 
@@ -62,33 +87,67 @@
                 <small style="color: var(--paper-dark); display: block; margin-bottom: 0.4rem;">
                     Text displayed inside the vintage in-browser dual-page book reader. Use <code>---PAGE---</code> to denote page breaks.
                 </small>
-                {{ form.full_content(class="form-control", rows="10", placeholder="Inscribe chapter text, theorems, or manuscript contents here...") }}
+                {{ form.full_content(class="form-control", rows="8", placeholder="Inscribe chapter text, theorems, or manuscript contents here...") }}
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; padding: 1.5rem; background: rgba(20, 10, 5, 0.5); border: 1px dashed var(--glass-border); border-radius: 8px;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="cover_image">{{ form.cover_image.label.text }}</label>
-                    {{ form.cover_image(class="form-control") }}
-                    <small style="color: var(--paper-dark); display: block; margin-top: 0.3rem;">
-                        JPG/PNG/WEBP. Decompression-bomb protected.
-                    </small>
+            <!-- DEDICATED PDF & COVER ASSET UPLOAD SECTION -->
+            <div style="margin: 2rem 0; padding: 1.8rem; background: rgba(22, 11, 5, 0.7); border: 2px dashed var(--gold); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+                <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.2rem;">
+                    <span style="font-size: 1.5rem;">📁</span>
+                    <div>
+                        <h3 style="font-family: var(--serif); font-size: 1.35rem; color: var(--gold-bright); margin: 0;">
+                            Digital Assets & PDF Upload Section
+                        </h3>
+                        <small style="color: var(--paper-dark);">
+                            Attach the complete PDF document and optional high-resolution cover for this library entry.
+                        </small>
+                    </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="file">{{ form.file.label.text }}</label>
-                    {{ form.file(class="form-control") }}
-                    <small style="color: var(--paper-dark); display: block; margin-top: 0.3rem;">
-                        Secure PDF format only (magic bytes verified).
-                    </small>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- PDF Document File Upload -->
+                    <div style="background: rgba(10, 5, 2, 0.5); padding: 1.2rem; border-radius: 6px; border: 1px solid var(--glass-border);">
+                        <label for="file" style="font-weight: 700; color: var(--gold); display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem;">
+                            <span>📑</span> PDF Document File *
+                        </label>
+                        {{ form.file(class="form-control", style="margin-top: 0.5rem;") }}
+                        <small style="color: var(--paper-dark); display: block; margin-top: 0.4rem; font-size: 0.78rem;">
+                            Accepted: <strong>.pdf</strong> format only. Magic-byte security verified. Max size: 16 MB.
+                        </small>
+                        {% if material and material.file_path %}
+                        <div style="margin-top: 0.8rem; padding: 0.5rem 0.8rem; background: rgba(40, 167, 69, 0.15); border: 1px solid rgba(40, 167, 69, 0.4); border-radius: 4px; font-size: 0.8rem; color: #a3e9a4;">
+                            ✔ Current File: <strong>{{ material.file_path }}</strong> ({{ material.file_size_mb }} MB)
+                            <br><small style="color: var(--paper-dark);">Leave input empty to keep existing file, or select a new PDF to overwrite.</small>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Book Cover Image Upload -->
+                    <div style="background: rgba(10, 5, 2, 0.5); padding: 1.2rem; border-radius: 6px; border: 1px solid var(--glass-border);">
+                        <label for="cover_image" style="font-weight: 700; color: var(--gold); display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem;">
+                            <span>🖼</span> Book / Manuscript Cover Image
+                        </label>
+                        {{ form.cover_image(class="form-control", style="margin-top: 0.5rem;") }}
+                        <small style="color: var(--paper-dark); display: block; margin-top: 0.4rem; font-size: 0.78rem;">
+                            Accepted: <strong>JPG, PNG, WEBP</strong>. Auto-resized & EXIF metadata stripped.
+                        </small>
+                        {% if material and material.cover_image %}
+                        <div style="margin-top: 0.8rem; display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="{{ material.get_cover_url() }}" alt="Current Cover" style="width: 36px; height: 48px; object-fit: cover; border-radius: 3px; border: 1px solid var(--gold);">
+                            <small style="color: var(--paper-dark); font-size: 0.78rem;">Current cover on file. Upload new to replace.</small>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
             <div class="form-check" style="margin-bottom: 2rem;">
                 {{ form.is_featured() }}
-                <label for="is_featured" style="cursor: pointer; color: var(--gold-bright);">
-                    Feature prominently in library spotlight carousel
+                <label for="is_featured" style="cursor: pointer; color: var(--gold-bright); font-size: 0.95rem;">
+                    ★ Feature prominently in library spotlight carousel
                 </label>
             </div>
+
 
             <div style="display: flex; gap: 1rem;">
                 {{ form.submit(class="btn-primary-mv", style="max-width: 280px;") }}
