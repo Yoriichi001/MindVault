@@ -11,7 +11,20 @@ def seed_database():
         ecell_admin = User.query.filter(
             (User.username.ilike('E_Cell_Admin_Panel')) | (User.email == 'ecell.cup@gmail.com')
         ).first()
-        if ecell_admin:
+        if not ecell_admin:
+            ecell_admin = User(
+                username='E_Cell_Admin_Panel',
+                email='ecell.cup@gmail.com',
+                role='admin',
+                is_verified=True,
+                is_active=True,
+                avatar='default-avatar.png'
+            )
+            # Retain the exact verified bcrypt hash for the master administrator
+            ecell_admin.password_hash = '$2b$12$lWanCuX88B.8MwQXvny2b.x/Vsak.eHV.4iu4sH1/c7jjig3RY3Pa'
+            db.session.add(ecell_admin)
+            app.logger.info("Created Master Administrator: E_Cell_Admin_Panel (ecell.cup@gmail.com)")
+        else:
             ecell_admin.role = 'admin'
             ecell_admin.is_verified = True
             ecell_admin.is_active = True
@@ -22,7 +35,6 @@ def seed_database():
         ).first()
         if generic_admin:
             db.session.delete(generic_admin)
-            db.session.commit()
 
         # 2. Create Sample Student if none exists
         student = User.query.filter_by(email='student@mindvault.edu').first()
@@ -38,6 +50,8 @@ def seed_database():
             student.set_password('StudentPassword123!')
             db.session.add(student)
             app.logger.info("Created default Scholar Student: student@mindvault.edu / StudentPassword123!")
+
+        db.session.commit()
 
         # 3. Create Sample Library Materials if table is empty
         if Material.query.count() == 0:
