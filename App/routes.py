@@ -323,6 +323,8 @@ def google_auth():
     """
     Google OAuth 2.0 / GIS handler.
     Validates server-side id_token and logs in or registers user.
+    Uses dual verification: local google-auth cryptographic validation
+    with seamless fallback to Google's official tokeninfo endpoint.
     """
     data = request.get_json(silent=True) or request.form
     token = data.get('credential') or data.get('id_token')
@@ -330,22 +332,56 @@ def google_auth():
     if not token:
         return jsonify({'success': False, 'message': 'Missing Google token'}), 400
 
-    try:
-        from google.oauth2 import id_token
-        from google.auth.transport import requests as google_requests
+    token = token.strip()
+    client_id = (current_app.config.get('GOOGLE_CLIENT_ID') or '').strip()
 
-        client_id = current_app.config['GOOGLE_CLIENT_ID']
+    try:
         # If running in local demo without live google client ID
-        if client_id == 'DEMO_MINDVAULT_GOOGLE_CLIENT_ID':
-            # Demo graceful mock
+        if not client_id or client_id == 'DEMO_MINDVAULT_GOOGLE_CLIENT_ID':
             email = "scholar.demo@mindvault.edu"
             name = "Demo Scholar"
             sub = "google-demo-sub-12345"
+            picture = "default-avatar.png"
         else:
-            idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
+            idinfo = None
+            verify_error = None
+
+            # Primary: Verify using google-auth library
+            try:
+                from google.oauth2 import id_token
+                from google.auth.transport import requests as google_requests
+                idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
+            except Exception as e1:
+                verify_error = e1
+                current_app.logger.warning(f"google-auth verify failed: {e1}, trying tokeninfo endpoint...")
+
+            # Secondary: Google official tokeninfo endpoint fallback
+            if not idinfo:
+                try:
+                    import urllib.request
+                    import json
+                    token_url = f"https://oauth2.googleapis.com/tokeninfo?id_token={token}"
+                    req = urllib.request.Request(token_url, headers={'User-Agent': 'MindVault-Auth/1.0'})
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        token_data = json.loads(resp.read().decode('utf-8'))
+                    
+                    aud = token_data.get('aud')
+                    if aud != client_id:
+                        raise ValueError(f"Audience mismatch: token audience '{aud}' does not match configured client_id '{client_id}'")
+                    
+                    iss = token_data.get('iss')
+                    if iss not in ['accounts.google.com', 'https://accounts.google.com']:
+                        raise ValueError(f"Untrusted issuer: {iss}")
+
+                    idinfo = token_data
+                except Exception as e2:
+                    current_app.logger.error(f"Google tokeninfo endpoint failed: {e2}")
+                    raise verify_error or e2
+
             email = idinfo['email']
             name = idinfo.get('name', email.split('@')[0])
             sub = idinfo['sub']
+            picture = idinfo.get('picture')
 
         user = User.query.filter(or_(User.email == email.lower(), User.google_id == sub)).first()
         if not user:
@@ -363,16 +399,33 @@ def google_auth():
                 google_id=sub,
                 role='student',
                 is_verified=True,
-                avatar='default-avatar.png'
+                avatar=picture or 'default-avatar.png'
             )
             db.session.add(user)
             db.session.commit()
+        else:
+            # Update and link Google attributes
+            updated = False
+            if not user.google_id:
+                user.google_id = sub
+                updated = True
+            if not user.is_verified:
+                user.is_verified = True
+                updated = True
+            if picture and (not user.avatar or user.avatar == 'default-avatar.png'):
+                user.avatar = picture
+                updated = True
+            if updated:
+                db.session.commit()
 
-        login_user(user)
+        if not user.is_active:
+            return jsonify({'success': False, 'message': 'Account is suspended or inactive. Please contact administration.'}), 403
+
+        login_user(user, remember=True)
         return jsonify({'success': True, 'redirect': url_for('routes.index')})
     except Exception as e:
-        current_app.logger.error(f"Google auth error: {e}")
-        return jsonify({'success': False, 'message': 'Google authentication failed'}), 400
+        current_app.logger.error(f"Google auth error: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': f'Google authentication failed: {str(e)}'}), 400
 
 
 @routes_bp.route('/reset-password', methods=['GET', 'POST'])
