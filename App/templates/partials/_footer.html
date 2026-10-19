@@ -1,26 +1,157 @@
-<footer class="shop-footer" style="margin-top: 5rem; border-top: 1px solid var(--glass-border); padding: 3rem 1.5rem; text-align: center; background: rgba(20, 10, 5, 0.9);">
-  <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-    <div style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold-bright); letter-spacing: 2px;">
-      MINDVAULT [E-BOOK]
+<!-- ======================================================
+     MINDVAULT MASTER FOOTER
+     Comprehensive Archival Navigation, E-CELL Synergy & Contact
+====================================================== -->
+<footer class="mv-master-footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+
+      <!-- Column 1: About MindVault & E-CELL Mission -->
+      <div class="footer-col footer-col-about">
+        <div class="footer-brand-row">
+          <a href="https://ecellcup.onrender.com" target="_blank" rel="noopener noreferrer" class="footer-ecell-badge" title="E-CELL Central University of Punjab">
+            <img src="{{ url_for('static', filename='img/ecell_logo.png') }}" alt="E-CELL Central University of Punjab" class="footer-ecell-img">
+          </a>
+          <div class="mv-brand-seal" style="width: 36px; height: 36px; font-size: 0.9rem;">MV</div>
+          <div class="footer-brand-text">
+            <span class="footer-brand-title">MINDVAULT</span>
+            <small class="footer-brand-subtitle">ATELIER OF KNOWLEDGE</small>
+          </div>
+        </div>
+
+        <div class="footer-ethos-box">
+          <p class="footer-ethos-quote">
+            "If a student has resources, then he can understand."
+          </p>
+          <p class="footer-about-text">
+            MindVault was forged to break educational divides by providing universal, barrier-free access to high-impact research papers, seminal books, and structured study notes. An intellectual initiative driven in synergy with <strong>E-CELL Central University of Punjab</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Column 2: The Vault Archives (Quick Links) -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">QUICK ARCHIVES</h4>
+        <ul class="footer-links-list">
+          <li>
+            <a href="{{ url_for('routes.index') }}">
+              <span class="footer-link-icon">🏛</span> Library Sanctum
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('routes.books_view') }}">
+              <span class="footer-link-icon">📚</span> Books & Literature
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('routes.papers_view') }}">
+              <span class="footer-link-icon">📜</span> Research Papers
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('routes.study_materials_view') }}">
+              <span class="footer-link-icon">✒</span> Study Materials & Notes
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('routes.feedback') }}">
+              <span class="footer-link-icon">💬</span> Inscribe Feedback
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: E-CELL Community & Portals -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">E-CELL ECOSYSTEM</h4>
+        <ul class="footer-links-list">
+          <li>
+            <a href="https://ecellcup.onrender.com" target="_blank" rel="noopener noreferrer" class="footer-community-link">
+              <span class="footer-link-icon">🌐</span> E-CELL Community Hub ↗
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('routes.login') }}">
+              <span class="footer-link-icon">📖</span> Student Portal Login
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('routes.register') }}">
+              <span class="footer-link-icon">✍</span> Register Scholar Account
+            </a>
+          </li>
+          {% if current_user.is_authenticated %}
+            <li>
+              <a href="{{ url_for('routes.account') }}">
+                <span class="footer-link-icon">👤</span> My Scholar Dossier
+              </a>
+            </li>
+            {% if current_user.is_admin %}
+              <li>
+                <a href="{{ url_for('routes.admin_dashboard') }}" style="color: var(--gold-bright);">
+                  <span class="footer-link-icon">⚡</span> Admin Command Panel
+                </a>
+              </li>
+            {% endif %}
+          {% else %}
+            <li>
+              <a href="{{ url_for('routes.admin_login') }}" style="color: var(--gold-bright);">
+                <span class="footer-link-icon">🛡</span> Master Admin Login
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Column 4: Contact & Direct Inquiries -->
+      <div class="footer-col footer-col-contact">
+        <h4 class="footer-col-title">COMMUNICATIONS</h4>
+        <p style="color: var(--paper-dark); font-size: 0.82rem; margin-bottom: 0.8rem; line-height: 1.5;">
+          For scholarly inquiries, manuscript donations, or community collaboration:
+        </p>
+
+        <div class="footer-contact-items">
+          <a href="mailto:ecellcup@gmail.com" class="footer-contact-item">
+            <span class="contact-icon">✉</span>
+            <div class="contact-detail">
+              <small>Official Inscription Email</small>
+              <strong>ecellcup@gmail.com</strong>
+            </div>
+          </a>
+
+          <a href="tel:+917037176784" class="footer-contact-item">
+            <span class="contact-icon">📞</span>
+            <div class="contact-detail">
+              <small>Scholar Contact Line</small>
+              <strong>+91 7037176784</strong>
+            </div>
+          </a>
+
+          <div class="footer-contact-item" style="cursor: default;">
+            <span class="contact-icon">📍</span>
+            <div class="contact-detail">
+              <small>Academic Center</small>
+              <span>Central University of Punjab, Bathinda</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div style="color: var(--paper-dark); font-size: 0.88rem; letter-spacing: 1.5px; text-transform: uppercase;">
-      Store Knowledge. Unlock Potential.
-    </div>
-    <div class="manuscript-divider" style="color: var(--gold); margin: 0.5rem 0;">
+
+    <!-- Ornamental Divider -->
+    <div class="footer-divider-ornament">
       <span>❧ ━━━━━ ❦ ━━━━━ ❧</span>
     </div>
-    <p style="font-size: 0.95rem; color: var(--paper-light); max-width: 600px; line-height: 1.6; opacity: 0.85;">
-      A sanctum of wisdom designed for scholars, researchers, and voracious readers. Explore books, delve into peer-reviewed research papers, and master study materials crafted to elevate human understanding.
-    </p>
-    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">
-      <a href="{{ url_for('routes.books_view') }}" style="color: var(--paper-light); text-decoration: none;">Books</a>
-      <a href="{{ url_for('routes.papers_view') }}" style="color: var(--paper-light); text-decoration: none;">Research Papers</a>
-      <a href="{{ url_for('routes.study_materials_view') }}" style="color: var(--paper-light); text-decoration: none;">Study Materials</a>
-      <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold-bright); text-decoration: none;">Community Forum ↗</a>
-      <a href="{{ url_for('routes.feedback') }}" style="color: var(--paper-light); text-decoration: none;">Feedback</a>
-    </div>
-    <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--paper-dark);">
-      &copy; {{ current_year }} MindVault Digital Library. Preserved with timeless craftsmanship.
+
+    <!-- Bottom Copyright & Synergy Bar -->
+    <div class="footer-bottom-bar">
+      <div class="footer-copy-text">
+        &copy; {{ current_year }} <strong>MindVault Digital Library</strong>. Developed in academic partnership with <strong>Entrepreneurship Cell (E-CELL)</strong>, Central University of Punjab.
+      </div>
+      <div class="footer-motto-tag">
+        STORE KNOWLEDGE · UNLOCK POTENTIAL
+      </div>
     </div>
   </div>
 </footer>

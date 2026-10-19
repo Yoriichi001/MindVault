@@ -3,7 +3,9 @@
 {% block title %}Administrative Command Dashboard | MindVault{% endblock %}
 
 {% block content %}
-<div class="admin-layout">
+<div class="admin-layout-container">
+    {% include 'admin/_admin_sidebar.html' %}
+    <main class="admin-main-stage">
 
     <div class="admin-header">
         <div>
@@ -189,5 +191,6 @@
         </div>
     </div>
 
+    </main>
 </div>
 {% endblock %}

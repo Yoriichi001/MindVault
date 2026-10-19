@@ -1,0 +1,123 @@
+<!-- ======================================================
+     ADMINISTRATIVE COMMAND SIDEBAR CONSOLE
+     Direct 1-Click Access to Every Admin Function
+====================================================== -->
+<aside class="admin-sidebar-console" aria-label="Administrative Navigation Dock">
+    <!-- Archivist Identity Card -->
+    <div class="admin-sidebar-profile">
+        <div class="admin-sidebar-avatar-wrapper">
+            <img src="{{ current_user.get_avatar_url() }}" alt="{{ current_user.username }}" class="admin-sidebar-avatar">
+            <span class="admin-sidebar-status-dot" title="Active Session"></span>
+        </div>
+        <div class="admin-sidebar-info">
+            <strong class="admin-sidebar-username">{{ current_user.username }}</strong>
+            <span class="badge badge-admin" style="font-size: 0.65rem; padding: 0.2rem 0.55rem; margin-top: 0.2rem; display: inline-block;">
+                Master Archivist
+            </span>
+        </div>
+    </div>
+
+    <!-- Direct Access Action Navigation -->
+    <nav class="admin-sidebar-nav-list">
+        <div class="admin-sidebar-category-label">CORE COMMAND</div>
+
+        <a href="{{ url_for('routes.admin_dashboard') }}" 
+           class="admin-nav-item {% if request.endpoint == 'routes.admin_dashboard' %}active{% endif %}"
+           title="Executive Metrics & Real-time Overview">
+            <span class="admin-nav-icon">⚡</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">Executive Dashboard</span>
+                <small class="admin-nav-desc">Database & Activity Stats</small>
+            </div>
+        </a>
+
+        <div class="admin-sidebar-category-label" style="margin-top: 1.1rem;">CATALOGUE MANAGEMENT</div>
+
+        <a href="{{ url_for('routes.admin_materials') }}" 
+           class="admin-nav-item {% if request.endpoint in ['routes.admin_materials', 'routes.admin_material_edit'] %}active{% endif %}"
+           title="Open Material Archive & Catalogue Repository">
+            <span class="admin-nav-icon">📦</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">Open Material Archive</span>
+                <small class="admin-nav-desc">Manage Books & Papers</small>
+            </div>
+        </a>
+
+        <a href="{{ url_for('routes.admin_material_new') }}" 
+           class="admin-nav-item admin-nav-item-action {% if request.endpoint == 'routes.admin_material_new' %}active{% endif %}"
+           title="Inscribe New Material & Upload PDF">
+            <span class="admin-nav-icon">✍</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">+ Add New Material</span>
+                <small class="admin-nav-desc">Upload PDF & Details</small>
+            </div>
+            <span class="admin-nav-badge">NEW</span>
+        </a>
+
+        <div class="admin-sidebar-category-label" style="margin-top: 1.1rem;">SCHOLAR & COMMUNITY</div>
+
+        <a href="{{ url_for('routes.admin_users') }}" 
+           class="admin-nav-item {% if request.endpoint == 'routes.admin_users' %}active{% endif %}"
+           title="Inspect User Panel & Scholar Directory">
+            <span class="admin-nav-icon">👥</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">Inspect User Panel</span>
+                <small class="admin-nav-desc">Scholars, Roles & Status</small>
+            </div>
+        </a>
+
+        <a href="{{ url_for('routes.admin_feedbacks') }}" 
+           class="admin-nav-item {% if request.endpoint == 'routes.admin_feedbacks' %}active{% endif %}"
+           title="Review Feedback Inscriptions">
+            <span class="admin-nav-icon">💬</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">Review Feedback</span>
+                <small class="admin-nav-desc">Inscriptions & Ratings</small>
+            </div>
+        </a>
+
+        <div class="admin-sidebar-category-label" style="margin-top: 1.1rem;">PORTAL NAVIGATION</div>
+
+        <a href="{{ url_for('routes.index') }}" 
+           class="admin-nav-item"
+           title="Inspect the Live Public Vault">
+            <span class="admin-nav-icon">🏛</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">Public Library Sanctum</span>
+                <small class="admin-nav-desc">Reader-facing Interface</small>
+            </div>
+            <span class="admin-nav-symbol">↗</span>
+        </a>
+
+        <a href="https://ecellcup.onrender.com" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="admin-nav-item"
+           style="border-color: rgba(56, 189, 248, 0.25);"
+           title="Visit E-CELL Central University of Punjab Community Hub">
+            <span class="admin-nav-icon">🌐</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title" style="color: #7dd3fc;">E-CELL Community Hub</span>
+                <small class="admin-nav-desc">Achievement & Ventures</small>
+            </div>
+            <span class="admin-nav-symbol">↗</span>
+        </a>
+
+        <a href="{{ url_for('routes.account') }}" 
+           class="admin-nav-item"
+           title="Archivist Profile & Password Settings">
+            <span class="admin-nav-icon">👤</span>
+            <div class="admin-nav-text">
+                <span class="admin-nav-title">Archivist Dossier</span>
+                <small class="admin-nav-desc">Profile & Security Settings</small>
+            </div>
+        </a>
+    </nav>
+
+    <!-- Administrative Sign Out Dock -->
+    <div class="admin-sidebar-footer">
+        <a href="{{ url_for('routes.logout') }}" class="admin-logout-btn" title="End Administrative Session">
+            <span>🚪 Sign Out Console</span>
+        </a>
+    </div>
+</aside>

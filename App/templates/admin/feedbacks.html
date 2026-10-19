@@ -3,7 +3,9 @@
 {% block title %}Scholar Feedback Review | MindVault Admin{% endblock %}
 
 {% block content %}
-<div class="admin-layout">
+<div class="admin-layout-container">
+    {% include 'admin/_admin_sidebar.html' %}
+    <main class="admin-main-stage">
 
     <div class="admin-header">
         <div>
@@ -98,5 +100,6 @@
         {% endif %}
     </div>
 
+    </main>
 </div>
 {% endblock %}

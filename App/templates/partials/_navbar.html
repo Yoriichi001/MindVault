@@ -7,6 +7,14 @@
       <span class="mv-hamburger-line"></span>
     </button>
 
+    <!-- E-CELL CUP Partner Logo & Direct Community Redirect -->
+    <a href="https://ecellcup.onrender.com" target="_blank" rel="noopener noreferrer" class="ecell-brand-link" title="Visit E-CELL Central University of Punjab Community Portal (ecellcup.onrender.com)">
+      <img src="{{ url_for('static', filename='img/ecell_logo.png') }}" alt="E-CELL Central University of Punjab" class="ecell-nav-logo">
+      <span class="ecell-nav-text">E-CELL CUP ↗</span>
+    </a>
+
+    <div class="mv-brand-divider" aria-hidden="true"></div>
+
     <a href="{{ url_for('routes.index') }}" class="mv-brand">
       <div class="mv-brand-seal">MV</div>
       <div class="mv-brand-title">
@@ -93,13 +101,19 @@
 <!-- Offcanvas Mobile & Tablet Navigation Sidebar Drawer -->
 <aside class="mv-mobile-sidebar" id="mvMobileSidebar" aria-label="Mobile Navigation" aria-hidden="true">
   <div class="mv-sidebar-header">
-    <a href="{{ url_for('routes.index') }}" class="mv-brand" style="gap: 0.75rem;">
-      <div class="mv-brand-seal" style="width: 36px; height: 36px; font-size: 0.95rem;">MV</div>
-      <div class="mv-brand-title">
-        <span style="font-size: 1.2rem;">MINDVAULT</span>
-        <small style="font-size: 0.55rem; letter-spacing: 2px;">ATELIER OF KNOWLEDGE</small>
-      </div>
-    </a>
+    <div style="display: flex; align-items: center; gap: 0.6rem;">
+      <a href="https://ecellcup.onrender.com" target="_blank" rel="noopener noreferrer" class="ecell-brand-link" title="E-CELL Central University of Punjab">
+        <img src="{{ url_for('static', filename='img/ecell_logo.png') }}" alt="E-CELL Central University of Punjab" class="ecell-nav-logo" style="height: 32px; width: 32px;">
+      </a>
+      <div class="mv-brand-divider" style="height: 22px; margin: 0 0.2rem;"></div>
+      <a href="{{ url_for('routes.index') }}" class="mv-brand" style="gap: 0.6rem;">
+        <div class="mv-brand-seal" style="width: 32px; height: 32px; font-size: 0.85rem;">MV</div>
+        <div class="mv-brand-title">
+          <span style="font-size: 1.1rem;">MINDVAULT</span>
+          <small style="font-size: 0.5rem; letter-spacing: 1.5px;">ATELIER OF KNOWLEDGE</small>
+        </div>
+      </a>
+    </div>
     <button class="mv-sidebar-close" id="mvSidebarClose" type="button" aria-label="Close navigation menu">✕</button>
   </div>
 

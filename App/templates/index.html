@@ -25,69 +25,149 @@
                 <div class="page-edge"></div>
             </div>
 
-            <!-- Book interior revealed on open -->
+            <!-- Book interior revealed on open (Multi-Folio Codex) -->
             <div class="book-interior">
-                <div class="interior-paper">
-                    <div class="paper-border">
-                        <p class="manuscript-small">
-                            ATELIER OF KNOWLEDGE & SCHOLARSHIP
-                        </p>
-                        <div class="ornament" style="margin-top: 6px; font-size: 24px;">❦</div>
-                        <h2 style="margin-top: 4px; font-size: 24px;">MIND <span>&</span> VAULT</h2>
-                        <p class="interior-subtitle" style="margin-top: 4px; font-size: 7.5px;">
-                            STORE KNOWLEDGE · UNLOCK POTENTIAL
-                        </p>
-                        <div class="ornament divider-ornament" style="margin: 8px 0; font-size: 11px;">
-                            ━━━━━ ✦ ━━━━━
-                        </div>
+                <div class="interior-paper" id="bookInteriorPaper">
 
-                        <!-- Action Buttons on the Open Book Page -->
-                        <div class="book-page-actions">
-                            {% if current_user.is_authenticated %}
-                                <div style="font-size: 0.85rem; color: #382419; margin-bottom: 0.2rem;">
-                                    Welcome, <strong>{{ current_user.username }}</strong>
-                                </div>
-                                <a href="{{ url_for('routes.account') }}" class="book-page-btn book-page-btn-primary">
-                                    <span>👤</span> Account Panel
-                                </a>
-                                {% if current_user.is_admin %}
-                                <a href="{{ url_for('routes.admin_dashboard') }}" class="book-page-btn book-page-btn-secondary" style="border-color: #c4a064;">
-                                    <span>⚡</span> Master Admin Dashboard
-                                </a>
-                                {% endif %}
-                            {% else %}
-                                <a href="{{ url_for('routes.login') }}" class="book-page-btn book-page-btn-primary">
-                                    <span>📖</span> Sign In / Login
-                                </a>
-
-                                <a href="{{ url_for('routes.register') }}" class="book-page-btn book-page-btn-secondary">
-                                    <span>✍</span> Register Account
-                                </a>
-                            {% endif %}
-
-                            <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" class="book-page-btn book-page-btn-community">
-                                <span>🌐</span> Join Community ↗
-                            </a>
-
-                            <button type="button" id="browseLibraryBtn" class="book-page-btn book-page-btn-browse">
-                                <span>↓</span> Browse Manuscripts & Books
-                            </button>
-
-                            {% if not current_user.is_authenticated or not current_user.is_admin %}
-                            <div style="margin-top: 0.4rem; font-size: 0.72rem; text-align: center;">
-                                <a href="{{ url_for('routes.admin_login') }}" style="color: #79502f; text-decoration: none; font-weight: 600;">
-                                    🛡 Master Admin Login
-                                </a>
+                    <!-- ================= FOLIO 1: ATELIER OF KNOWLEDGE ================= -->
+                    <div class="book-folio-page folio-1 active" id="bookFolioPage1">
+                        <div class="paper-border">
+                            <p class="manuscript-small">
+                                ATELIER OF KNOWLEDGE &amp; SCHOLARSHIP
+                            </p>
+                            <div class="ornament" style="margin-top: 4px; font-size: 22px;">❦</div>
+                            <h2 style="margin-top: 3px; font-size: 22px;">MIND <span>&amp;</span> VAULT</h2>
+                            <p class="interior-subtitle" style="margin-top: 3px; font-size: 7.5px;">
+                                STORE KNOWLEDGE · UNLOCK POTENTIAL
+                            </p>
+                            <div class="ornament divider-ornament" style="margin: 6px 0; font-size: 11px;">
+                                ━━━━━ ✦ ━━━━━
                             </div>
-                            {% endif %}
 
-                            <button type="button" id="closeBookBtn" class="book-close-cover-btn">
-                                <span>✕</span> Close Book Cover
-                            </button>
+                            <!-- Action Buttons on Folio 1 -->
+                            <div class="book-page-actions">
+                                {% if current_user.is_authenticated %}
+                                    <div style="font-size: 0.85rem; color: #382419; margin-bottom: 0.15rem;">
+                                        Welcome, <strong>{{ current_user.username }}</strong>
+                                    </div>
+                                    <a href="{{ url_for('routes.account') }}" class="book-page-btn book-page-btn-primary">
+                                        <span>👤</span> Account Panel
+                                    </a>
+                                    {% if current_user.is_admin %}
+                                    <a href="{{ url_for('routes.admin_dashboard') }}" class="book-page-btn book-page-btn-secondary" style="border-color: #c4a064;">
+                                        <span>⚡</span> Master Admin Dashboard
+                                    </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{{ url_for('routes.login') }}" class="book-page-btn book-page-btn-primary">
+                                        <span>📖</span> Sign In / Login
+                                    </a>
+
+                                    <a href="{{ url_for('routes.register') }}" class="book-page-btn book-page-btn-secondary">
+                                        <span>✍</span> Register Account
+                                    </a>
+                                {% endif %}
+
+                                <a href="https://ecellcup.onrender.com" target="_blank" rel="noopener noreferrer" class="book-page-btn book-page-btn-community">
+                                    <span>🌐</span> E-Cell Community ↗
+                                </a>
+
+                                <button type="button" id="browseLibraryBtn" class="book-page-btn book-page-btn-browse">
+                                    <span>↓</span> Browse Manuscripts &amp; Books
+                                </button>
+
+                                {% if not current_user.is_authenticated or not current_user.is_admin %}
+                                <div style="margin-top: 0.35rem; font-size: 0.72rem; text-align: center;">
+                                    <a href="{{ url_for('routes.admin_login') }}" style="color: #79502f; text-decoration: none; font-weight: 600;">
+                                        🛡 Master Admin Login
+                                    </a>
+                                </div>
+                                {% endif %}
+
+                                <button type="button" class="book-close-cover-btn close-book-trigger" id="closeBookBtn">
+                                    <span>✕</span> Close Book Cover
+                                </button>
+                            </div>
+
+                            <!-- Bottom Corner Pagination Navigation Controls -->
+                            <div class="book-folio-nav">
+                                <button type="button" class="book-nav-arrow-btn prev disabled" id="folioPrevBtn1" aria-label="Previous Folio" disabled>
+                                    <span class="nav-symbol">❮</span>
+                                    <span class="nav-text">Prev</span>
+                                </button>
+                                <span class="page-number">— FOLIO I / II —</span>
+                                <button type="button" class="book-nav-arrow-btn next" id="folioNextBtn1" aria-label="Next Folio: Terms and Conditions">
+                                    <span class="nav-text">Next</span>
+                                    <span class="nav-symbol">❯</span>
+                                </button>
+                            </div>
                         </div>
-
-                        <p class="page-number" style="margin-top: 10px; font-size: 11px;">— FOLIO I —</p>
                     </div>
+
+                    <!-- ================= FOLIO 2: TERMS AND CONDITIONS ================= -->
+                    <div class="book-folio-page folio-2" id="bookFolioPage2">
+                        <div class="paper-border">
+                            <p class="manuscript-small">
+                                VAULT CHARTER &amp; SCHOLAR CODEX
+                            </p>
+                            <div class="ornament" style="margin-top: 4px; font-size: 20px;">⚖</div>
+                            <h2 style="margin-top: 3px; font-size: 20px;">TERMS <span>&amp;</span> CONDITIONS</h2>
+                            <p class="interior-subtitle" style="margin-top: 3px; font-size: 7.5px;">
+                                ACADEMIC INTEGRITY · OPEN ACCESS CHARTER
+                            </p>
+                            <div class="ornament divider-ornament" style="margin: 6px 0; font-size: 10px;">
+                                ━━━━━ ✦ ━━━━━
+                            </div>
+
+                            <!-- Scrollable Terms & Conditions Codex Body -->
+                            <div class="folio-terms-body">
+                                <div class="terms-card-point">
+                                    <strong>Ⅰ. The Knowledge Ethos</strong>
+                                    <p>MindVault exists because <em>"if a student has resources, then he can understand."</em> All books, peer-reviewed papers, and notes are curated strictly for non-commercial student empowerment.</p>
+                                </div>
+
+                                <div class="terms-card-point">
+                                    <strong>Ⅱ. Academic Integrity &amp; Attribution</strong>
+                                    <p>Readers are granted unrestricted digital access for study and research. Intellectual property remains with original authors; citations must honor academic attribution.</p>
+                                </div>
+
+                                <div class="terms-card-point">
+                                    <strong>Ⅲ. E-CELL Synergy &amp; Community</strong>
+                                    <p>In partnership with <strong>E-CELL Central University of Punjab</strong>, scholars are encouraged to take learned resources and translate them into breakthrough student initiatives on our community hub.</p>
+                                </div>
+
+                                <div class="terms-card-point">
+                                    <strong>Ⅳ. Scholar Inscriptions &amp; Security</strong>
+                                    <p>Users must submit authentic feedback and adhere to respectful discourse. Administrators reserve the right to review materials to maintain archival purity.</p>
+                                </div>
+
+                                <div class="terms-quick-actions">
+                                    {% if not current_user.is_authenticated %}
+                                        <a href="{{ url_for('routes.login') }}" class="terms-action-chip">📖 Login</a>
+                                        <a href="{{ url_for('routes.register') }}" class="terms-action-chip">✍ Register</a>
+                                    {% else %}
+                                        <a href="{{ url_for('routes.account') }}" class="terms-action-chip">👤 My Dossier</a>
+                                    {% endif %}
+                                    <a href="https://ecellcup.onrender.com" target="_blank" rel="noopener noreferrer" class="terms-action-chip highlight">🌐 Community ↗</a>
+                                    <button type="button" class="terms-action-chip close-book-trigger">✕ Close Book</button>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Corner Pagination Navigation Controls -->
+                            <div class="book-folio-nav">
+                                <button type="button" class="book-nav-arrow-btn prev" id="folioPrevBtn2" aria-label="Previous Folio: Atelier">
+                                    <span class="nav-symbol">❮</span>
+                                    <span class="nav-text">Prev</span>
+                                </button>
+                                <span class="page-number">— FOLIO II / II —</span>
+                                <button type="button" class="book-nav-arrow-btn next" id="folioNextBtn2" aria-label="Return to Folio 1">
+                                    <span class="nav-text">First</span>
+                                    <span class="nav-symbol">↺</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -324,34 +404,76 @@
 
 {% block extra_scripts %}
 <script>
-    const openBookBtn = document.getElementById('openBookBtn');
-    const closeBookBtn = document.getElementById('closeBookBtn');
-    const browseLibraryBtn = document.getElementById('browseLibraryBtn');
-    const mainBook = document.getElementById('mainBook');
-    const libraryCollection = document.getElementById('libraryCollection');
+    (function() {
+        const openBookBtn = document.getElementById('openBookBtn');
+        const mainBook = document.getElementById('mainBook');
+        const browseLibraryBtn = document.getElementById('browseLibraryBtn');
+        const libraryCollection = document.getElementById('libraryCollection');
 
-    if (openBookBtn && mainBook) {
-        // Open the 3D book smoothly and reveal buttons inside without scrolling down
-        openBookBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            mainBook.classList.add('book-opened');
-        });
-    }
+        const folio1 = document.getElementById('bookFolioPage1');
+        const folio2 = document.getElementById('bookFolioPage2');
+        const nextBtn1 = document.getElementById('folioNextBtn1');
+        const prevBtn2 = document.getElementById('folioPrevBtn2');
+        const nextBtn2 = document.getElementById('folioNextBtn2');
 
-    if (closeBookBtn && mainBook) {
-        // Close the book cover back smoothly
-        closeBookBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            mainBook.classList.remove('book-opened');
-        });
-    }
+        function goToFolio(pageIndex) {
+            if (!folio1 || !folio2) return;
+            if (pageIndex === 2) {
+                folio1.classList.remove('active');
+                folio2.classList.add('active');
+            } else {
+                folio2.classList.remove('active');
+                folio1.classList.add('active');
+            }
+        }
 
-    if (browseLibraryBtn && libraryCollection) {
-        // Scroll down when user clicks browse manuscripts
-        browseLibraryBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            libraryCollection.scrollIntoView({ behavior: 'smooth' });
+        if (nextBtn1) {
+            nextBtn1.addEventListener('click', function(e) {
+                e.preventDefault();
+                goToFolio(2);
+            });
+        }
+
+        if (prevBtn2) {
+            prevBtn2.addEventListener('click', function(e) {
+                e.preventDefault();
+                goToFolio(1);
+            });
+        }
+
+        if (nextBtn2) {
+            nextBtn2.addEventListener('click', function(e) {
+                e.preventDefault();
+                goToFolio(1);
+            });
+        }
+
+        if (openBookBtn && mainBook) {
+            openBookBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                goToFolio(1); // Always start at Folio 1 upon opening
+                mainBook.classList.add('book-opened');
+            });
+        }
+
+        // Attach close event to all close triggers inside the book
+        document.querySelectorAll('.close-book-trigger').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (mainBook) {
+                    mainBook.classList.remove('book-opened');
+                    // Reset to folio 1 after closing
+                    setTimeout(() => goToFolio(1), 400);
+                }
+            });
         });
-    }
+
+        if (browseLibraryBtn && libraryCollection) {
+            browseLibraryBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                libraryCollection.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    })();
 </script>
 {% endblock %}

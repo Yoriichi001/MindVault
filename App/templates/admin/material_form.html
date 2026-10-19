@@ -3,7 +3,10 @@
 {% block title %}{{ title }} | MindVault Admin{% endblock %}
 
 {% block content %}
-<div class="reader-container" style="max-width: 900px; margin: 2.5rem auto; padding: 0 1.5rem;">
+<div class="admin-layout-container">
+    {% include 'admin/_admin_sidebar.html' %}
+    <main class="admin-main-stage">
+        <div style="max-width: 900px; margin: 0 auto;">
 
     <div style="margin-bottom: 1.5rem;">
         <a href="{{ url_for('routes.admin_materials') }}" style="color: var(--gold); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;">
@@ -164,5 +167,7 @@
         </form>
     </div>
 
+        </div>
+    </main>
 </div>
 {% endblock %}
