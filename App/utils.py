@@ -97,23 +97,36 @@ def verify_token(token, max_age=86400, salt="email-confirm-salt"):
 
 
 def configure_cloudinary():
-    """Extracts credentials from CLOUDINARY_URL and explicitly initializes the Cloudinary SDK."""
+    """Extracts credentials from CLOUDINARY_URL or separate keys and explicitly initializes the Cloudinary SDK."""
     raw_url = current_app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
-    if not raw_url or not raw_url.strip():
-        return False
     try:
         import cloudinary
-        p = urlparse(raw_url.strip())
-        if p.hostname and p.username and p.password:
+        if raw_url and raw_url.strip():
+            clean_url = raw_url.strip().strip("'\"")
+            p = urlparse(clean_url)
+            if p.hostname and p.username and p.password:
+                cloudinary.config(
+                    cloud_name=p.hostname,
+                    api_key=p.username,
+                    api_secret=p.password,
+                    secure=True
+                )
+                return True
+
+        # Fallback to separate environment variables
+        c_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+        c_key = os.environ.get('CLOUDINARY_API_KEY')
+        c_secret = os.environ.get('CLOUDINARY_API_SECRET')
+        if c_name and c_key and c_secret:
             cloudinary.config(
-                cloud_name=p.hostname,
-                api_key=p.username,
-                api_secret=p.password,
+                cloud_name=c_name.strip().strip("'\""),
+                api_key=c_key.strip().strip("'\""),
+                api_secret=c_secret.strip().strip("'\""),
                 secure=True
             )
             return True
     except Exception as e:
-        current_app.logger.warning(f"Could not parse CLOUDINARY_URL: {e}")
+        current_app.logger.warning(f"Could not configure Cloudinary: {e}")
     return False
 
 

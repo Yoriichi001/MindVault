@@ -26,7 +26,10 @@ limiter = Limiter(
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    try:
+        return db.session.get(User, int(user_id))
+    except Exception:
+        return None
 
 
 def auto_migrate(app):
@@ -84,12 +87,13 @@ def create_app(config_class=Config):
         os.makedirs(os.path.join(upload_root, sub), exist_ok=True)
 
     # Initialize Cloudinary cloud storage if configured
-    cloudinary_url = app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
-    if cloudinary_url and cloudinary_url.strip():
-        try:
-            from urllib.parse import urlparse
-            import cloudinary
-            p = urlparse(cloudinary_url.strip())
+    try:
+        from urllib.parse import urlparse
+        import cloudinary
+        cloudinary_url = app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
+        if cloudinary_url and cloudinary_url.strip():
+            clean_url = cloudinary_url.strip().strip("'\"")
+            p = urlparse(clean_url)
             if p.hostname and p.username and p.password:
                 cloudinary.config(
                     cloud_name=p.hostname,
@@ -98,8 +102,20 @@ def create_app(config_class=Config):
                     secure=True
                 )
                 app.logger.info(f"Cloudinary cloud media storage initialized for: {p.hostname}")
-        except Exception as ce:
-            app.logger.warning(f"Cloudinary configuration warning: {ce}")
+        else:
+            c_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+            c_key = os.environ.get('CLOUDINARY_API_KEY')
+            c_secret = os.environ.get('CLOUDINARY_API_SECRET')
+            if c_name and c_key and c_secret:
+                cloudinary.config(
+                    cloud_name=c_name.strip().strip("'\""),
+                    api_key=c_key.strip().strip("'\""),
+                    api_secret=c_secret.strip().strip("'\""),
+                    secure=True
+                )
+                app.logger.info(f"Cloudinary initialized via discrete credentials for: {c_name}")
+    except Exception as ce:
+        app.logger.warning(f"Cloudinary configuration notice: {ce}")
 
     # Database creation & auto-migration
     with app.app_context():
@@ -139,5 +155,40 @@ def create_app(config_class=Config):
         )
         return response
 
+    # Global Error Handlers (Eliminates raw 500 error screens)
+    from flask import render_template
+
+    @app.errorhandler(404)
+    def handle_not_found(e):
+        return render_template(
+            'error.html',
+            status_code=404,
+            error_title="Page or Resource Not Found",
+            error_message="The manuscript, page, or record you requested could not be discovered in the MindVault catalogue."
+        ), 404
+
+    @app.errorhandler(413)
+    def handle_large_file(e):
+        return render_template(
+            'error.html',
+            status_code=413,
+            error_title="Artifact Size Exceeds Limit",
+            error_message="The uploaded file exceeds the 16 MB maximum threshold. Please choose an image or document of smaller proportions."
+        ), 413
+
+    @app.errorhandler(500)
+    @app.errorhandler(Exception)
+    def handle_server_error(e):
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        app.logger.error(f"Handled application exception: {e}", exc_info=True)
+        return render_template(
+            'error.html',
+            status_code=500,
+            error_title="Internal Sanctum Notice",
+            error_message="The vault encountered a brief disturbance while processing your request. Your records remain intact. Please re-try in a moment."
+        ), 500
 
     return app

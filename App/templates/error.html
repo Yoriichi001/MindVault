@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ error_title|default('Archive Notice') }} | MindVault{% endblock %}
+
+{% block content %}
+<div class="reader-container" style="max-width: 680px; margin: 4rem auto; padding: 0 1.5rem; text-align: center;">
+    <div class="glass-panel" style="padding: 3rem 2rem;">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem; color: var(--gold);">
+            {% if status_code == 404 %}📜{% elif status_code == 413 %}⚖️{% else %}🛡️{% endif %}
+        </div>
+        <p class="eyebrow" style="color: var(--gold); letter-spacing: 2px;">
+            CODE {{ status_code|default(500) }}
+        </p>
+        <h1 style="font-family: var(--serif); font-size: 2.2rem; color: var(--gold-bright); margin-bottom: 1rem;">
+            {{ error_title|default('Sanctum Preservation Notice') }}
+        </h1>
+        <p style="color: var(--paper-dark); font-size: 1rem; line-height: 1.6; margin-bottom: 2rem;">
+            {{ error_message|default('The archival apparatus encountered an unforeseen anomaly. The archives remain safe, and scholar records are preserved.') }}
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('routes.index') }}" class="btn-primary-mv" style="max-width: 220px; text-decoration: none;">
+                Return to Library
+            </a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('routes.account') }}" class="antique-button" style="text-decoration: none; padding: 0.75rem 1.4rem;">
+                Scholar Dossier
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

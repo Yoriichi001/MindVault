@@ -79,21 +79,27 @@ class AccountUpdateForm(FlaskForm):
     avatar = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], 'Only image files (JPG, PNG, WEBP) are accepted.')])
     submit = SubmitField('Save Profile Changes')
 
-    def __init__(self, current_user, *args, **kwargs):
+    def __init__(self, current_user=None, *args, **kwargs):
         super(AccountUpdateForm, self).__init__(*args, **kwargs)
         self.current_user = current_user
 
     def validate_username(self, username):
-        if username.data.strip() != self.current_user.username:
-            user = User.query.filter_by(username=username.data.strip()).first()
-            if user:
-                raise ValidationError("Username already in use by another scholar.")
+        if username and username.data and self.current_user:
+            clean_name = username.data.strip()
+            current_name = self.current_user.username or ""
+            if clean_name != current_name:
+                user = User.query.filter_by(username=clean_name).first()
+                if user and user.id != getattr(self.current_user, 'id', None):
+                    raise ValidationError("Username already in use by another scholar.")
 
     def validate_email(self, email):
-        if email.data.strip().lower() != self.current_user.email.lower():
-            user = User.query.filter_by(email=email.data.strip().lower()).first()
-            if user:
-                raise ValidationError("Email already registered to another account.")
+        if email and email.data and self.current_user:
+            clean_email = email.data.strip().lower()
+            current_email = (self.current_user.email or "").lower()
+            if clean_email != current_email:
+                user = User.query.filter_by(email=clean_email).first()
+                if user and user.id != getattr(self.current_user, 'id', None):
+                    raise ValidationError("Email already registered to another account.")
 
 
 class PasswordResetRequestForm(FlaskForm):

@@ -128,14 +128,16 @@
                     {% for h in history %}
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: rgba(20, 10, 5, 0.5); border: 1px solid var(--glass-border); border-radius: 8px;">
                         <div>
-                            <strong style="color: var(--paper-light); display: block;">{{ h.material.title }}</strong>
-                            <small style="color: var(--paper-dark);">{{ h.material.author }} · {{ h.material.category }}</small>
+                            <strong style="color: var(--paper-light); display: block;">{{ h.material.title if h.material else 'Archived Manuscript' }}</strong>
+                            <small style="color: var(--paper-dark);">{{ h.material.author if h.material else 'Ancient Scholar' }} · {{ h.material.category if h.material else 'MindVault Library' }}</small>
                         </div>
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             <span style="font-size: 0.8rem; color: var(--gold);">{{ h.progress_percent }}% Completed</span>
+                            {% if h.material_id and h.material %}
                             <a href="{{ url_for('routes.read_online', material_id=h.material_id) }}" class="antique-button" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
                                 Resume Read →
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}

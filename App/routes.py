@@ -95,7 +95,7 @@ def community_redirect():
 def material_detail(material_id):
     """Product detail view of book, research paper or study material."""
     material = Material.query.get_or_404(material_id)
-    material.views_count += 1
+    material.views_count = (material.views_count or 0) + 1
     db.session.commit()
 
     # Track reading history if user is authenticated
@@ -117,7 +117,7 @@ def read_online(material_id):
     Anyone can read online freely on the website!
     """
     material = Material.query.get_or_404(material_id)
-    material.views_count += 1
+    material.views_count = (material.views_count or 0) + 1
     db.session.commit()
 
     pages = material.get_pages_list()
@@ -163,7 +163,7 @@ def download_pdf(material_id):
 
     # Remote Cloudinary CDN file delivery
     if material.file_path.startswith('http://') or material.file_path.startswith('https://'):
-        material.downloads_count += 1
+        material.downloads_count = (material.downloads_count or 0) + 1
         db.session.commit()
         return redirect(material.file_path)
 
@@ -174,7 +174,7 @@ def download_pdf(material_id):
         flash("The archival file is being re-indexed. Please read online in the meantime.", "warning")
         return redirect(url_for('routes.read_online', material_id=material.id))
 
-    material.downloads_count += 1
+    material.downloads_count = (material.downloads_count or 0) + 1
     db.session.commit()
 
     directory, filename = os.path.split(full_path)
@@ -503,43 +503,52 @@ def account():
     Provides default avatar if user doesn't have one.
     Displays reading history and stats.
     """
-    form = AccountUpdateForm(current_user=current_user)
-    if form.validate_on_submit():
-        try:
-            # Handle avatar upload with Pillow bomb defense
-            if form.avatar.data and hasattr(form.avatar.data, 'filename') and form.avatar.data.filename:
-                avatar_path = save_uploaded_image(form.avatar.data, subfolder='avatars', max_dim=400)
-                if avatar_path:
-                    current_user.avatar = avatar_path
-                else:
-                    flash("Failed to process image. Ensure it is a valid JPG/PNG/WEBP image under 16MB.", "danger")
+    try:
+        form = AccountUpdateForm(current_user=current_user)
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                # Handle avatar upload with Pillow bomb defense
+                if form.avatar.data and hasattr(form.avatar.data, 'filename') and form.avatar.data.filename:
+                    avatar_path = save_uploaded_image(form.avatar.data, subfolder='avatars', max_dim=400)
+                    if avatar_path:
+                        current_user.avatar = avatar_path
+                    else:
+                        flash("Failed to process image. Ensure it is a valid JPG/PNG/WEBP image under 16MB.", "danger")
 
-            if form.username.data:
-                current_user.username = form.username.data.strip()
-            if form.email.data:
-                current_user.email = form.email.data.strip().lower()
+                if form.username.data:
+                    current_user.username = form.username.data.strip()
+                if form.email.data:
+                    current_user.email = form.email.data.strip().lower()
 
-            db.session.commit()
-            flash("Your scholar profile has been updated.", "success")
-            return redirect(url_for('routes.account'))
-        except Exception as e:
-            db.session.rollback()
-            current_app.logger.error(f"Account update error: {e}", exc_info=True)
-            flash(f"Profile update could not be saved: {str(e)}", "danger")
-            return redirect(url_for('routes.account'))
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.email.data = current_user.email
+                db.session.commit()
+                flash("Your scholar profile has been updated.", "success")
+                return redirect(url_for('routes.account'))
+            else:
+                # Validation errors: flash them clearly to the user
+                for field_name, error_msgs in form.errors.items():
+                    for err in error_msgs:
+                        field_label = form[field_name].label.text if field_name in form else field_name
+                        flash(f"{field_label}: {err}", "danger")
+        elif request.method == 'GET':
+            form.username.data = current_user.username
+            form.email.data = current_user.email
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Account update error: {e}", exc_info=True)
+        flash(f"Profile update could not be processed: {str(e)}", "danger")
+        return redirect(url_for('routes.account'))
 
     # Fetch user reading history safely
     try:
         history = ReadingHistory.query.filter_by(user_id=current_user.id).order_by(ReadingHistory.last_read_at.desc()).limit(10).all()
-    except Exception:
+    except Exception as e:
+        current_app.logger.warning(f"Could not load reading history: {e}")
         history = []
 
     try:
         user_feedbacks = Feedback.query.filter_by(user_id=current_user.id).all()
-    except Exception:
+    except Exception as e:
+        current_app.logger.warning(f"Could not load feedbacks: {e}")
         user_feedbacks = []
 
     return render_template(
