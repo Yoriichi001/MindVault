@@ -76,6 +76,7 @@ def books_view():
 
 
 @routes_bp.route('/research-papers')
+@routes_bp.route('/papers')
 def papers_view():
     return redirect(url_for('routes.index', category='Research Papers'))
 

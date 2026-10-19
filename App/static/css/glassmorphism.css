@@ -71,6 +71,10 @@
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--glass-border);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+.mv-navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
 }
 
 .mv-brand {
@@ -777,9 +781,437 @@
 }
 
 
+/* ======================================================
+   MOBILE & TABLET SIDEBAR NAVIGATION DRAWER
+====================================================== */
+
+.mv-sidebar-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 9px;
+    background: rgba(56, 36, 25, 0.65);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.mv-sidebar-toggle:hover {
+    border-color: var(--gold);
+    background: rgba(91, 56, 35, 0.75);
+}
+
+.mv-hamburger-line {
+    width: 100%;
+    height: 2px;
+    background: var(--gold-bright);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.mv-sidebar-toggle.active .mv-hamburger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.mv-sidebar-toggle.active .mv-hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.mv-sidebar-toggle.active .mv-hamburger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Translucent Dimming Backdrop Overlay */
+.mv-sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 5, 2, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mv-sidebar-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Offcanvas Sidebar Drawer */
+.mv-mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(340px, 86vw);
+    background: linear-gradient(180deg, rgba(28, 14, 8, 0.98) 0%, rgba(18, 9, 4, 0.99) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 15px 0 45px rgba(0, 0, 0, 0.85);
+    z-index: 1999;
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+}
+
+.mv-mobile-sidebar.open {
+    transform: translateX(0);
+}
+
+body.sidebar-open {
+    overflow: hidden !important;
+    touch-action: none;
+}
+
+.mv-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.4rem;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(14, 7, 3, 0.6);
+}
+
+.mv-sidebar-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: rgba(56, 36, 25, 0.5);
+    color: var(--gold-bright);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mv-sidebar-close:hover {
+    border-color: var(--gold);
+    color: #fff;
+    background: rgba(91, 56, 35, 0.7);
+}
+
+/* Mini Scholar Dossier Card */
+.mv-sidebar-scholar-card {
+    margin: 1rem 1.2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(38, 20, 11, 0.65);
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.mv-sidebar-user-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.mv-sidebar-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold);
+}
+
+.mv-sidebar-user-info {
+    overflow: hidden;
+}
+
+.mv-sidebar-username {
+    display: block;
+    color: var(--gold-bright);
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--serif);
+}
+
+.mv-sidebar-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 6px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: var(--gold-bright);
+    font-size: 0.8rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.mv-sidebar-action-btn:hover {
+    background: var(--gold);
+    color: var(--wood-dark);
+}
+
+/* Sidebar Navigation Items */
+.mv-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0.4rem 0.8rem 2rem 0.8rem;
+}
+
+.mv-sidebar-section-title {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    color: var(--paper-dark);
+    padding: 0.8rem 1rem 0.4rem 1rem;
+    font-weight: 700;
+}
+
+.mv-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.8rem 1.1rem;
+    border-radius: 8px;
+    color: var(--paper-light);
+    font-size: 0.92rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.mv-sidebar-link:hover,
+.mv-sidebar-link.active {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold-bright);
+    border-left: 3px solid var(--gold);
+}
+
+.mv-sidebar-community {
+    color: #ffdf7e !important;
+}
+
+.mv-sidebar-icon {
+    font-size: 1.1rem;
+    min-width: 22px;
+    text-align: center;
+}
+
+/* ======================================================
+   RESPONSIVE LAYOUT HELPERS (PROFILE, DETAILS, TABLES, GRIDS)
+====================================================== */
+
+.collection-section {
+    max-width: 1300px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.library-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.library-main-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    color: var(--gold-bright);
+}
+
+.library-search-form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 420px;
+    width: 100%;
+}
+
+.library-search-input {
+    background: rgba(24, 12, 6, 0.7);
+    border: 1px solid var(--glass-border);
+    padding: 0.75rem 1.1rem;
+    border-radius: 8px;
+    color: var(--paper-light);
+    flex: 1;
+    min-width: 0;
+}
+
+.library-search-submit {
+    padding: 0.75rem 1.4rem;
+    white-space: nowrap;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 2rem;
+}
+
+.product-card-item {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border-radius: 12px;
+}
+
+.card-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.card-read-btn {
+    padding: 0.65rem 0.4rem;
+    font-size: 0.8rem;
+    text-align: center;
+    text-decoration: none;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(85, 48, 26, 0.9), rgba(42, 22, 12, 0.96));
+    color: #ffdf7e !important;
+    font-weight: 700;
+    border: 1px solid var(--gold);
+}
+
+.card-download-btn {
+    padding: 0.65rem 0.4rem;
+    font-size: 0.8rem;
+    text-align: center;
+    text-decoration: none;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+    color: #140a04 !important;
+    font-weight: 800;
+    border: 1px solid #ffdf7e;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+}
+
+.profile-layout-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.profile-submit-btn {
+    max-width: 260px;
+    width: 100%;
+}
+
+.material-detail-panel {
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.material-detail-title {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 4.5vw, 2.8rem);
+    color: #fffdf8;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.feedback-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.feedback-grid-sub-rate {
+    grid-template-columns: 2fr 1fr;
+}
+
+.dashboard-hub-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.admin-form-row-2col {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.2rem;
+}
+
+.admin-form-row-3col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2rem;
+}
+
+.admin-form-uploads-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* ======================================================
+   DEVICE-SPECIFIC MEDIA QUERIES (PHONES & TABLETS)
+====================================================== */
+
+/* 1. Large Tablets & Small Laptops (<= 991px, e.g. iPad Air, Galaxy Tab) */
+@media (max-width: 991px) {
+    .mv-nav-links {
+        display: none !important;
+    }
+    .mv-sidebar-toggle {
+        display: flex !important;
+    }
+    .mv-navbar {
+        padding: 0.75rem 1.4rem;
+    }
+    .profile-layout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.8rem !important;
+    }
+    .material-detail-panel {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        padding: 2.2rem 1.6rem !important;
+    }
+    .dashboard-hub-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    .admin-form-row-2col,
+    .admin-form-row-3col,
+    .admin-form-uploads-row {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* 2. Tablets & Large Phones (<= 860px, e.g. iPad Mini, Phablets) */
 @media (max-width: 860px) {
     .reader-parchment-spread {
         grid-template-columns: 1fr;
+        padding: 1.5rem 1rem;
     }
     .reader-parchment-spread::after {
         display: none;
@@ -787,8 +1219,229 @@
     .parchment-page.right-page {
         display: none;
     }
-    .mv-nav-links {
-        display: none; /* Can be toggled via mobile menu */
+    .reader-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .feedback-grid-row,
+    .feedback-grid-sub-rate {
+        grid-template-columns: 1fr !important;
+        gap: 0.8rem !important;
+    }
+}
+
+/* 3. Screen width <= 600px: 3D Heritage Book Fit & Page Action Adaptations */
+@media (max-width: 600px) {
+    #coverScreen {
+        overflow-x: clip !important;
+    }
+    .main-book.book-opened .book-cover {
+        transform: rotateY(-180deg) !important;
+        opacity: 0.15;
+        pointer-events: none !important;
+    }
+    .book-scene {
+        width: min(340px, 92vw) !important;
+    }
+    .book-page-btn {
+        padding: 0.65rem 0.8rem !important;
+        font-size: 0.78rem !important;
+    }
+}
+
+/* 4. Standard Mobile Phones (<= 576px, e.g. iPhone 13/14/15/16, Samsung Galaxy S21-S24) */
+@media (max-width: 576px) {
+    .mv-navbar {
+        padding: 0.6rem 0.85rem;
+    }
+    .mv-brand-seal {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+    .mv-brand-title span {
+        font-size: 1.15rem;
+    }
+    .mv-brand-title small {
+        display: none;
+    }
+    .mv-user-name-label {
+        display: none;
+    }
+    .mv-portal-label {
+        display: none;
+    }
+    .mv-portal-icon {
+        display: inline-block;
+    }
+    .mv-dropdown-toggle {
+        padding: 0.35rem 0.6rem;
+        gap: 0.35rem;
+    }
+    .reader-container {
+        padding: 0 0.85rem !important;
+        margin: 1.5rem auto !important;
+    }
+    .glass-panel {
+        padding: 1.4rem 1rem !important;
+        border-radius: 12px !important;
+    }
+    .collection-section {
+        padding: 0 0.85rem !important;
+        margin: 1.5rem auto !important;
+    }
+    .library-search-form {
+        max-width: 100% !important;
+    }
+    .library-main-title {
+        font-size: 1.85rem !important;
+    }
+    .product-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.4rem !important;
+    }
+    .product-card-item {
+        padding: 1.2rem !important;
+    }
+    .card-action-buttons {
+        gap: 0.5rem !important;
+    }
+    .card-read-btn,
+    .card-download-btn {
+        padding: 0.6rem 0.3rem !important;
+        font-size: 0.75rem !important;
+    }
+    .reader-parchment-spread {
+        border-width: 4px !important;
+        border-radius: 6px !important;
+        padding: 1rem 0.6rem !important;
+        min-height: auto !important;
+    }
+    .reader-toolbar {
+        padding: 0.8rem 0.9rem !important;
+    }
+    .category-filters {
+        gap: 0.5rem !important;
+    }
+    .filter-button {
+        font-size: 0.72rem !important;
+        padding: 0.5rem 0.8rem !important;
+    }
+    .auth-container {
+        padding: 1.5rem 0.75rem !important;
+    }
+    .auth-glass-box {
+        padding: 1.8rem 1.1rem !important;
+        border-radius: 12px !important;
+    }
+    .auth-header h1 {
+        font-size: 1.6rem !important;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .profile-submit-btn {
+        max-width: 100% !important;
+    }
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -0.5rem;
+        padding: 0 0.5rem;
+    }
+    .admin-layout {
+        padding: 0 0.85rem !important;
+        margin: 1.2rem auto !important;
+    }
+    .btn-primary-mv,
+    .antique-button {
+        min-height: 44px;
+    }
+    /* Touch target comfort */
+    .mv-dropdown-item {
+        padding: 0.75rem 1.2rem;
+    }
+    /* Prevent iOS Safari auto-zoom on input focus */
+    .form-control,
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+}
+
+/* 5. Ultra-Compact Mobile Phones (<= 375px, e.g. iPhone 5/SE, Galaxy Fold outer screen) */
+@media (max-width: 375px) {
+    .mv-navbar {
+        padding: 0.5rem 0.55rem;
+    }
+    .mv-navbar-left {
+        gap: 0.6rem;
+    }
+    .mv-brand {
+        gap: 0.5rem;
+    }
+    .mv-brand-seal {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    .mv-brand-title span {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+    .mv-sidebar-toggle {
+        width: 36px;
+        height: 36px;
+        padding: 7px;
+    }
+    .collection-section {
+        padding: 0 0.5rem !important;
+    }
+    .product-card-item {
+        padding: 0.9rem !important;
+    }
+    .card-action-buttons {
+        grid-template-columns: 1fr !important;
+        gap: 0.45rem !important;
+    }
+    .card-read-btn,
+    .card-download-btn {
+        width: 100% !important;
+        padding: 0.65rem 0.5rem !important;
+    }
+    .book-scene {
+        width: min(300px, 94vw) !important;
+        min-height: 400px !important;
+    }
+    .book-page-actions {
+        max-width: 100% !important;
+        padding: 0 0.25rem !important;
+    }
+    .book-page-btn {
+        font-size: 0.72rem !important;
+        padding: 0.6rem 0.5rem !important;
+        letter-spacing: 1px !important;
+    }
+    .reader-parchment-spread {
+        border-width: 2px !important;
+        padding: 0.8rem 0.4rem !important;
+    }
+    .auth-glass-box {
+        padding: 1.4rem 0.75rem !important;
+    }
+    .glass-panel {
+        padding: 1.1rem 0.75rem !important;
+    }
+    .reader-container {
+        padding: 0 0.5rem !important;
+    }
+    .admin-layout {
+        padding: 0 0.5rem !important;
     }
 }
 

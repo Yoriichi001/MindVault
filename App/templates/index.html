@@ -162,19 +162,19 @@
 <!-- ==========================================
      DIGITAL LIBRARY CATALOGUE SECTION
 =========================================== -->
-<section id="libraryCollection" class="collection-section" style="max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem;">
+<section id="libraryCollection" class="collection-section">
 
     <!-- Library Header & Search Bar -->
-    <div class="section-heading" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem;">
+    <div class="section-heading library-header-row">
         <div>
             <p class="eyebrow" style="color: var(--gold); letter-spacing: 2px;">THE CURATED ARCHIVES</p>
-            <h2 style="font-family: var(--serif); font-size: 2.8rem; color: var(--gold-bright);">
+            <h2 class="library-main-title">
                 Sanctum of <em>Knowledge</em>
             </h2>
         </div>
 
         <!-- Live Search Form -->
-        <form method="GET" action="{{ url_for('routes.index') }}" style="display: flex; gap: 0.5rem; max-width: 420px; width: 100%;">
+        <form method="GET" action="{{ url_for('routes.index') }}" class="library-search-form">
             {% if selected_category != 'all' %}
                 <input type="hidden" name="category" value="{{ selected_category }}">
             {% endif %}
@@ -183,10 +183,9 @@
                 name="q"
                 value="{{ search_query }}"
                 placeholder="Search by title, author, or field..."
-                class="form-control"
-                style="background: rgba(24, 12, 6, 0.7); border: 1px solid var(--glass-border); padding: 0.75rem 1.1rem; border-radius: 8px; color: var(--paper-light);"
+                class="form-control library-search-input"
             >
-            <button type="submit" class="antique-button" style="padding: 0.75rem 1.4rem; white-space: nowrap;">
+            <button type="submit" class="antique-button library-search-submit">
                 Search
             </button>
         </form>
@@ -214,9 +213,9 @@
 
     <!-- Materials Grid -->
     {% if materials %}
-    <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 2rem;">
+    <div class="product-grid">
         {% for item in materials %}
-        <article class="glass-card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+        <article class="glass-card product-card-item">
             
             {% if item.is_featured %}
             <div style="position: absolute; top: 12px; right: 12px; background: var(--gold); color: var(--wood-dark); font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; padding: 0.2rem 0.6rem; border-radius: 12px; text-transform: uppercase;">
@@ -261,13 +260,13 @@
                 </div>
 
                 <!-- Dual Action Buttons: Read Online vs Download PDF -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                    <a href="{{ url_for('routes.read_online', material_id=item.id) }}" class="antique-button" style="padding: 0.65rem 0.4rem; font-size: 0.8rem; text-align: center; text-decoration: none; justify-content: center; background: linear-gradient(135deg, rgba(85, 48, 26, 0.9), rgba(42, 22, 12, 0.96)); color: #ffdf7e; font-weight: 700; border: 1px solid var(--gold);">
-                        <span>📖 READ ONLINE</span>
+                <div class="card-action-buttons">
+                    <a href="{{ url_for('routes.read_online', material_id=item.id) }}" class="antique-button card-read-btn">
+                        <span>📖 READ</span>
                     </a>
 
-                    <a href="{{ url_for('routes.download_pdf', material_id=item.id) }}" class="antique-button" style="padding: 0.65rem 0.4rem; font-size: 0.8rem; text-align: center; text-decoration: none; justify-content: center; background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%); color: #140a04; font-weight: 800; border: 1px solid #ffdf7e; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);">
-                        <span>⬇ DOWNLOAD</span>
+                    <a href="{{ url_for('routes.download_pdf', material_id=item.id) }}" class="antique-button card-download-btn">
+                        <span>⬇ GET PDF</span>
                     </a>
                 </div>
             </div>

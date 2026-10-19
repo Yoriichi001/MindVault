@@ -29,7 +29,7 @@
                 {{ form.website(tabindex="-1", autocomplete="off") }}
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="feedback-grid-row">
                 <div class="form-group">
                     <label for="name">{{ form.name.label.text }}</label>
                     {{ form.name(class="form-control", placeholder="Your full name or handle", required=true) }}
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+            <div class="feedback-grid-row feedback-grid-sub-rate">
                 <div class="form-group">
                     <label for="subject">{{ form.subject.label.text }}</label>
                     {{ form.subject(class="form-control", placeholder="e.g. Request for Quantum Computing texts", required=true) }}

@@ -18,7 +18,7 @@
         <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem;">
+            <div class="admin-form-row-2col">
                 <div class="form-group">
                     <label for="title">{{ form.title.label.text }} *</label>
                     {{ form.title(class="form-control", placeholder="e.g. Structure and Interpretation of Computer Programs", required=true, autofocus=true) }}
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Document Category, Subject, Pages & Category Description -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 1.2rem;">
+            <div class="admin-form-row-3col">
                 <div class="form-group">
                     <label for="category">{{ form.category.label.text }} *</label>
                     {{ form.category(class="form-control", id="categorySelect") }}
@@ -56,7 +56,7 @@
                 <h4 style="font-family: var(--serif); font-size: 1.05rem; color: var(--gold-bright); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
                     <span>📜</span> Academic & Citation Details <small style="color: var(--paper-dark); font-size: 0.75rem;">(Optional)</small>
                 </h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="admin-form-row-3col">
                     <div class="form-group" style="margin-bottom: 0;">
                         <label for="edition_year" style="font-size: 0.82rem;">Publication Year / Edition</label>
                         {{ form.edition_year(class="form-control", placeholder="e.g. 2024 or 3rd Edition") }}
@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="admin-form-uploads-row">
                     <!-- PDF Document File Upload -->
                     <div style="background: rgba(10, 5, 2, 0.5); padding: 1.2rem; border-radius: 6px; border: 1px solid var(--glass-border);">
                         <label for="file" style="font-weight: 700; color: var(--gold); display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem;">

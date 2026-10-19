@@ -12,7 +12,7 @@
         </h1>
     </div>
 
-    <div style="display: grid; grid-template-columns: 340px 1fr; gap: 2rem; align-items: start;">
+    <div class="profile-layout-grid">
 
         <!-- Left Column: Avatar & Account Badges -->
         <div class="glass-panel" style="padding: 2.2rem; text-align: center;">
@@ -112,7 +112,7 @@
                     </div>
 
                     <div style="margin-top: 1.8rem;">
-                        {{ form.submit(class="btn-primary-mv", style="max-width: 260px;") }}
+                        {{ form.submit(class="btn-primary-mv profile-submit-btn") }}
                     </div>
                 </form>
             </div>

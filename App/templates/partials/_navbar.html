@@ -1,12 +1,22 @@
 <header class="mv-navbar">
-  <a href="{{ url_for('routes.index') }}" class="mv-brand">
-    <div class="mv-brand-seal">MV</div>
-    <div class="mv-brand-title">
-      <span>MINDVAULT</span>
-      <small>STORE KNOWLEDGE · UNLOCK POTENTIAL</small>
-    </div>
-  </a>
+  <div class="mv-navbar-left">
+    <!-- Mobile & Tablet Sidebar Hamburger Toggle -->
+    <button class="mv-sidebar-toggle" id="mvSidebarToggle" type="button" aria-label="Open Navigation Drawer" aria-expanded="false" aria-controls="mvMobileSidebar">
+      <span class="mv-hamburger-line"></span>
+      <span class="mv-hamburger-line"></span>
+      <span class="mv-hamburger-line"></span>
+    </button>
 
+    <a href="{{ url_for('routes.index') }}" class="mv-brand">
+      <div class="mv-brand-seal">MV</div>
+      <div class="mv-brand-title">
+        <span>MINDVAULT</span>
+        <small>STORE KNOWLEDGE · UNLOCK POTENTIAL</small>
+      </div>
+    </a>
+  </div>
+
+  <!-- Desktop Navigation Links (Hidden on Tablets & Phones) -->
   <nav class="mv-nav-links">
     <a href="{{ url_for('routes.index') }}" class="{% if request.endpoint == 'routes.index' and not request.args.get('category') %}active{% endif %}">Library</a>
     <a href="{{ url_for('routes.books_view') }}" class="{% if request.args.get('category') == 'Books' %}active{% endif %}">Books</a>
@@ -19,12 +29,13 @@
     <a href="{{ url_for('routes.feedback') }}" class="{% if request.endpoint == 'routes.feedback' %}active{% endif %}">Feedback</a>
   </nav>
 
+  <!-- User / Auth Action Dropdown -->
   <div class="mv-dropdown" id="userMenuDropdown">
     {% if current_user.is_authenticated %}
       <button class="mv-dropdown-toggle" id="userDropdownBtn" aria-haspopup="true" aria-expanded="false">
         <img src="{{ current_user.get_avatar_url() }}" alt="{{ current_user.username }}" class="mv-avatar-img">
-        <span>{{ current_user.username }}</span>
-        <span style="font-size: 0.7rem;">▼</span>
+        <span class="mv-user-name-label">{{ current_user.username }}</span>
+        <span class="mv-chevron">▼</span>
       </button>
       <div class="mv-dropdown-menu" aria-labelledby="userDropdownBtn">
         <div style="padding: 0.5rem 1.2rem; border-bottom: 1px solid var(--glass-border);">
@@ -56,8 +67,9 @@
       </div>
     {% else %}
       <button class="mv-dropdown-toggle" id="authDropdownBtn" aria-haspopup="true" aria-expanded="false">
-        <span>Access Portal</span>
-        <span style="font-size: 0.7rem;">▼</span>
+        <span class="mv-portal-label">Access Portal</span>
+        <span class="mv-portal-icon">🔑</span>
+        <span class="mv-chevron">▼</span>
       </button>
       <div class="mv-dropdown-menu" aria-labelledby="authDropdownBtn">
         <a href="{{ url_for('routes.login') }}" class="mv-dropdown-item">
@@ -74,3 +86,188 @@
     {% endif %}
   </div>
 </header>
+
+<!-- Mobile & Tablet Sidebar Backdrop Overlay -->
+<div class="mv-sidebar-backdrop" id="mvSidebarBackdrop" aria-hidden="true"></div>
+
+<!-- Offcanvas Mobile & Tablet Navigation Sidebar Drawer -->
+<aside class="mv-mobile-sidebar" id="mvMobileSidebar" aria-label="Mobile Navigation" aria-hidden="true">
+  <div class="mv-sidebar-header">
+    <a href="{{ url_for('routes.index') }}" class="mv-brand" style="gap: 0.75rem;">
+      <div class="mv-brand-seal" style="width: 36px; height: 36px; font-size: 0.95rem;">MV</div>
+      <div class="mv-brand-title">
+        <span style="font-size: 1.2rem;">MINDVAULT</span>
+        <small style="font-size: 0.55rem; letter-spacing: 2px;">ATELIER OF KNOWLEDGE</small>
+      </div>
+    </a>
+    <button class="mv-sidebar-close" id="mvSidebarClose" type="button" aria-label="Close navigation menu">✕</button>
+  </div>
+
+  <!-- Scholar Card / Fast Auth in Sidebar -->
+  <div class="mv-sidebar-scholar-card">
+    {% if current_user.is_authenticated %}
+      <div class="mv-sidebar-user-row">
+        <img src="{{ current_user.get_avatar_url() }}" alt="{{ current_user.username }}" class="mv-sidebar-avatar">
+        <div class="mv-sidebar-user-info">
+          <strong class="mv-sidebar-username">{{ current_user.username }}</strong>
+          <div style="display: flex; gap: 0.4rem; align-items: center; margin-top: 0.2rem;">
+            <span class="badge {% if current_user.is_admin %}badge-admin{% else %}badge-student{% endif %}" style="font-size: 0.68rem; padding: 0.2rem 0.5rem;">
+              {{ current_user.role|capitalize }}
+            </span>
+            {% if current_user.is_verified %}
+              <span style="color: var(--gold-bright); font-size: 0.72rem; font-weight: 600;">✓ Verified</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <a href="{{ url_for('routes.account') }}" class="mv-sidebar-action-btn">
+        <span>👤</span> Open Account Dossier
+      </a>
+    {% else %}
+      <div class="mv-sidebar-auth-actions">
+        <p style="color: var(--paper-light); font-size: 0.82rem; margin-bottom: 0.7rem; font-style: italic;">
+          Unlock manuscript downloads and reading trackers.
+        </p>
+        <div style="display: flex; gap: 0.6rem;">
+          <a href="{{ url_for('routes.login') }}" class="btn-primary-mv" style="flex: 1; text-align: center; text-decoration: none; padding: 0.65rem 0.5rem; font-size: 0.82rem;">
+            📖 Login
+          </a>
+          <a href="{{ url_for('routes.register') }}" class="antique-button" style="flex: 1; text-align: center; text-decoration: none; padding: 0.65rem 0.5rem; font-size: 0.82rem; justify-content: center;">
+            ✍ Register
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Navigation Links with Rich Vintage Aesthetic -->
+  <nav class="mv-sidebar-nav">
+    <div class="mv-sidebar-section-title">LIBRARY VAULT</div>
+    <a href="{{ url_for('routes.index') }}" class="mv-sidebar-link {% if request.endpoint == 'routes.index' and not request.args.get('category') %}active{% endif %}">
+      <span class="mv-sidebar-icon">🏛</span>
+      <span>Library Catalogue</span>
+    </a>
+    <a href="{{ url_for('routes.books_view') }}" class="mv-sidebar-link {% if request.args.get('category') == 'Books' %}active{% endif %}">
+      <span class="mv-sidebar-icon">📚</span>
+      <span>Books & Literature</span>
+    </a>
+    <a href="{{ url_for('routes.papers_view') }}" class="mv-sidebar-link {% if request.args.get('category') == 'Research Papers' %}active{% endif %}">
+      <span class="mv-sidebar-icon">📜</span>
+      <span>Research Papers</span>
+    </a>
+    <a href="{{ url_for('routes.study_materials_view') }}" class="mv-sidebar-link {% if request.args.get('category') == 'Study Materials' %}active{% endif %}">
+      <span class="mv-sidebar-icon">✒</span>
+      <span>Study Materials & Notes</span>
+    </a>
+    <a href="{{ community_url }}" target="_blank" rel="noopener noreferrer" class="mv-sidebar-link mv-sidebar-community">
+      <span class="mv-sidebar-icon">🌐</span>
+      <span>E-Cell Community ↗</span>
+    </a>
+    <a href="{{ url_for('routes.feedback') }}" class="mv-sidebar-link {% if request.endpoint == 'routes.feedback' %}active{% endif %}">
+      <span class="mv-sidebar-icon">💬</span>
+      <span>Inscribe Feedback</span>
+    </a>
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
+      <div class="mv-sidebar-section-title" style="color: var(--gold-bright); margin-top: 1.4rem;">
+        ADMINISTRATIVE CONSOLE
+      </div>
+      <a href="{{ url_for('routes.admin_dashboard') }}" class="mv-sidebar-link {% if request.endpoint == 'routes.admin_dashboard' %}active{% endif %}" style="color: var(--gold-bright);">
+        <span class="mv-sidebar-icon">⚡</span>
+        <span>Executive Dashboard</span>
+      </a>
+      <a href="{{ url_for('routes.admin_materials') }}" class="mv-sidebar-link {% if request.endpoint in ['routes.admin_materials', 'routes.admin_material_new', 'routes.admin_material_edit'] %}active{% endif %}">
+        <span class="mv-sidebar-icon">📦</span>
+        <span>Catalogue Manager</span>
+      </a>
+      <a href="{{ url_for('routes.admin_users') }}" class="mv-sidebar-link {% if request.endpoint == 'routes.admin_users' %}active{% endif %}">
+        <span class="mv-sidebar-icon">👥</span>
+        <span>Scholar Roster</span>
+      </a>
+      <a href="{{ url_for('routes.admin_feedbacks') }}" class="mv-sidebar-link {% if request.endpoint == 'routes.admin_feedbacks' %}active{% endif %}">
+        <span class="mv-sidebar-icon">📨</span>
+        <span>Feedback Archives</span>
+      </a>
+    {% endif %}
+
+    {% if not current_user.is_authenticated %}
+      <div style="border-top: 1px solid var(--glass-border); margin: 1.2rem 0; padding-top: 0.8rem;">
+        <a href="{{ url_for('routes.admin_login') }}" class="mv-sidebar-link" style="color: var(--gold-bright); font-size: 0.85rem;">
+          <span class="mv-sidebar-icon">🛡</span>
+          <span>Master Admin Portal</span>
+        </a>
+      </div>
+    {% endif %}
+
+    {% if current_user.is_authenticated %}
+      <div style="margin-top: 1.8rem; padding: 0 0.5rem 1rem 0.5rem;">
+        <a href="{{ url_for('routes.logout') }}" class="antique-button" style="width: 100%; justify-content: center; text-decoration: none; color: #ff6b6b; border-color: rgba(255, 107, 107, 0.4); padding: 0.65rem 1rem; font-size: 0.85rem;">
+          <span>🚪 Sign Out</span>
+        </a>
+      </div>
+    {% endif %}
+  </nav>
+</aside>
+
+<!-- Sidebar Interaction Script -->
+<script>
+  (function() {
+    const toggleBtn = document.getElementById('mvSidebarToggle');
+    const closeBtn = document.getElementById('mvSidebarClose');
+    const sidebar = document.getElementById('mvMobileSidebar');
+    const backdrop = document.getElementById('mvSidebarBackdrop');
+
+    function openSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.add('open');
+      if (backdrop) backdrop.classList.add('visible');
+      if (toggleBtn) {
+        toggleBtn.classList.add('active');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+      sidebar.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('sidebar-open');
+    }
+
+    function closeSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('visible');
+      if (toggleBtn) {
+        toggleBtn.classList.remove('active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+      sidebar.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('sidebar-open');
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (sidebar && sidebar.classList.contains('open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      });
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
+    });
+
+    // Close when clicking any navigation link inside sidebar
+    if (sidebar) {
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+      });
+    }
+  })();
+</script>
+
