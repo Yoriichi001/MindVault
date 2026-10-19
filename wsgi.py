@@ -259,8 +259,11 @@ This provides the mathematical basis for low-rank matrix approximation, Latent S
             db.session.add(sample_feedback)
             db.session.commit()
 
-# Run database auto-seeding
-seed_database()
+# Run database auto-seeding safely
+try:
+    seed_database()
+except Exception as e:
+    app.logger.warning(f"Database auto-seed check deferred: {e}")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
