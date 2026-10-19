@@ -212,61 +212,93 @@
 <!-- Sidebar Interaction Script -->
 <script>
   (function() {
-    const toggleBtn = document.getElementById('mvSidebarToggle');
-    const closeBtn = document.getElementById('mvSidebarClose');
-    const sidebar = document.getElementById('mvMobileSidebar');
-    const backdrop = document.getElementById('mvSidebarBackdrop');
+    function initMvSidebar() {
+      const toggleBtn = document.getElementById('mvSidebarToggle');
+      const closeBtn = document.getElementById('mvSidebarClose');
+      const sidebar = document.getElementById('mvMobileSidebar');
+      const backdrop = document.getElementById('mvSidebarBackdrop');
 
-    function openSidebar() {
-      if (!sidebar) return;
-      sidebar.classList.add('open');
-      if (backdrop) backdrop.classList.add('visible');
-      if (toggleBtn) {
+      if (!toggleBtn || !sidebar) return;
+
+      let lastToggleTime = 0;
+
+      function openSidebar(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('visible');
         toggleBtn.classList.add('active');
         toggleBtn.setAttribute('aria-expanded', 'true');
+        sidebar.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('sidebar-open');
+        document.documentElement.classList.add('sidebar-open');
       }
-      sidebar.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('sidebar-open');
-    }
 
-    function closeSidebar() {
-      if (!sidebar) return;
-      sidebar.classList.remove('open');
-      if (backdrop) backdrop.classList.remove('visible');
-      if (toggleBtn) {
+      function closeSidebar(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('visible');
         toggleBtn.classList.remove('active');
         toggleBtn.setAttribute('aria-expanded', 'false');
+        sidebar.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('sidebar-open');
+        document.documentElement.classList.remove('sidebar-open');
       }
-      sidebar.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('sidebar-open');
-    }
 
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (sidebar && sidebar.classList.contains('open')) {
+      function handleToggle(e) {
+        const now = Date.now();
+        if (now - lastToggleTime < 300) return; // Debounce touch+click synthetic events
+        lastToggleTime = now;
+
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        if (sidebar.classList.contains('open')) {
           closeSidebar();
         } else {
           openSidebar();
         }
+      }
+
+      toggleBtn.addEventListener('click', handleToggle);
+      toggleBtn.addEventListener('touchend', handleToggle, { passive: false });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeSidebar);
+        closeBtn.addEventListener('touchend', closeSidebar, { passive: false });
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', closeSidebar);
+        backdrop.addEventListener('touchend', closeSidebar, { passive: false });
+      }
+
+      // Close on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+          closeSidebar();
+        }
+      });
+
+      // Close when clicking any navigation link inside sidebar
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+          closeSidebar();
+        });
       });
     }
 
-    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-    if (backdrop) backdrop.addEventListener('click', closeSidebar);
-
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
-        closeSidebar();
-      }
-    });
-
-    // Close when clicking any navigation link inside sidebar
-    if (sidebar) {
-      sidebar.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', closeSidebar);
-      });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMvSidebar);
+    } else {
+      initMvSidebar();
     }
   })();
 </script>
