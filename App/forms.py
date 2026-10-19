@@ -1,9 +1,20 @@
+import re
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp, ValidationError, Optional
+from wtforms.validators import DataRequired, Length, EqualTo, Regexp, ValidationError, Optional
 from App.models import User
 from App.utils import is_disposable_email
+
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+
+def safe_email_validator(form, field):
+    """Resilient email format validator that never crashes if email_validator package is absent."""
+    if not field.data:
+        return
+    data = field.data.strip()
+    if not EMAIL_REGEX.match(data):
+        raise ValidationError("Please provide a valid email address.")
 
 # Honeypot validation helper
 def honeypot_check(form, field):
@@ -37,7 +48,7 @@ class RegisterForm(FlaskForm):
             Regexp(r'^[a-zA-Z0-9_]+$', message="Username may only contain letters, numbers, and underscores.")
         ]
     )
-    email = StringField('Email Address', validators=[DataRequired(), Email(), Length(max=120)])
+    email = StringField('Email Address', validators=[DataRequired(), safe_email_validator, Length(max=120)])
     password = PasswordField(
         'Password',
         validators=[
@@ -75,7 +86,7 @@ class AccountUpdateForm(FlaskForm):
             Regexp(r'^[a-zA-Z0-9_]+$', message="Username may only contain letters, numbers, and underscores.")
         ]
     )
-    email = StringField('Email Address', validators=[DataRequired(), Email(), Length(max=120)])
+    email = StringField('Email Address', validators=[DataRequired(), safe_email_validator, Length(max=120)])
     avatar = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], 'Only image files (JPG, PNG, WEBP) are accepted.')])
     submit = SubmitField('Save Profile Changes')
 
@@ -103,7 +114,7 @@ class AccountUpdateForm(FlaskForm):
 
 
 class PasswordResetRequestForm(FlaskForm):
-    email = StringField('Registered Email', validators=[DataRequired(), Email()])
+    email = StringField('Registered Email', validators=[DataRequired(), safe_email_validator])
     website = StringField('Website', validators=[honeypot_check])
     submit = SubmitField('Send Password Reset Link')
 
@@ -155,7 +166,7 @@ class MaterialForm(FlaskForm):
 
 class FeedbackForm(FlaskForm):
     name = StringField('Your Name', validators=[DataRequired(), Length(max=100)])
-    email = StringField('Your Email', validators=[DataRequired(), Email(), Length(max=120)])
+    email = StringField('Your Email', validators=[DataRequired(), safe_email_validator, Length(max=120)])
     subject = StringField('Subject / Topic', validators=[DataRequired(), Length(max=150)])
     message = TextAreaField('Feedback / Suggestion / Review', validators=[DataRequired(), Length(min=5, max=3000)])
     rating = SelectField('Your Rating', choices=[('5', '5 - Masterpiece'), ('4', '4 - Very Good'), ('3', '3 - Helpful'), ('2', '2 - Needs Improvement'), ('1', '1 - Poor')], default='5')
