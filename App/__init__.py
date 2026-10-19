@@ -85,11 +85,19 @@ def create_app(config_class=Config):
 
     # Initialize Cloudinary cloud storage if configured
     cloudinary_url = app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
-    if cloudinary_url:
+    if cloudinary_url and cloudinary_url.strip():
         try:
+            from urllib.parse import urlparse
             import cloudinary
-            cloudinary.config(cloudinary_url=cloudinary_url)
-            app.logger.info("Cloudinary cloud media storage initialized.")
+            p = urlparse(cloudinary_url.strip())
+            if p.hostname and p.username and p.password:
+                cloudinary.config(
+                    cloud_name=p.hostname,
+                    api_key=p.username,
+                    api_secret=p.password,
+                    secure=True
+                )
+                app.logger.info(f"Cloudinary cloud media storage initialized for: {p.hostname}")
         except Exception as ce:
             app.logger.warning(f"Cloudinary configuration warning: {ce}")
 

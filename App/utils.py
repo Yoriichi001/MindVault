@@ -96,6 +96,27 @@ def verify_token(token, max_age=86400, salt="email-confirm-salt"):
         return None
 
 
+def configure_cloudinary():
+    """Extracts credentials from CLOUDINARY_URL and explicitly initializes the Cloudinary SDK."""
+    raw_url = current_app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
+    if not raw_url or not raw_url.strip():
+        return False
+    try:
+        import cloudinary
+        p = urlparse(raw_url.strip())
+        if p.hostname and p.username and p.password:
+            cloudinary.config(
+                cloud_name=p.hostname,
+                api_key=p.username,
+                api_secret=p.password,
+                secure=True
+            )
+            return True
+    except Exception as e:
+        current_app.logger.warning(f"Could not parse CLOUDINARY_URL: {e}")
+    return False
+
+
 def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=85):
     """
     Secure image upload handler:
@@ -141,13 +162,9 @@ def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=
         img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
         
         # Check for Cloudinary configuration
-        cloudinary_url = current_app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
-        if cloudinary_url:
+        if configure_cloudinary():
             try:
-                import cloudinary
                 import cloudinary.uploader
-                cloudinary.config(cloudinary_url=cloudinary_url)
-                
                 buffer = io.BytesIO()
                 img.save(buffer, 'JPEG', quality=quality, optimize=True)
                 buffer.seek(0)
@@ -160,7 +177,7 @@ def save_uploaded_image(file_storage, subfolder='avatars', max_dim=800, quality=
                 if upload_res and 'secure_url' in upload_res:
                     return upload_res['secure_url']
             except Exception as ce:
-                current_app.logger.warning(f"Cloudinary image upload failed, falling back to local: {ce}")
+                current_app.logger.warning(f"Cloudinary image upload failed: {ce}, falling back to local disk")
 
         # Local storage fallback
         target_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], subfolder)
@@ -196,13 +213,9 @@ def save_uploaded_pdf(file_storage):
             return None, 0.0
 
         # Check for Cloudinary configuration
-        cloudinary_url = current_app.config.get('CLOUDINARY_URL') or os.environ.get('CLOUDINARY_URL')
-        if cloudinary_url:
+        if configure_cloudinary():
             try:
-                import cloudinary
                 import cloudinary.uploader
-                cloudinary.config(cloudinary_url=cloudinary_url)
-                
                 unique_id = uuid.uuid4().hex
                 upload_res = cloudinary.uploader.upload(
                     file_storage.stream,
@@ -215,7 +228,7 @@ def save_uploaded_pdf(file_storage):
                     size_mb = round(size_bytes / (1024 * 1024), 2)
                     return upload_res['secure_url'], size_mb
             except Exception as ce:
-                current_app.logger.warning(f"Cloudinary PDF upload failed, falling back to local: {ce}")
+                current_app.logger.warning(f"Cloudinary PDF upload failed: {ce}, falling back to local disk")
                 file_storage.stream.seek(0)
             
         target_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'books')
